@@ -1,0 +1,77 @@
+table Disclaimer
+	lineageTag: 8be3fb4d-6150-4305-8bfa-fdf29151016e
+
+	measure 'Sample Data Disclaimer HTML' =
+			
+			VAR _css = "
+			<style>
+			    .sd-box {
+			        font-family: Segoe UI, sans-serif;
+			        max-width: 720px;
+			        margin: 0 auto;
+			        padding: 16px 20px;
+			        background: #eff6fc;
+			        border-left: 4px solid #0078d4;
+			        border-radius: 6px;
+			        line-height: 1.6;
+			    }
+			    .sd-box h2 {
+			        font-size: 15px;
+			        font-weight: 600;
+			        margin: 0 0 8px 0;
+			        color: #201f1e;
+			    }
+			    .sd-box p {
+			        font-size: 13px;
+			        margin: 0 0 8px 0;
+			        color: #484644;
+			    }
+			    .sd-box p:last-child {
+			        margin-bottom: 0;
+			    }
+			    .sd-box a {
+			        color: #0078d4;
+			        text-decoration: none;
+			    }
+			    .sd-box a:hover {
+			        text-decoration: underline;
+			    }
+			    .sd-box code {
+			        font-family: Consolas, monospace;
+			        font-size: 12px;
+			        background: #e1dfdd;
+			        padding: 1px 5px;
+			        border-radius: 3px;
+			    }
+			</style>
+			"
+			VAR _body = "
+			<div class='sd-box'>
+			    <h2>&#x1F4CA; Sample data</h2>
+			    <p>This report uses the <strong>Contoso 1M row dataset</strong> from SQLBI's Contoso Data Generator V2. The data is not included in this repository.</p>
+			    <p>Download the ready-to-use data from <a href='https://github.com/sql-bi/Contoso-Data-Generator-V2-data/releases/tag/ready-to-use-data' target='_blank'>github.com/sql-bi/Contoso-Data-Generator-V2-data</a> and point the semantic model's data source to the downloaded files.</p>
+			    <p>The PBIR X-Ray queries themselves do not depend on the sample data &mdash; they read the <code>.Report</code> folder structure. You can point <code>pq_pbir_ReportFolderPath</code> at any PBIR report folder.</p>
+			</div>
+			"
+			RETURN
+			    _css & _body
+		lineageTag: 687c6d16-10a8-4e2e-a907-72c337b7ec43
+
+	column 'hide this column'
+		isHidden
+		formatString: 0
+		lineageTag: 96276b8c-78c9-4c42-8b6f-79131354a37b
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [hide this column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Disclaimer = calculated
+		mode: import
+		source =
+				
+				ROW( "hide this column" , 666 )
+
+	annotation PBI_Id = 8e486c418e924fc7a32961c447e94eb7
+

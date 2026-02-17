@@ -1,0 +1,120 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "c1a0000000000000004",
+  "position": {
+    "x": 660,
+    "y": 180,
+    "z": 3000,
+    "height": 530,
+    "width": 610,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "VisualType"
+                }
+              },
+              "queryRef": "Visuals_pbir.VisualType",
+              "nativeQueryRef": "Visual Type"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Visuals_pbir"
+                        }
+                      },
+                      "Property": "VisualId"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(Visuals_pbir.VisualId)",
+              "nativeQueryRef": "Count"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Visuals_pbir"
+                        }
+                      },
+                      "Property": "PageName"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(Visuals_pbir.PageName)",
+              "nativeQueryRef": "Pages used on"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Visuals_pbir"
+                      }
+                    },
+                    "Property": "VisualId"
+                  }
+                },
+                "Function": 5
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'How many of each visual type exist'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+/// Errors in queries that were loaded on 2/14/2026 10:56:49 AM.
+queryGroup 'Query Errors - 2/14/2026 10:56:49 AM'
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["pq_par_csvFolderPath","currencyexchange","customer","date","orderrows","orders","product","sales","store"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table currencyexchange
+ref table DateTableTemplate_0105e6d9-5018-4682-9adc-87acd11e378c
+ref table LocalDateTable_0000d98e-6911-4e95-89e0-b92f18ec9363
+ref table customer
+ref table LocalDateTable_aa507332-438d-4dea-89e2-41c45c61daee
+ref table LocalDateTable_3a6fe571-9cc2-46d7-8b96-0f55ee2520b1
+ref table LocalDateTable_654339ee-90fe-4479-aa27-9bf3a75037ec
+ref table date
+ref table LocalDateTable_2601f702-38d9-4e4c-80fb-e68a0bc7fd92
+ref table LocalDateTable_76cc4f55-cc80-4ef7-8d40-d3b4d82c1dff
+ref table LocalDateTable_874351e6-bbb4-4aab-bcd9-21c4d65d34f7
+ref table orderrows
+ref table orders
+ref table LocalDateTable_e06a7250-a314-417a-92f8-b8fac3598966
+ref table LocalDateTable_9ffcc9b7-35c8-4e97-8696-0246215445af
+ref table product
+ref table sales
+ref table LocalDateTable_2b38237e-045f-4331-94b1-7e53668dce0a
+ref table store
+ref table LocalDateTable_0d24c54f-ff97-47c3-aaf6-e5f3356d82e5
+ref table LocalDateTable_1d123f57-6497-4c31-b6f6-dbaae134e3b8
+ref table Disclaimer
+
+ref cultureInfo en-US
+

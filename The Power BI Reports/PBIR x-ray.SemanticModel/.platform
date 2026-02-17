@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "PBIR x-ray"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c169d238-5861-4abf-ba6f-06d98cc80482"
+  }
+}

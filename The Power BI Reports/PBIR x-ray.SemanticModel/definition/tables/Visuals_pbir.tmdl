@@ -1,0 +1,966 @@
+table Visuals_pbir
+	lineageTag: 2c8c5e72-d70e-484d-8f90-b5a88689ba2b
+
+	measure 'Slicer Sync Status' =
+			
+			VAR _selectedGroup =
+			    SELECTEDVALUE( SyncGroups[SyncGroupName] )
+			VAR _slicers =
+			    FILTER(
+			        Visuals_pbir,
+			        ( Visuals_pbir[VisualType] = "slicer" || Visuals_pbir[VisualType] = "advancedSlicerVisual" || Visuals_pbir[VisualType] = "listSlicer" )
+			            && Visuals_pbir[PageId] IN VALUES( Pages_pbir[PageId] )
+			    )
+			VAR _inGroup =
+			    FILTER(
+			        _slicers,
+			        Visuals_pbir[SyncGroupName] = _selectedGroup
+			    )
+			VAR _countInGroup = COUNTROWS( _inGroup )
+			VAR _isHidden =
+			    MAXX( _inGroup, Visuals_pbir[IsHidden] )
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        _countInGroup > 0 && _isHidden,
+			            "Hidden, Synced",
+			        _countInGroup > 0,
+			            "Visible, Synced",
+			        "No Slicer"
+			    )
+		lineageTag: 8e23218d-78de-40a1-ba84-e549468868cf
+
+	measure 'Slicer Sync HTML' = ```
+			
+			VAR _selectedGroup = SELECTEDVALUE( SyncGroups[SyncGroupName] )
+			VAR _pages = 
+			    ADDCOLUMNS(
+			        ALL( Pages_pbir[PageName], Pages_pbir[PageId], Pages_pbir[PageOrdinal] ),
+			        "@HasSlicer", 
+			            COUNTROWS(
+			                FILTER(
+			                    ALL( Visuals_pbir ),
+			                    ( Visuals_pbir[VisualType] = "slicer" || Visuals_pbir[VisualType] = "advancedSlicerVisual" || Visuals_pbir[VisualType] = "listSlicer" )
+			                        && Visuals_pbir[SyncGroupName] = _selectedGroup
+			                        && Visuals_pbir[PageId] = Pages_pbir[PageId]
+			                )
+			            ) > 0,
+			        "@IsHidden",
+			            CALCULATE(
+			                MAX( Visuals_pbir[IsHidden] ),
+			                FILTER(
+			                    ALL( Visuals_pbir ),
+			                    ( Visuals_pbir[VisualType] = "slicer" || Visuals_pbir[VisualType] = "advancedSlicerVisual" || Visuals_pbir[VisualType] = "listSlicer" )
+			                        && Visuals_pbir[SyncGroupName] = _selectedGroup
+			                        && Visuals_pbir[PageId] = Pages_pbir[PageId]
+			                )
+			            )
+			    )
+			VAR _css = "
+			<style>
+			    .sync-table { 
+			        width: 100%; 
+			        border-collapse: collapse; 
+			        font-family: Segoe UI, sans-serif; 
+			        font-size: 12px; 
+			    }
+			    .sync-table th { 
+			        background: #f3f3f3; 
+			        padding: 6px 12px; 
+			        text-align: left; 
+			        border-bottom: 2px solid #118dff; 
+			        font-weight: 600; 
+			    }
+			    .sync-table td { 
+			        padding: 5px 12px; 
+			        border-bottom: 1px solid #ededed; 
+			    }
+			    .sync-table tr:hover { 
+			        background: #f5f9ff; 
+			    }
+			    .icon-sync { 
+			        color: #107c10; 
+			        font-size: 16px; 
+			        font-weight: bold; 
+			    }
+			    .icon-none { 
+			        color: #d1d1d1; 
+			        font-size: 14px; 
+			    }
+			    .icon-hidden { 
+			        color: #e67700; 
+			        font-size: 14px; 
+			    }
+			    .page-name { 
+			        max-width: 220px; 
+			        overflow: hidden; 
+			        text-overflow: ellipsis; 
+			        white-space: nowrap; 
+			    }
+			    .header-icon { 
+			        text-align: center; 
+			        width: 40px; 
+			    }
+			    .cell-icon { 
+			        text-align: center; 
+			    }
+			</style>
+			"
+			VAR _header = "
+			<table class='sync-table'>
+			<tr>
+			    <th class='page-name'>Page name</th>
+			    <th class='header-icon' title='Synced'>&#x1f504;</th>
+			    <th class='header-icon' title='Visible'>&#x1f441;</th>
+			</tr>
+			"
+			VAR _rows = 
+			    CONCATENATEX(
+			        _pages,
+			        VAR _hasSlicer = [@HasSlicer]
+			        VAR _isHidden = [@IsHidden]
+			        VAR _syncIcon = 
+			            IF( _hasSlicer, 
+			                "<span class='icon-sync'>&#x2713;</span>", 
+			                "<span class='icon-none'>&#x2717;</span>" 
+			            )
+			        VAR _visIcon = 
+			            IF( NOT _hasSlicer,
+			                "<span class='icon-none'>&#x2717;</span>",
+			                IF( _isHidden,
+			                    "<span class='icon-hidden'>&#x1f6ab;</span>",
+			                    "<span class='icon-sync'>&#x2713;</span>"
+			                )
+			            )
+			        RETURN
+			            "<tr>" &
+			            "<td class='page-name'>" & [PageName] & "</td>" &
+			            "<td class='cell-icon'>" & _syncIcon & "</td>" &
+			            "<td class='cell-icon'>" & _visIcon & "</td>" &
+			            "</tr>",
+			            ,
+				        [PageOrdinal], ASC
+			    )
+			VAR _footer = "</table>"
+			RETURN
+			    _css & _header & _rows & _footer
+			```
+		lineageTag: 6a85d590-a811-418c-93d3-199fd07f7b80
+
+	measure 'Page Navigation HTML' =
+			
+			VAR _navVisual =
+			    MAXX(
+			        FILTER( ALL( Visuals_pbir ), Visuals_pbir[VisualType] = "pageNavigator" ),
+			        Visuals_pbir[PageNavigationDetails]
+			    )
+			VAR _hasNav = NOT ISBLANK( _navVisual )
+			// Parse the JSON-encoded settings
+			VAR _showHidden =
+			    IF( _hasNav,
+			        CONTAINSSTRING( _navVisual, """showHiddenPages"":true" ),
+			        FALSE()
+			    )
+			VAR _showTooltip =
+			    IF( _hasNav,
+			        CONTAINSSTRING( _navVisual, """showTooltipPages"":true" ),
+			        FALSE()
+			    )
+			// Extract excluded page IDs from the JSON
+			VAR _excludedRaw =
+			    IF( _hasNav,
+			        MID(
+			            _navVisual,
+			            FIND( """excludedPages"":[", _navVisual, 1, 0 ) + 17,
+			            FIND( "]", _navVisual,
+			                FIND( """excludedPages"":[", _navVisual, 1, 0 ) + 17, 0
+			            ) - FIND( """excludedPages"":[", _navVisual, 1, 0 ) - 17
+			        ),
+			        ""
+			    )
+			VAR _pages =
+			    ADDCOLUMNS(
+			        ALL( Pages_pbir[PageName], Pages_pbir[PageId], Pages_pbir[PageOrdinal],
+			             Pages_pbir[PageVisibility], Pages_pbir[PageType] ),
+			        "@IsExcluded", CONTAINSSTRING( _excludedRaw, Pages_pbir[PageId] ),
+			        "@IsHiddenPage", Pages_pbir[PageVisibility] = "HiddenInViewMode",
+			        "@IsDrillthrough", Pages_pbir[PageType] = "Drillthrough",
+			        "@IsTooltip", Pages_pbir[PageType] = "Tooltip"
+			    )
+			VAR _css = "
+			<style>
+			    .nav-table {
+			        width: 100%;
+			        border-collapse: collapse;
+			        font-family: Segoe UI, sans-serif;
+			        font-size: 12px;
+			    }
+			    .nav-table th {
+			        background: #f3f3f3;
+			        padding: 6px 12px;
+			        text-align: left;
+			        border-bottom: 2px solid #118dff;
+			        font-weight: 600;
+			    }
+			    .nav-table td {
+			        padding: 5px 12px;
+			        border-bottom: 1px solid #ededed;
+			    }
+			    .nav-table tr:hover {
+			        background: #f5f9ff;
+			    }
+			    .icon-show {
+			        color: #107c10;
+			        font-size: 16px;
+			        font-weight: bold;
+			    }
+			    .icon-hide {
+			        color: #d1d1d1;
+			        font-size: 14px;
+			    }
+			    .icon-excluded {
+			        color: #e67700;
+			        font-size: 14px;
+			    }
+			    .page-name {
+			        max-width: 220px;
+			        overflow: hidden;
+			        text-overflow: ellipsis;
+			        white-space: nowrap;
+			    }
+			    .header-icon {
+			        text-align: center;
+			        width: 40px;
+			    }
+			    .cell-icon {
+			        text-align: center;
+			    }
+			    .settings-bar {
+			        font-size: 11px;
+			        color: #666;
+			        padding: 4px 12px 8px 12px;
+			    }
+			    .settings-bar span {
+			        margin-right: 16px;
+			    }
+			    .setting-on { color: #107c10; font-weight: 600; }
+			    .setting-off { color: #a4262c; font-weight: 600; }
+			</style>
+			"
+			VAR _settingsBar = "
+			<div class='settings-bar'>
+			    <span>Show hidden pages: <span class='" & IF( _showHidden, "setting-on", "setting-off" ) & "'>" & IF( _showHidden, "On", "Off" ) & "</span></span>
+			    <span>Show tooltip pages: <span class='" & IF( _showTooltip, "setting-on", "setting-off" ) & "'>" & IF( _showTooltip, "On", "Off" ) & "</span></span>
+			</div>
+			"
+			VAR _header = "
+			<table class='nav-table'>
+			<tr>
+			    <th class='page-name'>Page name</th>
+			    <th class='header-icon' title='In Navigator'>&#x1f4c4;</th>
+			    <th class='header-icon' title='Reason'>&#x2139;</th>
+			</tr>
+			"
+			VAR _rows =
+			    CONCATENATEX(
+			        _pages,
+			        VAR _isExcluded = [@IsExcluded]
+			        VAR _isHiddenPage = [@IsHiddenPage]
+			        VAR _isDrillthrough = [@IsDrillthrough]
+			        VAR _isTooltip = [@IsTooltip]
+			        VAR _effectivelyHidden =
+			            _isExcluded
+			            || ( _isHiddenPage && NOT _showHidden )
+			            || ( _isTooltip && NOT _showTooltip )
+			        VAR _navIcon =
+			            IF( _isExcluded,
+			                "<span class='icon-excluded'>&#x1f6ab;</span>",
+			                IF( _effectivelyHidden,
+			                    "<span class='icon-hide'>&#x2717;</span>",
+			                    "<span class='icon-show'>&#x2713;</span>"
+			                )
+			            )
+			        VAR _reason =
+			            IF( _isExcluded, "Excluded",
+			                IF( _isHiddenPage && NOT _showHidden, "Hidden page",
+			                    IF( _isDrillthrough && _isHiddenPage && NOT _showHidden, "Drillthrough",
+			                        IF( _isTooltip && NOT _showTooltip, "Tooltip",
+			                            ""
+			                        )
+			                    )
+			                )
+			            )
+			        RETURN
+			            "<tr>" &
+			            "<td class='page-name'>" & [PageName] & "</td>" &
+			            "<td class='cell-icon'>" & _navIcon & "</td>" &
+			            "<td>" & _reason & "</td>" &
+			            "</tr>",
+			            ,
+			            [PageOrdinal], ASC
+			    )
+			VAR _footer = "</table>"
+			VAR _noNav = "<div style='font-family: Segoe UI, sans-serif; font-size: 12px; color: #666; padding: 12px;'>No page navigator visual found in this report.</div>"
+			RETURN
+			    IF( _hasNav,
+			        _css & _settingsBar & _header & _rows & _footer,
+			        _noNav
+			    )
+		lineageTag: 35b8373a-a09c-40b4-bda4-2b91fd3cce04
+
+	measure 'vizAID Disclaimer HTML' =
+			
+			VAR _css = "
+			<style>
+			    .disclaimer {
+			        font-family: Segoe UI, sans-serif;
+			        max-width: 720px;
+			        margin: 0 auto;
+			        padding: 32px 24px;
+			        color: #323130;
+			        line-height: 1.6;
+			    }
+			    .disclaimer h1 {
+			        font-size: 28px;
+			        font-weight: 700;
+			        color: #201f1e;
+			        margin: 0 0 4px 0;
+			        letter-spacing: -0.5px;
+			    }
+			    .disclaimer .subtitle {
+			        font-size: 14px;
+			        color: #797775;
+			        margin: 0 0 28px 0;
+			    }
+			    .disclaimer .section {
+			        margin-bottom: 24px;
+			        padding: 16px 20px;
+			        border-radius: 6px;
+			    }
+			    .disclaimer .section-amber {
+			        background: #fff4ce;
+			        border-left: 4px solid #f7a800;
+			    }
+			    .disclaimer .section-blue {
+			        background: #eff6fc;
+			        border-left: 4px solid #0078d4;
+			    }
+			    .disclaimer .section-green {
+			        background: #f1faf1;
+			        border-left: 4px solid #107c10;
+			    }
+			    .disclaimer .section h2 {
+			        font-size: 15px;
+			        font-weight: 600;
+			        margin: 0 0 8px 0;
+			        color: #201f1e;
+			    }
+			    .disclaimer .section p {
+			        font-size: 13px;
+			        margin: 0 0 8px 0;
+			        color: #484644;
+			    }
+			    .disclaimer .section p:last-child {
+			        margin-bottom: 0;
+			    }
+			    .disclaimer .footer {
+			        font-size: 12px;
+			        color: #a19f9d;
+			        margin-top: 32px;
+			        padding-top: 16px;
+			        border-top: 1px solid #edebe9;
+			    }
+			    .disclaimer a {
+			        color: #0078d4;
+			        text-decoration: none;
+			    }
+			    .disclaimer a:hover {
+			        text-decoration: underline;
+			    }
+			    .disclaimer code {
+			        font-family: Consolas, monospace;
+			        font-size: 12px;
+			        background: #f3f2f1;
+			        padding: 1px 5px;
+			        border-radius: 3px;
+			    }
+			</style>
+			"
+			VAR _body = "
+			<div class='disclaimer'>
+			
+			    <h1>PBIR X-Ray</h1>
+			    <p class='subtitle'>Power BI Report Content Analyzer &mdash; V1</p>
+			
+			    <div class='section section-amber'>
+			        <h2>&#x26A0;&#xFE0F; PBIR is in preview</h2>
+			        <p>The PBIR folder-based format (<code>.pbip</code>) is a Microsoft Fabric preview feature at the time of writing. The JSON schema is not publicly documented beyond the type definitions in Microsoft's GitHub repository. Structures, field names, and encoding conventions may change with any Power BI Desktop release &mdash; without notice and without migration tooling.</p>
+			        <p>This solution was developed by reverse-engineering working reports, not from stable API contracts. When Microsoft updates the format, some extraction logic may need to be updated accordingly.</p>
+			    </div>
+			
+			    <div class='section section-blue'>
+			        <h2>&#x1F50D; Known limitations</h2>
+			        <p>This is a best-effort extraction. Mistakes are possible &mdash; one, two, possibly more. Some PBIR fields are intentionally not extracted (the <code>SchemaCoverageAudit_pbir</code> query will tell you exactly which ones). Custom visuals and third-party components may use JSON structures that the pipeline does not recognize.</p>
+			        <p>The analysis reflects what is <em>written in the files</em>, not what Power BI Desktop renders at runtime. Default values that Power BI strips from the JSON are handled with fallback defaults, but edge cases may exist.</p>
+			    </div>
+			
+			    <div class='section section-green'>
+			        <h2>&#x1F4AC; Getting help</h2>
+			        <p><strong>Found something wrong or missing?</strong> Raise an issue on the GitHub repository. No promises &mdash; but issues get read, and good ones get fixed.</p>
+			        <p><strong>Want to extend the queries yourself?</strong> The README documents the architecture, the <code>try...otherwise</code> discipline, and three extension patterns (add a column, add a data source, create a new query). The PBIR Reference section covers encoding patterns, visual types, and JSON structure. Everything you need for a DIY approach is in there.</p>
+			    </div>
+			
+			    <div class='footer'>
+			        PBIR X-Ray is an independent community project. It is not affiliated with, endorsed by, or supported by Microsoft.
+			    </div>
+			
+			</div>
+			"
+			RETURN
+			    _css & _body
+		lineageTag: c4fde48f-ce72-482c-94b5-bf2beae6b1a7
+
+	column ReportName
+		dataType: string
+		lineageTag: 1e4b4114-4dcf-4fac-9f10-e2a33fdd7eaf
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualId
+		dataType: string
+		lineageTag: 3cdf83d4-338b-49d5-b270-8cfc6f3a71d2
+		summarizeBy: none
+		sourceColumn: VisualId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageName
+		dataType: string
+		lineageTag: ce540d98-5534-467f-bb5a-a115a9c74779
+		summarizeBy: none
+		sourceColumn: PageName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageOrdinal
+		dataType: string
+		lineageTag: 39549149-1191-4ec6-b3cf-a1e9f0adc5d8
+		summarizeBy: none
+		sourceColumn: PageOrdinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualType
+		dataType: string
+		lineageTag: d6cbc7ec-abe3-47b9-a4e7-d04e3b27a19c
+		summarizeBy: none
+		sourceColumn: VisualType
+
+		annotation SummarizationSetBy = Automatic
+
+	column X
+		dataType: string
+		lineageTag: 4a305785-f38d-4834-807a-bb559ad35474
+		summarizeBy: none
+		sourceColumn: X
+
+		annotation SummarizationSetBy = Automatic
+
+	column Y
+		dataType: string
+		lineageTag: 59875627-a6fb-4837-ac2a-4e83da0e0a1e
+		summarizeBy: none
+		sourceColumn: Y
+
+		annotation SummarizationSetBy = Automatic
+
+	column Width
+		dataType: string
+		lineageTag: eaf258d0-5bc0-4eae-9d7c-20b654797b9b
+		summarizeBy: none
+		sourceColumn: Width
+
+		annotation SummarizationSetBy = Automatic
+
+	column Height
+		dataType: string
+		lineageTag: 4c8942f5-a752-488d-8de9-f4ea87a63ee3
+		summarizeBy: none
+		sourceColumn: Height
+
+		annotation SummarizationSetBy = Automatic
+
+	column ZOrder
+		dataType: string
+		lineageTag: 0107efc7-8088-49e3-82ee-aef1cda11d48
+		summarizeBy: none
+		sourceColumn: ZOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column FieldCount
+		dataType: string
+		lineageTag: ad0e428f-143a-431d-b084-6dd3bcc4da71
+		summarizeBy: none
+		sourceColumn: FieldCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectionRoles
+		dataType: string
+		lineageTag: 64d04632-4b85-4160-ba1e-37606ed3fb65
+		summarizeBy: none
+		sourceColumn: ProjectionRoles
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectKeys
+		dataType: string
+		lineageTag: 30d0c0c6-58a9-42bb-9695-4fd320987a56
+		summarizeBy: none
+		sourceColumn: ObjectKeys
+
+		annotation SummarizationSetBy = Automatic
+
+	column VcObjectKeys
+		dataType: string
+		lineageTag: 7f280b03-be12-490b-b3cf-43408869183a
+		summarizeBy: none
+		sourceColumn: VcObjectKeys
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerMode
+		dataType: string
+		lineageTag: 9396123b-0ee3-4c47-acab-0f91ef7801c5
+		summarizeBy: none
+		sourceColumn: SlicerMode
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerOrientation
+		dataType: string
+		lineageTag: 8a7962eb-34d1-4f10-a6d0-81de95a19ab8
+		summarizeBy: none
+		sourceColumn: SlicerOrientation
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasSelfFilter
+		dataType: string
+		lineageTag: 3616145c-396d-4e9b-93b6-6b22fb1e7c55
+		summarizeBy: none
+		sourceColumn: HasSelfFilter
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasDefaultFilter
+		dataType: string
+		lineageTag: 4b5f50e1-eb1a-4d78-a8cc-9c7d3ba2c798
+		summarizeBy: none
+		sourceColumn: HasDefaultFilter
+
+		annotation SummarizationSetBy = Automatic
+
+	column StrictSingleSelect
+		dataType: string
+		lineageTag: 12ab8455-5c32-455e-b8e3-74939cf5c32c
+		summarizeBy: none
+		sourceColumn: StrictSingleSelect
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValuesOnRow
+		dataType: string
+		lineageTag: 22e84f52-0820-4b0d-b53e-865744090a87
+		summarizeBy: none
+		sourceColumn: ValuesOnRow
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShowColumnSubtotals
+		dataType: string
+		lineageTag: f12a86d6-e3a0-472e-886c-b2acc5562e85
+		summarizeBy: none
+		sourceColumn: ShowColumnSubtotals
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShowRowSubtotals
+		dataType: string
+		lineageTag: 62ef0af9-dd80-44b6-bd00-9dec73b5ef02
+		summarizeBy: none
+		sourceColumn: ShowRowSubtotals
+
+		annotation SummarizationSetBy = Automatic
+
+	column LabelDisplayUnits
+		dataType: string
+		lineageTag: 756357c6-0b93-4ef0-b749-4d2bcc79af92
+		summarizeBy: none
+		sourceColumn: LabelDisplayUnits
+
+		annotation SummarizationSetBy = Automatic
+
+	column ColumnAdjustment
+		dataType: string
+		lineageTag: 5393076a-fa90-4ec0-bd3a-b8a777f92517
+		summarizeBy: none
+		sourceColumn: ColumnAdjustment
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasBorder
+		dataType: string
+		lineageTag: 3434ff48-3734-4f52-869c-5e66b9151fdc
+		summarizeBy: none
+		sourceColumn: HasBorder
+
+		annotation SummarizationSetBy = Automatic
+
+	column DrillFilterOtherVisuals
+		dataType: string
+		lineageTag: ac4271a3-ddc4-4d65-920d-519c4df96e30
+		summarizeBy: none
+		sourceColumn: DrillFilterOtherVisuals
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasFieldParameters
+		dataType: string
+		lineageTag: 3a6990c0-fd30-4e8f-97b6-c7b555bc627d
+		summarizeBy: none
+		sourceColumn: HasFieldParameters
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasConditionalFormatting
+		dataType: string
+		lineageTag: 56f7d76f-ebcc-4282-a708-0128aca490c0
+		summarizeBy: none
+		sourceColumn: HasConditionalFormatting
+
+		annotation SummarizationSetBy = Automatic
+
+	column ConditionalFormattingCount
+		dataType: string
+		lineageTag: 467dfe7f-e0e4-4203-b4ce-eec9a87c16a3
+		summarizeBy: none
+		sourceColumn: ConditionalFormattingCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column SyncGroupName
+		dataType: string
+		lineageTag: 0028ebab-d811-41a2-883c-6a4fca2bfbdf
+		summarizeBy: none
+		sourceColumn: SyncGroupName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentGroup
+		dataType: string
+		lineageTag: b9b81b81-e595-4e02-a35c-63ea3957017a
+		summarizeBy: none
+		sourceColumn: ParentGroup
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageId
+		dataType: string
+		lineageTag: ea54e266-4aa7-47d8-95e1-abd6e9dd0894
+		summarizeBy: none
+		sourceColumn: PageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsHidden
+		dataType: string
+		lineageTag: c28638c5-d781-442f-8e6f-3c1085759666
+		summarizeBy: none
+		sourceColumn: IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualTitle
+		dataType: string
+		lineageTag: b7720e76-1dfa-4707-af39-6a19afdd1413
+		summarizeBy: none
+		sourceColumn: VisualTitle
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageNavigationDetails
+		dataType: string
+		lineageTag: c7933473-0753-405e-8fe7-5efb52cf5c21
+		summarizeBy: none
+		sourceColumn: PageNavigationDetails
+
+		annotation SummarizationSetBy = Automatic
+
+	column HowCreated
+		dataType: string
+		lineageTag: c29e12ef-4374-4dd5-9ad4-be4de89e26fc
+		summarizeBy: none
+		sourceColumn: HowCreated
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Visuals_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    PageIds = Data[PageIds],
+				    PageData = Data[PageData],
+				    
+				    // Helper: count conditional formatting rules in objects.values[]
+				    // CF is encoded as Conditional expressions inside properties like backColor or fontColor
+				    // Path: entry.properties.{propertyName}.solid.color.expr.Conditional
+				    // Helper: count conditional formatting rules across all CF types
+				    // Counts entries from two JSON locations:
+				    //   1. objects.values[] — Rules (Conditional), Gradient (FillRule), Field Value (direct Measure/Column)
+				    //   2. objects.columnFormatting[] — Data Bars
+				    fnCountConditionalFormatting = (visualRecord as record) as number =>
+				        let
+				            // Count CF entries in objects.values[] (Rules, Gradient, Field Value)
+				            ValuesEntries = try visualRecord[objects][values] otherwise {},
+				            ValuesCFCount = List.Count(
+				                List.Select(ValuesEntries, each
+				                    let
+				                        props = try _[properties] otherwise Record.FromList({}, {}),
+				                        propNames = try Record.FieldNames(props) otherwise {},
+				                        cfProps = List.Select(propNames, each _ = "backColor" or _ = "fontColor")
+				                    in
+				                        List.AnyTrue(
+				                            List.Transform(cfProps, (pn) =>
+				                                let
+				                                    exprNode = try Record.Field(props, pn)[solid][color][expr] otherwise Record.FromList({}, {}),
+				                                    exprFields = try Record.FieldNames(exprNode) otherwise {}
+				                                in
+				                                    List.ContainsAny(exprFields, {"Conditional", "FillRule", "Measure", "Column"})
+				                            )
+				                        )
+				                )
+				            ),
+				            
+				            // Count CF entries in objects.columnFormatting[] (Data Bars)
+				            ColumnFmtEntries = try visualRecord[objects][columnFormatting] otherwise {},
+				            DataBarCount = List.Count(
+				                List.Select(ColumnFmtEntries, each
+				                    try (_[properties][dataBars] <> null) otherwise false
+				                )
+				            )
+				        in
+				            ValuesCFCount + DataBarCount,
+				    
+				    fnGetVisual = (pageDisplayName as text, pageId as text, pageOrdinal as number, vJson as record) as record =>
+				        let
+				            VisualName = try vJson[name] otherwise "",
+				            
+				            // Position — directly at top level
+				            Pos = try vJson[position] otherwise Record.FromList({}, {}),
+				            PosX = try Pos[x] otherwise 0,
+				            PosY = try Pos[y] otherwise 0,
+				            PosW = try Pos[width] otherwise 0,
+				            PosH = try Pos[height] otherwise 0,
+				            PosZ = try Pos[z] otherwise 0,
+				            
+				            // Visual node — may not exist for visual groups
+				            V = try vJson[visual] otherwise Record.FromList({}, {}),
+				            VisualType = try V[visualType] otherwise 
+				                (if try (vJson[visualGroup] <> null) otherwise false then "visualGroup" else "unknown"),
+				            
+				            // Objects — directly in visual node
+				            ObjectKeysList = try Record.FieldNames(V[objects]) otherwise {},
+				            VcObjectKeysList = try Record.FieldNames(V[visualContainerObjects]) otherwise {},
+				            
+				            // Slicer-specific
+				            SlicerMode = try V[objects][data]{0}[properties][mode][expr][Literal][Value] otherwise null,
+				            // Orientation: classic slicer uses objects.general, advancedSlicerVisual uses objects.layout
+				            SlicerOrientation = try V[objects][general]{0}[properties][orientation][expr][Literal][Value] otherwise
+				                (try V[objects][layout]{0}[properties][orientation][expr][Literal][Value] otherwise null),
+				            HasSelfFilter = try (V[objects][general]{0}[properties][selfFilterEnabled][expr][Literal][Value] = "true") otherwise false,
+				            HasDefaultFilter = try (V[objects][general]{0}[properties][filter] <> null) otherwise false,
+				            StrictSingleSelect = try (V[objects][selection]{0}[properties][strictSingleSelect][expr][Literal][Value] = "true") otherwise false,
+				            
+				            // Table/Matrix specific
+				            ValuesOnRow = try (V[objects][values]{0}[properties][valuesOnRow][expr][Literal][Value] = "true") otherwise false,
+				            ShowColumnSubtotals = try V[objects][subTotals]{0}[properties][columnSubtotals][expr][Literal][Value] otherwise null,
+				            ShowRowSubtotals = try V[objects][subTotals]{0}[properties][rowSubtotals][expr][Literal][Value] otherwise null,
+				            
+				            // Card specific
+				            LabelDisplayUnits = try V[objects][labels]{0}[properties][labelDisplayUnits][expr][Literal][Value] otherwise null,
+				            
+				            // Column headers
+				            ColumnAdjustment = try V[objects][columnHeaders]{0}[properties][columnAdjustment][expr][Literal][Value] otherwise null,
+				            
+				            // Visual container formatting (note: visualContainerObjects in folder-based PBIR)
+				            HasBorder = try (V[visualContainerObjects][border]{0}[properties][show][expr][Literal][Value] = "true") otherwise false,
+				            
+				            // Behavior flags
+				            DrillFilterOtherVisuals = try V[drillFilterOtherVisuals] otherwise null,
+				            
+				            // SyncGroup (slicer sync)
+				            SyncGroupName = try V[syncGroup][groupName] otherwise null,
+				            
+				            // Parent group
+				            ParentGroup = try vJson[parentGroupName] otherwise null,
+				            
+				            // Visibility — top level on visual container, not inside visual node
+				            IsHidden = try vJson[isHidden] otherwise false,
+				            
+				            // How the visual was created — top level on visual container
+				            // Written by Power BI Desktop but not in Microsoft's published schema
+				            // Known values: "InsertVisualButton" (for actionButton, pageNavigator, bookmarkNavigator)
+				            HowCreated = try vJson[howCreated] otherwise null,
+				            
+				            // Visual title — from visualContainerObjects.title[].properties.text
+				            TitleRaw = try V[visualContainerObjects][title]{0}[properties][text][expr][Literal][Value] otherwise null,
+				            TitleCleaned = if TitleRaw <> null 
+				                then Text.BetweenDelimiters(TitleRaw, "'", "'") 
+				                else null,
+				            VisualTitle = if TitleCleaned <> null 
+				                then TitleCleaned & " (" & VisualName & ")" 
+				                else VisualName,
+				            
+				            // Projections — now in visual.query.queryState
+				            QS = try V[query][queryState] otherwise Record.FromList({}, {}),
+				            ProjectionRolesList = try Record.FieldNames(QS) otherwise {},
+				            ProjectionRoles = Text.Combine(ProjectionRolesList, ", "),
+				            
+				            FieldCount = try List.Sum(
+				                List.Transform(ProjectionRolesList, each 
+				                    try List.Count(Record.Field(QS, _)[projections]) otherwise 0
+				                )
+				            ) otherwise 0,
+				            
+				            // Field parameters — now in queryState role level
+				            HasFieldParameters = try List.AnyTrue(
+				                List.Transform(ProjectionRolesList, each
+				                    try (Record.Field(QS, _)[fieldParameters] <> null) otherwise false
+				                )
+				            ) otherwise false,
+				            
+				            // Conditional formatting — scan objects.values[] for Conditional expressions
+				            CFCount = fnCountConditionalFormatting(V),
+				            
+				            // Page Navigator details — encoded JSON with global options and per-page overrides
+				            // Only populated for pageNavigator visuals; null for everything else
+				            // Note: when all settings are at defaults, Power BI strips the objects.pages
+				            // node entirely from the visual.json — the absence of objects means "all defaults"
+				            // Power BI defaults: showHiddenPages=false, showTooltipPages=false, no exclusions
+				            PageNavigationDetails = if VisualType = "pageNavigator" then
+				                let
+				                    HasObjects = try (V[objects] <> null) otherwise false,
+				                    PagesEntries = if HasObjects then (try V[objects][pages] otherwise {}) else {},
+				                    
+				                    // Scan entries for showHiddenPages/showTooltipPages properties
+				                    // Default is "false" (Power BI's default when objects.pages is absent)
+				                    ShowHiddenPages = try List.First(
+				                        List.RemoveNulls(
+				                            List.Transform(PagesEntries, each
+				                                try [properties][showHiddenPages][expr][Literal][Value] otherwise null
+				                            )
+				                        )
+				                    ) otherwise "false",
+				                    ShowTooltipPages = try List.First(
+				                        List.RemoveNulls(
+				                            List.Transform(PagesEntries, each
+				                                try [properties][showTooltipPages][expr][Literal][Value] otherwise null
+				                            )
+				                        )
+				                    ) otherwise "false",
+				                    
+				                    // Per-page entries: have selector.id and showPage = false
+				                    ExcludedPageIds = List.RemoveNulls(
+				                        List.Transform(PagesEntries, each
+				                            let
+				                                pageId = try [selector][id] otherwise null,
+				                                showPage = try [properties][showPage][expr][Literal][Value] otherwise "true"
+				                            in
+				                                if pageId <> null and showPage = "false" then pageId else null
+				                        )
+				                    ),
+				                    
+				                    Detail = "{""showHiddenPages"":" & ShowHiddenPages 
+				                        & ",""showTooltipPages"":" & ShowTooltipPages 
+				                        & ",""excludedPages"":[" 
+				                        & Text.Combine(List.Transform(ExcludedPageIds, each """" & _ & """"), ",") 
+				                        & "]}"
+				                in
+				                    Detail
+				            else
+				                null
+				        in
+				            [
+				                ReportName = ReportName,
+				                VisualId = VisualName,
+				                VisualTitle = VisualTitle,
+				                PageName = pageDisplayName,
+				                PageId = pageId,
+				                PageOrdinal = pageOrdinal,
+				                VisualType = VisualType,
+				                X = PosX,
+				                Y = PosY,
+				                Width = PosW,
+				                Height = PosH,
+				                ZOrder = PosZ,
+				                FieldCount = FieldCount,
+				                ProjectionRoles = ProjectionRoles,
+				                ObjectKeys = Text.Combine(ObjectKeysList, ", "),
+				                VcObjectKeys = Text.Combine(VcObjectKeysList, ", "),
+				                SlicerMode = SlicerMode,
+				                SlicerOrientation = SlicerOrientation,
+				                HasSelfFilter = HasSelfFilter,
+				                HasDefaultFilter = HasDefaultFilter,
+				                StrictSingleSelect = StrictSingleSelect,
+				                ValuesOnRow = ValuesOnRow,
+				                ShowColumnSubtotals = ShowColumnSubtotals,
+				                ShowRowSubtotals = ShowRowSubtotals,
+				                LabelDisplayUnits = LabelDisplayUnits,
+				                ColumnAdjustment = ColumnAdjustment,
+				                HasBorder = HasBorder,
+				                DrillFilterOtherVisuals = DrillFilterOtherVisuals,
+				                HasFieldParameters = HasFieldParameters,
+				                HasConditionalFormatting = CFCount > 0,
+				                ConditionalFormattingCount = CFCount,
+				                SyncGroupName = SyncGroupName,
+				                ParentGroup = ParentGroup,
+				                IsHidden = IsHidden,
+				                HowCreated = HowCreated,
+				                PageNavigationDetails = PageNavigationDetails
+				            ],
+				    
+				    AllVisuals = List.Combine(
+				        List.Transform(
+				            List.Zip({PageData, List.Positions(PageIds)}),
+				            each
+				                let
+				                    pair = _,
+				                    pd = pair{0},
+				                    ordinal = pair{1},
+				                    PageDisplayName = try pd[PageJson][displayName] otherwise pd[PageId],
+				                    
+				                    VisualRecords = List.Transform(
+				                        pd[VisualJsonList],
+				                        each fnGetVisual(PageDisplayName, pd[PageId], ordinal, _)
+				                    )
+				                in
+				                    VisualRecords
+				        )
+				    ),
+				    
+				    Result = Table.FromRecords(AllVisuals),
+				    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"ZOrder", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

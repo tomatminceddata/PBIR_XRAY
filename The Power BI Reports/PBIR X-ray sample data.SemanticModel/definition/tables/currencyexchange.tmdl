@@ -1,0 +1,59 @@
+table currencyexchange
+	lineageTag: 8e0eb110-c8b7-4fd4-84bd-d6bd9dc397aa
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f03737d4-01ee-4ec4-aeb8-3bdbd18fe1b1
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 5e64051b-f3be-4eb1-8d0e-b3d0644dc2ea
+			defaultHierarchy: LocalDateTable_0000d98e-6911-4e95-89e0-b92f18ec9363.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FromCurrency
+		dataType: string
+		lineageTag: 8279bb67-4f3f-4a38-ae15-1b2360eee67f
+		summarizeBy: none
+		sourceColumn: FromCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+	column ToCurrency
+		dataType: string
+		lineageTag: 7fc4e2d2-f38d-462c-b68f-ee00759efa58
+		summarizeBy: none
+		sourceColumn: ToCurrency
+
+		annotation SummarizationSetBy = Automatic
+
+	column Exchange
+		dataType: double
+		lineageTag: a08a147f-5cf0-4041-88ba-e97d31218493
+		summarizeBy: sum
+		sourceColumn: Exchange
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition currencyexchange = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Text.Combine({pq_par_csvFolderPath,"\","currencyexchange.csv"})),[Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type date}, {"FromCurrency", type text}, {"ToCurrency", type text}, {"Exchange", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

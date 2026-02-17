@@ -1,0 +1,376 @@
+table ModelReferences_pbir
+	lineageTag: b49d1ed0-f6f8-4112-9f4c-56a255d4944a
+
+	column ReportName
+		dataType: string
+		lineageTag: 40d0b497-6508-4f19-985e-d74eca9fd527
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualId
+		dataType: string
+		lineageTag: 3cd4dcd7-3690-4c19-944f-73a2bb799b70
+		summarizeBy: none
+		sourceColumn: VisualId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageName
+		dataType: string
+		lineageTag: 1b2e62c3-6ab0-4d10-ba81-0af371f4ef40
+		summarizeBy: none
+		sourceColumn: PageName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageOrdinal
+		dataType: string
+		lineageTag: 38f08253-3cc5-40f6-be9b-fad0296ef69c
+		summarizeBy: none
+		sourceColumn: PageOrdinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualType
+		dataType: string
+		lineageTag: 7e9dfee1-01b5-4b65-b029-982ecd11b22c
+		summarizeBy: none
+		sourceColumn: VisualType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Role
+		dataType: string
+		lineageTag: 52143043-6074-4582-9871-b0989e1b6fcf
+		summarizeBy: none
+		sourceColumn: Role
+
+		annotation SummarizationSetBy = Automatic
+
+	column QueryRef
+		dataType: string
+		lineageTag: edaf63fa-dcfa-4687-8030-2af70710a8dd
+		summarizeBy: none
+		sourceColumn: QueryRef
+
+		annotation SummarizationSetBy = Automatic
+
+	column RefType
+		dataType: string
+		lineageTag: 13a7f26c-b237-4612-a5bc-65f723c0a66e
+		summarizeBy: none
+		sourceColumn: RefType
+
+		annotation SummarizationSetBy = Automatic
+
+	column TableName
+		dataType: string
+		lineageTag: 677f68db-1964-44ff-92be-92176fad5a07
+		summarizeBy: none
+		sourceColumn: TableName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectName
+		dataType: string
+		lineageTag: d9f7a74f-9094-4e99-9ffb-b060c3b69ae7
+		summarizeBy: none
+		sourceColumn: ObjectName
+
+		annotation SummarizationSetBy = Automatic
+
+	column AggFunction
+		dataType: string
+		lineageTag: 0b5ef8d7-acfd-44f3-a6ab-98a368f8e7f4
+		summarizeBy: none
+		sourceColumn: AggFunction
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsActive
+		dataType: string
+		lineageTag: 1ac0c599-998c-49ac-98ee-0922ee5eaeb0
+		summarizeBy: none
+		sourceColumn: IsActive
+
+		annotation SummarizationSetBy = Automatic
+
+	column Source
+		dataType: string
+		lineageTag: a02647b4-d937-4a37-b51c-d6e6dfbf939a
+		summarizeBy: none
+		sourceColumn: Source
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ModelReferences_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    PageIds = Data[PageIds],
+				    PageData = Data[PageData],
+				    
+				    // Helper: extract entity and property from a Measure or Column reference node
+				    fnExtractCFRef = (node as record) as record =>
+				        let
+				            MEntity = try node[Measure][Expression][SourceRef][Entity] otherwise null,
+				            MProp = try node[Measure][Property] otherwise null,
+				            CEntity = try node[Column][Expression][SourceRef][Entity] otherwise null,
+				            CProp = try node[Column][Property] otherwise null,
+				            Entity = if MEntity <> null then MEntity else CEntity,
+				            Property = if MProp <> null then MProp else CProp
+				        in
+				            [Entity = Entity, Property = Property],
+				    
+				    fnGetRefs = (pageDisplayName as text, pageOrdinal as number, vJson as record) as list =>
+				        let
+				            VisualName = try vJson[name] otherwise "",
+				            V = try vJson[visual] otherwise Record.FromList({}, {}),
+				            VisualType = try V[visualType] otherwise "unknown",
+				            
+				            // Query state with projections
+				            QS = try V[query][queryState] otherwise Record.FromList({}, {}),
+				            RoleNames = try Record.FieldNames(QS) otherwise {},
+				            
+				            // Extract projection references
+				            ProjectionRefs = List.Combine(
+				                List.Transform(RoleNames, each
+				                    let
+				                        role = _,
+				                        roleData = try Record.Field(QS, role) otherwise Record.FromList({}, {}),
+				                        items = try roleData[projections] otherwise {}
+				                    in
+				                        List.Transform(items, each
+				                            let
+				                                qr = try _[queryRef] otherwise "",
+				                                parsed = fn_pbir_ParseQueryRef(qr)
+				                            in
+				                                [
+				                                    ReportName = ReportName,
+				                                    VisualId = VisualName,
+				                                    PageName = pageDisplayName,
+				                                    PageOrdinal = pageOrdinal,
+				                                    VisualType = VisualType,
+				                                    Role = role,
+				                                    QueryRef = qr,
+				                                    RefType = parsed[RefType],
+				                                    TableName = parsed[TableName],
+				                                    ObjectName = parsed[ObjectName],
+				                                    AggFunction = parsed[AggFunction],
+				                                    IsActive = try _[active] otherwise null,
+				                                    Source = "Projection"
+				                                ]
+				                        )
+				                )
+				            ),
+				            
+				            // Extract field parameter references (now at role level)
+				            FieldParamRefs = List.Combine(
+				                List.Transform(RoleNames, each
+				                    let
+				                        role = _,
+				                        roleData = try Record.Field(QS, role) otherwise Record.FromList({}, {}),
+				                        fpList = try roleData[fieldParameters] otherwise {}
+				                    in
+				                        List.Transform(fpList, each
+				                            let
+				                                entity = try _[parameterExpr][Column][Expression][SourceRef][Entity] otherwise "",
+				                                prop = try _[parameterExpr][Column][Property] otherwise ""
+				                            in
+				                                [
+				                                    ReportName = ReportName,
+				                                    VisualId = VisualName,
+				                                    PageName = pageDisplayName,
+				                                    PageOrdinal = pageOrdinal,
+				                                    VisualType = VisualType,
+				                                    Role = role & " (FieldParameter)",
+				                                    QueryRef = entity & "." & prop,
+				                                    RefType = "FieldParameter",
+				                                    TableName = entity,
+				                                    ObjectName = prop,
+				                                    AggFunction = null,
+				                                    IsActive = null,
+				                                    Source = "FieldParameter"
+				                                ]
+				                        )
+				                )
+				            ),
+				            
+				            // Extract conditional formatting references from all CF types:
+				            //   1. Rules (Conditional.Cases) — measure/column in the condition
+				            //   2. Gradient (FillRule) — input measure/column that drives the gradient
+				            //   3. Field Value (direct Measure/Column) — the measure that returns the color
+				            //   4. Data Bars (columnFormatting) — no additional model reference (uses the target column itself)
+				            ValuesEntries = try V[objects][values] otherwise {},
+				            
+				            CFRefs = List.Combine(
+				                List.Transform(ValuesEntries, each
+				                    let
+				                        entry = _,
+				                        props = try entry[properties] otherwise Record.FromList({}, {}),
+				                        propNames = try Record.FieldNames(props) otherwise {},
+				                        cfProps = List.Select(propNames, each _ = "backColor" or _ = "fontColor")
+				                    in
+				                        List.Combine(
+				                            List.Transform(cfProps, (pn) =>
+				                                let
+				                                    exprNode = try Record.Field(props, pn)[solid][color][expr] otherwise Record.FromList({}, {}),
+				                                    exprFields = try Record.FieldNames(exprNode) otherwise {}
+				                                in
+				                                    // ─── Rules: extract from Cases[].Condition ───
+				                                    if List.Contains(exprFields, "Conditional") then
+				                                        let
+				                                            Cases = try exprNode[Conditional][Cases] otherwise {},
+				                                            FirstCase = try Cases{0} otherwise Record.FromList({}, {}),
+				                                            Cond = try FirstCase[Condition] otherwise Record.FromList({}, {}),
+				                                            HasAnd = try (Cond[And] <> null) otherwise false,
+				                                            CompNode = if HasAnd then
+				                                                    try Cond[And][Left][Comparison][Left] otherwise Record.FromList({}, {})
+				                                                else
+				                                                    try Cond[Comparison][Left] otherwise Record.FromList({}, {}),
+				                                            Extracted = fnExtractCFRef(CompNode)
+				                                        in
+				                                            if Extracted[Entity] <> null and Extracted[Property] <> null then
+				                                                {[
+				                                                    ReportName = ReportName,
+				                                                    VisualId = VisualName,
+				                                                    PageName = pageDisplayName,
+				                                                    PageOrdinal = pageOrdinal,
+				                                                    VisualType = VisualType,
+				                                                    Role = "Values (ConditionalFormatting)",
+				                                                    QueryRef = Extracted[Entity] & "." & Extracted[Property],
+				                                                    RefType = "Column/Measure",
+				                                                    TableName = Extracted[Entity],
+				                                                    ObjectName = Extracted[Property],
+				                                                    AggFunction = null,
+				                                                    IsActive = null,
+				                                                    Source = "ConditionalFormatting"
+				                                                ]}
+				                                            else {}
+				                                    
+				                                    // ─── Gradient: extract from FillRule.Input ───
+				                                    else if List.Contains(exprFields, "FillRule") then
+				                                        let
+				                                            InputNode = try exprNode[FillRule][Input] otherwise Record.FromList({}, {}),
+				                                            Extracted = fnExtractCFRef(InputNode)
+				                                        in
+				                                            if Extracted[Entity] <> null and Extracted[Property] <> null then
+				                                                {[
+				                                                    ReportName = ReportName,
+				                                                    VisualId = VisualName,
+				                                                    PageName = pageDisplayName,
+				                                                    PageOrdinal = pageOrdinal,
+				                                                    VisualType = VisualType,
+				                                                    Role = "Values (ConditionalFormatting)",
+				                                                    QueryRef = Extracted[Entity] & "." & Extracted[Property],
+				                                                    RefType = "Column/Measure",
+				                                                    TableName = Extracted[Entity],
+				                                                    ObjectName = Extracted[Property],
+				                                                    AggFunction = null,
+				                                                    IsActive = null,
+				                                                    Source = "ConditionalFormatting"
+				                                                ]}
+				                                            else {}
+				                                    
+				                                    // ─── Field Value: extract direct Measure/Column reference ───
+				                                    else if List.Contains(exprFields, "Measure") or List.Contains(exprFields, "Column") then
+				                                        let
+				                                            Extracted = fnExtractCFRef(exprNode)
+				                                        in
+				                                            if Extracted[Entity] <> null and Extracted[Property] <> null then
+				                                                {[
+				                                                    ReportName = ReportName,
+				                                                    VisualId = VisualName,
+				                                                    PageName = pageDisplayName,
+				                                                    PageOrdinal = pageOrdinal,
+				                                                    VisualType = VisualType,
+				                                                    Role = "Values (ConditionalFormatting)",
+				                                                    QueryRef = Extracted[Entity] & "." & Extracted[Property],
+				                                                    RefType = "Column/Measure",
+				                                                    TableName = Extracted[Entity],
+				                                                    ObjectName = Extracted[Property],
+				                                                    AggFunction = null,
+				                                                    IsActive = null,
+				                                                    Source = "ConditionalFormatting"
+				                                                ]}
+				                                            else {}
+				                                    
+				                                    else {}
+				                            )
+				                        )
+				                )
+				            ),
+				            
+				            // Extract label measure references (advancedSlicerVisual: objects.label[].properties.field)
+				            // These are measures displayed as labels on button slicers — hidden dependencies
+				            LabelEntries = try V[objects][label] otherwise {},
+				            LabelRefs = List.Combine(
+				                List.Transform(LabelEntries, each
+				                    let
+				                        mEntity = try [properties][field][expr][Measure][Expression][SourceRef][Entity] otherwise null,
+				                        mProp = try [properties][field][expr][Measure][Property] otherwise null,
+				                        cEntity = try [properties][field][expr][Column][Expression][SourceRef][Entity] otherwise null,
+				                        cProp = try [properties][field][expr][Column][Property] otherwise null,
+				                        Entity = if mEntity <> null then mEntity else cEntity,
+				                        Prop = if mProp <> null then mProp else cProp
+				                    in
+				                        if Entity <> null and Prop <> null then
+				                            {[
+				                                ReportName = ReportName,
+				                                VisualId = VisualName,
+				                                PageName = pageDisplayName,
+				                                PageOrdinal = pageOrdinal,
+				                                VisualType = VisualType,
+				                                Role = "Values (Label)",
+				                                QueryRef = Entity & "." & Prop,
+				                                RefType = "Column/Measure",
+				                                TableName = Entity,
+				                                ObjectName = Prop,
+				                                AggFunction = null,
+				                                IsActive = null,
+				                                Source = "Label"
+				                            ]}
+				                        else
+				                            {}
+				                )
+				            ),
+				            
+				            Combined = List.Combine({ProjectionRefs, FieldParamRefs, CFRefs, LabelRefs})
+				        in
+				            Combined,
+				    
+				    AllRefs = List.Combine(
+				        List.Transform(
+				            List.Zip({PageData, List.Positions(PageIds)}),
+				            each
+				                let
+				                    pair = _,
+				                    pd = pair{0},
+				                    ordinal = pair{1},
+				                    PageDisplayName = try pd[PageJson][displayName] otherwise pd[PageId],
+				                    
+				                    VisualRefs = List.Combine(
+				                        List.Transform(
+				                            pd[VisualJsonList],
+				                            each try fnGetRefs(PageDisplayName, ordinal, _) otherwise {}
+				                        )
+				                    )
+				                in
+				                    VisualRefs
+				        )
+				    ),
+				    
+				    Result = Table.FromRecords(AllRefs),
+				    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}, {"Role", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

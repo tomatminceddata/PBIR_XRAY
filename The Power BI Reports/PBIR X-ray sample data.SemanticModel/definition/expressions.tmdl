@@ -1,0 +1,7 @@
+expression pq_par_csvFolderPath = "Z:\Library\CloudStorage\OneDrive-tommartens\dev\sample datasets\ContosoRetailDW\csv-1m\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 2f3fce1b-a10d-4cbf-a100-6471fa8c59b4
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

@@ -1,0 +1,130 @@
+table ReportSettings_pbir
+	lineageTag: ec387455-55ae-4f3e-8ede-9201e9fadf79
+
+	column ReportName
+		dataType: string
+		lineageTag: cba477d2-34dd-4021-aa11-d65e8a0c647b
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Schema
+		dataType: string
+		lineageTag: 415ff895-5e0c-471e-9907-6f1450c8e52d
+		summarizeBy: none
+		sourceColumn: Schema
+
+		annotation SummarizationSetBy = Automatic
+
+	column ThemeName
+		dataType: string
+		lineageTag: 11c8e135-80ef-4471-8f22-5f17ae64e82d
+		summarizeBy: none
+		sourceColumn: ThemeName
+
+		annotation SummarizationSetBy = Automatic
+
+	column UseStylableVisualContainerHeader
+		dataType: string
+		lineageTag: 7cd4be5f-3cbd-4f4b-ae87-12c85aa9978f
+		summarizeBy: none
+		sourceColumn: UseStylableVisualContainerHeader
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExportDataMode
+		dataType: string
+		lineageTag: c89ae5a1-549f-42ec-863c-ae7ee938f55e
+		summarizeBy: none
+		sourceColumn: ExportDataMode
+
+		annotation SummarizationSetBy = Automatic
+
+	column DefaultDrillFilterOtherVisuals
+		dataType: string
+		lineageTag: 8019c6ee-0a1a-47cf-84d3-c9455df7a0c9
+		summarizeBy: none
+		sourceColumn: DefaultDrillFilterOtherVisuals
+
+		annotation SummarizationSetBy = Automatic
+
+	column AllowChangeFilterTypes
+		dataType: string
+		lineageTag: b1bb3f3d-87cd-4e89-904c-1a5f42ff3375
+		summarizeBy: none
+		sourceColumn: AllowChangeFilterTypes
+
+		annotation SummarizationSetBy = Automatic
+
+	column UseEnhancedTooltips
+		dataType: string
+		lineageTag: eb5d2424-0434-4e5f-8f95-97b8f8bb2aad
+		summarizeBy: none
+		sourceColumn: UseEnhancedTooltips
+
+		annotation SummarizationSetBy = Automatic
+
+	column UseDefaultAggregateDisplayName
+		dataType: string
+		lineageTag: f087e7ec-f43c-4100-ad2e-dedf33d9dedc
+		summarizeBy: none
+		sourceColumn: UseDefaultAggregateDisplayName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageCount
+		dataType: string
+		lineageTag: 9063e6c6-3992-4c12-94d5-78a824eb5500
+		summarizeBy: none
+		sourceColumn: PageCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalVisuals
+		dataType: string
+		lineageTag: 7b137370-ec36-42c8-880e-73039158e850
+		summarizeBy: none
+		sourceColumn: TotalVisuals
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ReportSettings_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    
+				    Report = Data[ReportJson],
+				    Settings = try Report[settings] otherwise Record.FromList({}, {}),
+				    Theme = try Report[themeCollection][baseTheme][name] otherwise null,
+				    SchemaUrl = try Report[#"$schema"] otherwise null,
+				    
+				    PageCount = List.Count(Data[PageIds]),
+				    
+				    TotalVisuals = List.Sum(
+				        List.Transform(Data[PageData], each List.Count(_[VisualJsonList]))
+				    ),
+				    
+				    Result = Table.FromRecords({[
+				        ReportName = ReportName,
+				        Schema = SchemaUrl,
+				        ThemeName = Theme,
+				        UseStylableVisualContainerHeader = try Settings[useStylableVisualContainerHeader] otherwise null,
+				        ExportDataMode = try Settings[exportDataMode] otherwise null,
+				        DefaultDrillFilterOtherVisuals = try Settings[defaultDrillFilterOtherVisuals] otherwise null,
+				        AllowChangeFilterTypes = try Settings[allowChangeFilterTypes] otherwise null,
+				        UseEnhancedTooltips = try Settings[useEnhancedTooltips] otherwise null,
+				        UseDefaultAggregateDisplayName = try Settings[useDefaultAggregateDisplayName] otherwise null,
+				        PageCount = PageCount,
+				        TotalVisuals = TotalVisuals
+				    ]})
+				in
+				    Result
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

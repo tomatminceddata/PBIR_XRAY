@@ -1,0 +1,443 @@
+expression fn_pbir_ParseQueryRef = ```
+		let
+		    fn = (queryRef as text) as record =>
+		        let
+		            AggFunctions = {"Sum", "Avg", "Min", "Max", "Count", "CountNonNull"},
+		            
+		            IsAggregation = List.AnyTrue(
+		                List.Transform(AggFunctions, each Text.StartsWith(queryRef, _ & "(") and Text.EndsWith(queryRef, ")"))
+		            ),
+		            
+		            AggFunctionName = if IsAggregation 
+		                then List.First(List.Select(AggFunctions, each Text.StartsWith(queryRef, _ & "(")), null)
+		                else null,
+		            
+		            InnerRef = if IsAggregation and AggFunctionName <> null
+		                then Text.Range(queryRef, Text.Length(AggFunctionName) + 1, Text.Length(queryRef) - Text.Length(AggFunctionName) - 2)
+		                else queryRef,
+		            
+		            DotPos = Text.PositionOf(InnerRef, "."),
+		            
+		            TableName = if DotPos >= 0 then Text.Start(InnerRef, DotPos) else "",
+		            ObjectName = if DotPos >= 0 then Text.Range(InnerRef, DotPos + 1) else InnerRef,
+		            
+		            RefType = if IsAggregation then "Aggregation (" & AggFunctionName & ")" else "Column/Measure"
+		        in
+		            [
+		                RefType = RefType,
+		                TableName = TableName,
+		                ObjectName = ObjectName,
+		                AggFunction = AggFunctionName
+		            ]
+		in
+		    fn
+		```
+	lineageTag: 5bfcfe35-8235-4398-bd81-69cb8f450dfe
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Function
+
+expression pq_pbir_ReportFolderPath = "X:\The Power BI Report\PBIR X-ray sample data.Report" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 680c9d20-292d-48c7-882a-58992238f8cb
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression fn_pbir_ReportData = ```
+		let
+		    fn = () as record =>
+		        let
+		            // === SINGLE DATA SOURCE ACCESS ===
+		            // Folder.Files is recursive — gets every file in the .Report tree
+		            AllFiles = Folder.Files(pq_pbir_ReportFolderPath),
+		            
+		            // --- Normalize folder path separators for cross-platform matching ---
+		            // On Windows [Folder Path] uses backslashes; on Mac/Linux forward slashes
+		            WithNormPath = Table.AddColumn(AllFiles, "NormPath", each
+		                Text.Replace([Folder Path], "\", "/"), type text
+		            ),
+		            BasePath = Text.Replace(pq_pbir_ReportFolderPath, "\", "/"),
+		            
+		            // --- Helper: find a file by name and normalized folder path suffix ---
+		            fnGetFile = (tbl as table, fileName as text, folderSuffix as text) as binary =>
+		                let
+		                    Matched = Table.SelectRows(tbl, each 
+		                        [Name] = fileName 
+		                        and Text.EndsWith([NormPath], folderSuffix)
+		                    ),
+		                    Content = try Matched{0}[Content] otherwise null
+		                in
+		                    Content,
+		            
+		            // --- Parse core metadata files ---
+		            PlatformBin = fnGetFile(WithNormPath, ".platform", BasePath & "/"),
+		            Platform = try Json.Document(PlatformBin) otherwise Record.FromList({}, {}),
+		            ReportName = try Platform[metadata][displayName] otherwise "Unknown",
+		            
+		            ReportJsonBin = fnGetFile(WithNormPath, "report.json", "/definition/"),
+		            ReportJson = try Json.Document(ReportJsonBin) otherwise Record.FromList({}, {}),
+		            
+		            PagesJsonBin = fnGetFile(WithNormPath, "pages.json", "/definition/pages/"),
+		            PagesJson = try Json.Document(PagesJsonBin) otherwise Record.FromList({}, {}),
+		            PageIds = try PagesJson[pageOrder] otherwise {},
+		            
+		            // --- Parse all page.json files ---
+		            PageJsonFiles = Table.SelectRows(WithNormPath, each [Name] = "page.json"),
+		            
+		            // --- Parse all visual.json files ---
+		            VisualJsonFiles = Table.SelectRows(WithNormPath, each [Name] = "visual.json"),
+		            
+		            // --- Build per-page data with visuals grouped by page ---
+		            PagesBasePath = BasePath & "/definition/pages/",
+		            
+		            PageData = List.Transform(PageIds, each
+		                let
+		                    pageId = _,
+		                    PageFolderPath = PagesBasePath & pageId & "/",
+		                    
+		                    // Find this page's page.json
+		                    PageJsonRow = try Table.SelectRows(PageJsonFiles, each
+		                        [NormPath] = PageFolderPath
+		                    ){0} otherwise null,
+		                    PageJson = try Json.Document(PageJsonRow[Content]) otherwise Record.FromList({}, {}),
+		                    
+		                    // Find all visual.json files under this page
+		                    // Their NormPath starts with the page's visuals path
+		                    VisualsFolderPrefix = PageFolderPath & "visuals/",
+		                    PageVisualFiles = Table.SelectRows(VisualJsonFiles, each
+		                        Text.StartsWith([NormPath], VisualsFolderPrefix)
+		                    ),
+		                    
+		                    VisualJsonList = try List.Transform(
+		                        Table.ToRecords(PageVisualFiles),
+		                        each try Json.Document([Content]) otherwise Record.FromList({}, {})
+		                    ) otherwise {}
+		                in
+		                    [
+		                        PageId = pageId,
+		                        PageJson = PageJson,
+		                        VisualJsonList = VisualJsonList
+		                    ]
+		            ),
+		            
+		            // --- Parse bookmark files (NEW in v5.2) ---
+		            BookmarksBasePath = BasePath & "/definition/bookmarks/",
+		            
+		            // bookmarks.json contains the ordered list of bookmark IDs
+		            BookmarksMetaBin = fnGetFile(WithNormPath, "bookmarks.json", "/definition/bookmarks/"),
+		            BookmarksMeta = try Json.Document(BookmarksMetaBin) otherwise Record.FromList({}, {}),
+		            BookmarkIds = try List.Transform(BookmarksMeta[items], each [name]) otherwise {},
+		            
+		            // Each bookmark is in {bookmarkId}.bookmark.json
+		            BookmarkJsonFiles = Table.SelectRows(WithNormPath, each 
+		                Text.EndsWith([Name], ".bookmark.json")
+		                and Text.StartsWith([NormPath], BookmarksBasePath)
+		            ),
+		            
+		            BookmarkData = List.Transform(
+		                Table.ToRecords(BookmarkJsonFiles),
+		                each
+		                    let
+		                        bJson = try Json.Document([Content]) otherwise Record.FromList({}, {}),
+		                        bId = try bJson[name] otherwise Text.BeforeDelimiter([Name], ".bookmark.json")
+		                    in
+		                        [
+		                            BookmarkId = bId,
+		                            BookmarkJson = bJson
+		                        ]
+		            ),
+		            
+		            Result = [
+		                ReportName = ReportName,
+		                Platform = Platform,
+		                ReportJson = ReportJson,
+		                PageIds = PageIds,
+		                PageData = PageData,
+		                BookmarkIds = BookmarkIds,
+		                BookmarkData = BookmarkData
+		            ]
+		        in
+		            Result
+		in
+		    fn
+		```
+	lineageTag: c575bad7-fe38-41a3-b34d-77e54647d0fa
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Function
+
+expression SchemaCoverageAudit_pbir =
+		let
+		    Data = fn_pbir_ReportData(),
+		
+		    // =====================================================================
+		    // SECTION 1: Recursive key walker
+		    // =====================================================================
+		    // Walks a JSON record/list tree, collecting dot-separated key paths.
+		    // Stops at expression grammar boundaries to avoid enumerating the
+		    // infinite expression language as if it were structural schema.
+		
+		    // Keys that signal "stop descending — everything below is expression grammar"
+		    ExpressionBoundaryKeys = {
+		        "expr", "Literal", "Measure", "Column", "Conditional", "FillRule",
+		        "Aggregation", "SparklineData", "filter", "From", "Where",
+		        "Condition", "And", "Comparison", "In", "Expressions",
+		        "Cases", "Value", "Right", "Left", "ComparisonKind",
+		        "SourceRef", "Expression", "Function",
+		        // Also stop at field references inside projections — these are value grammar
+		        "field", "expression"
+		    },
+		
+		    // Maximum depth to prevent runaway recursion on unexpected structures
+		    MaxDepth = 8,
+		
+		    // Core recursive walker: returns a flat list of {Path, SampleValue} records
+		    fnWalkRecord = (node as any, prefix as text, depth as number) as list =>
+		        if depth > MaxDepth then {}
+		        else if node is record then
+		            let
+		                fieldNames = Record.FieldNames(node),
+		                results = List.Combine(
+		                    List.Transform(fieldNames, (fname) =>
+		                        let
+		                            fullPath = if prefix = "" then fname else prefix & "." & fname,
+		                            childValue = try Record.Field(node, fname) otherwise null,
+		
+		                            // Is this key an expression boundary?
+		                            isBoundary = List.Contains(ExpressionBoundaryKeys, fname)
+		                        in
+		                            if isBoundary then
+		                                // Emit the key itself but don't descend
+		                                {[Path = fullPath, SampleValue = if childValue is record or childValue is list then "(expression)" else try Text.From(childValue) otherwise "(complex)"]}
+		                            else if childValue is record then
+		                                // Emit the key AND descend into the record
+		                                {[Path = fullPath, SampleValue = "(record)"]}
+		                                    & @fnWalkRecord(childValue, fullPath, depth + 1)
+		                            else if childValue is list then
+		                                // For lists: emit the key with [] suffix, then walk first element
+		                                let
+		                                    firstItem = try childValue{0} otherwise null,
+		                                    listPath = fullPath & "[]"
+		                                in
+		                                    {[Path = listPath, SampleValue = "(list:" & Text.From(List.Count(childValue)) & ")"]}
+		                                    & (if firstItem is record then @fnWalkRecord(firstItem, listPath, depth + 1)
+		                                       else {})
+		                            else
+		                                // Scalar value — emit and stop
+		                                {[Path = fullPath, SampleValue = try Text.From(childValue) otherwise "(null)"]}
+		                    )
+		                )
+		            in
+		                results
+		        else
+		            {},
+		
+		    // =====================================================================
+		    // SECTION 2: Walk all file types
+		    // =====================================================================
+		
+		    // --- .platform ---
+		    PlatformPaths = List.Transform(
+		        fnWalkRecord(Data[Platform], "", 0),
+		        each [FileType = ".platform", Path = [Path], SampleValue = [SampleValue]]
+		    ),
+		
+		    // --- report.json ---
+		    ReportJsonPaths = List.Transform(
+		        fnWalkRecord(Data[ReportJson], "", 0),
+		        each [FileType = "report.json", Path = [Path], SampleValue = [SampleValue]]
+		    ),
+		
+		    // --- page.json (walk all pages) ---
+		    PagePaths = List.Combine(
+		        List.Transform(Data[PageData], each
+		            List.Transform(
+		                fnWalkRecord([PageJson], "", 0),
+		                each [FileType = "page.json", Path = [Path], SampleValue = [SampleValue]]
+		            )
+		        )
+		    ),
+		
+		    // --- visual.json (walk all visuals across all pages) ---
+		    VisualPaths = List.Combine(
+		        List.Transform(Data[PageData], each
+		            List.Combine(
+		                List.Transform([VisualJsonList], (vJson) =>
+		                    List.Transform(
+		                        fnWalkRecord(vJson, "", 0),
+		                        each [FileType = "visual.json", Path = [Path], SampleValue = [SampleValue]]
+		                    )
+		                )
+		            )
+		        )
+		    ),
+		
+		    // --- *.bookmark.json (walk all bookmarks) ---
+		    BookmarkPaths = List.Combine(
+		        List.Transform(Data[BookmarkData], each
+		            List.Transform(
+		                fnWalkRecord([BookmarkJson], "", 0),
+		                each [FileType = "bookmark.json", Path = [Path], SampleValue = [SampleValue]]
+		            )
+		        )
+		    ),
+		
+		    // Combine all paths
+		    AllPathsRaw = List.Combine({PlatformPaths, ReportJsonPaths, PagePaths, VisualPaths, BookmarkPaths}),
+		    AllPathsTable = Table.FromRecords(AllPathsRaw),
+		
+		    // =====================================================================
+		    // SECTION 3: Aggregate — distinct paths with occurrence count
+		    // =====================================================================
+		    Grouped = Table.Group(AllPathsTable, {"FileType", "Path"}, {
+		        {"OccurrenceCount", each Table.RowCount(_), Int64.Type},
+		        {"SampleValue", each List.First(List.Select(Table.Column(_, "SampleValue"), each _ <> "(record)" and _ <> "(null)"), List.First(Table.Column(_, "SampleValue"))), type text}
+		    }),
+		
+		    // =====================================================================
+		    // SECTION 4: Extraction map — what the pipeline already reads
+		    // =====================================================================
+		    // Each entry: {FileType, PathPattern}
+		    // PathPattern supports prefix matching: "visual.objects" matches "visual.objects.data[]"
+		    ExtractedPaths = {
+		        // --- .platform ---
+		        {".platform", "metadata.displayName"},
+		        {".platform", "metadata.type"},
+		
+		        // --- report.json ---
+		        {"report.json", "themeCollection.baseTheme.name"},
+		        {"report.json", "$schema"},
+		        {"report.json", "settings.useStylableVisualContainerHeader"},
+		        {"report.json", "settings.exportDataMode"},
+		        {"report.json", "settings.defaultDrillFilterOtherVisuals"},
+		        {"report.json", "settings.allowChangeFilterTypes"},
+		        {"report.json", "settings.useEnhancedTooltips"},
+		        {"report.json", "settings.useDefaultAggregateDisplayName"},
+		
+		        // --- page.json ---
+		        {"page.json", "displayName"},
+		        {"page.json", "name"},
+		        {"page.json", "width"},
+		        {"page.json", "height"},
+		        {"page.json", "displayOption"},
+		        {"page.json", "visibility"},
+		        {"page.json", "type"},
+		
+		        // --- visual.json (container level) ---
+		        {"visual.json", "$schema"},
+		        {"visual.json", "name"},
+		        {"visual.json", "position.x"},
+		        {"visual.json", "position.y"},
+		        {"visual.json", "position.z"},
+		        {"visual.json", "position.width"},
+		        {"visual.json", "position.height"},
+		        {"visual.json", "isHidden"},
+		        {"visual.json", "howCreated"},
+		        {"visual.json", "parentGroupName"},
+		
+		        // --- visual.json (visual node) ---
+		        {"visual.json", "visual.visualType"},
+		        {"visual.json", "visual.drillFilterOtherVisuals"},
+		        {"visual.json", "visual.query.queryState"},
+		        {"visual.json", "visual.syncGroup.groupName"},
+		        {"visual.json", "visual.syncGroup.fieldChanges"},
+		        {"visual.json", "visual.syncGroup.filterChanges"},
+		
+		        // --- visual.json (objects we extract) ---
+		        {"visual.json", "visual.objects.data[]"},
+		        {"visual.json", "visual.objects.general[]"},
+		        {"visual.json", "visual.objects.values[]"},
+		        {"visual.json", "visual.objects.columnFormatting[]"},
+		        {"visual.json", "visual.objects.selection[]"},
+		        {"visual.json", "visual.objects.subTotals[]"},
+		        {"visual.json", "visual.objects.labels[]"},
+		        {"visual.json", "visual.objects.columnHeaders[]"},
+		        {"visual.json", "visual.objects.pages[]"},
+		        {"visual.json", "visual.objects.icon[]"},
+		        {"visual.json", "visual.objects.text[]"},
+		        {"visual.json", "visual.objects.label[]"},
+		        {"visual.json", "visual.objects.image[]"},
+		        {"visual.json", "visual.objects.layout[]"},
+		
+		        // --- visual.json (visualContainerObjects we extract) ---
+		        {"visual.json", "visual.visualContainerObjects.title[]"},
+		        {"visual.json", "visual.visualContainerObjects.visualLink[]"},
+		        {"visual.json", "visual.visualContainerObjects.border[]"},
+		
+		        // --- bookmark.json ---
+		        {"bookmark.json", "displayName"},
+		        {"bookmark.json", "name"},
+		        {"bookmark.json", "options.targetVisualNames"},
+		        {"bookmark.json", "explorationState.version"},
+		        {"bookmark.json", "explorationState.activeSection"},
+		        {"bookmark.json", "explorationState.sections"},
+		        {"bookmark.json", "explorationState.objects"}
+		    },
+		
+		    ExtractedTable = Table.FromRows(ExtractedPaths, {"FileType", "PathPattern"}),
+		
+		    // =====================================================================
+		    // SECTION 5: Match — mark each discovered path as extracted or not
+		    // =====================================================================
+		    WithExtracted = Table.AddColumn(Grouped, "IsExtracted", each
+		        let
+		            ft = [FileType],
+		            p = [Path],
+		            // Check exact match OR prefix match (extracted path is a prefix of discovered path)
+		            matched = List.AnyTrue(
+		                List.Transform(
+		                    Table.SelectRows(ExtractedTable, each [FileType] = ft)[PathPattern],
+		                    each p = _ or Text.StartsWith(p, _ & ".") or Text.StartsWith(p, _ & "[]")
+		                )
+		            )
+		        in
+		            matched,
+		        type logical
+		    ),
+		
+		    // =====================================================================
+		    // SECTION 6: Integration hints — suggest which query should consume it
+		    // =====================================================================
+		    WithHint = Table.AddColumn(WithExtracted, "IntegrationHint", each
+		        let
+		            ft = [FileType],
+		            p = [Path]
+		        in
+		            if ft = ".platform" then "ReportSettings_pbir"
+		            else if ft = "report.json" then "ReportSettings_pbir"
+		            else if ft = "page.json" then "Pages_pbir"
+		            else if ft = "bookmark.json" then
+		                if Text.StartsWith(p, "explorationState.sections") then "BookmarkActions_pbir"
+		                else "Bookmarks_pbir"
+		            else if ft = "visual.json" then
+		                if Text.StartsWith(p, "visual.objects.values") or Text.StartsWith(p, "visual.objects.columnFormatting") then "ConditionalFormattingRules_pbir"
+		                else if Text.StartsWith(p, "visual.query.queryState") then "ModelReferences_pbir"
+		                else if Text.StartsWith(p, "visual.visualContainerObjects.visualLink") then "Buttons_pbir"
+		                else if Text.StartsWith(p, "visual.syncGroup") then "SlicerInventory_pbir"
+		                else if Text.StartsWith(p, "filterConfig") then "(new: VisualFilters_pbir)"
+		                else "Visuals_pbir"
+		            else "(unknown)",
+		        type text
+		    ),
+		
+		    // =====================================================================
+		    // SECTION 7: Final output — sorted for triage
+		    // =====================================================================
+		    // Show unextracted first, then by file type and path
+		    Sorted = Table.Sort(WithHint, {
+		        {"IsExtracted", Order.Ascending},
+		        {"FileType", Order.Ascending},
+		        {"OccurrenceCount", Order.Descending},
+		        {"Path", Order.Ascending}
+		    })
+		in
+		    Sorted
+	lineageTag: 4ec3e156-8af0-4744-a313-206b16085121
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

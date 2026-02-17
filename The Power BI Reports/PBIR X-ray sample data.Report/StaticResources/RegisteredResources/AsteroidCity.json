@@ -1,0 +1,80 @@
+{
+  "name": "Asteroid City",
+  "dataColors": [
+    "#0A9F9D",
+    "#CEB175",
+    "#E54E21",
+    "#6C8645",
+    "#C18748",
+    "#C52E19",
+    "#54D8B1",
+    "#FBA72A",
+    "#5785C1",
+    "#175149"
+  ],
+  "background": "#FFF8F0",
+  "foreground": "#175149",
+  "tableAccent": "#E54E21",
+  "hyperlink": "#5785C1",
+  "good": "#6C8645",
+  "neutral": "#CEB175",
+  "bad": "#C52E19",
+  "maximum": "#E54E21",
+  "center": "#FBA72A",
+  "minimum": "#54D8B1",
+  "null": "#D3D4D8",
+  "textClasses": {
+    "callout": {
+      "fontSize": 28,
+      "fontFace": "Segoe UI Light",
+      "color": "#175149"
+    },
+    "title": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#175149"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#175149"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#3A403E"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ],
+        "visualHeaderTooltip": [
+          {
+            "type": "Default"
+          }
+        ]
+      }
+    }
+  }
+}

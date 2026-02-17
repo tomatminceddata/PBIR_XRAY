@@ -1,0 +1,166 @@
+table sales
+	lineageTag: 63e25b6c-e915-4b66-8600-e17a363311ee
+
+	measure 'Sales revenue' =
+			
+			SUMX( 'sales' , 'sales'[Quantity] * 'sales'[NetPrice] )
+		lineageTag: e0b52aba-eec1-487b-aee4-ffd83ef6aa4f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales cost' =
+			
+			SUMX( 'sales', 'sales'[Quantity] * 'sales'[UnitCost] )
+		lineageTag: 14e942b2-2fb3-4a42-8ad9-3f8a7ce1e82f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'vizAid bckg Sales Revenue' =
+			
+			//reusing the colors defined in the theme - magic!
+			 IF( [revenue contribution of Brand] >= 0.06, "good" , "bad" )
+		lineageTag: d3213dd9-b6b3-4ec1-828f-fccafd5636e7
+
+	column OrderKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 313bd83d-6e01-46a2-bb98-a98c571319ff
+		summarizeBy: none
+		sourceColumn: OrderKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column LineNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: a3df67fe-255b-4890-a845-11f9072d2d50
+		summarizeBy: sum
+		sourceColumn: LineNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: aa57191b-d961-4217-acd4-2445dd125c12
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DeliveryDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4e9a7b99-f165-48c7-9a20-29fbe489fc62
+		summarizeBy: none
+		sourceColumn: DeliveryDate
+
+		variation Variation
+			isDefault
+			relationship: c2c3cab6-e16e-4037-9fb2-e78758f0bbd8
+			defaultHierarchy: LocalDateTable_2b38237e-045f-4331-94b1-7e53668dce0a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 9a0a4704-3bb0-4254-bd64-17bf25955a8c
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: ba2f647d-f460-4a1a-b1a6-2f05ccdd0563
+		summarizeBy: count
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e931821-2375-4b48-80a3-4555733abb1d
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: a15f3d21-1f49-4b83-8b10-e86dfaaf2284
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 79b60012-7621-4177-a4c1-444dc517c09d
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NetPrice
+		dataType: double
+		lineageTag: 39ace42f-e760-4355-a4fb-f609da396d88
+		summarizeBy: sum
+		sourceColumn: NetPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column UnitCost
+		dataType: double
+		lineageTag: 60843f30-b0b8-44fe-b1b2-671315d8628e
+		summarizeBy: sum
+		sourceColumn: UnitCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CurrencyCode
+		dataType: string
+		lineageTag: 800c58c2-6553-41f5-a0e6-effb49ab5351
+		summarizeBy: none
+		sourceColumn: CurrencyCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column ExchangeRate
+		dataType: double
+		lineageTag: db1a613c-bfb1-4e0a-86f2-49f0f1860b90
+		summarizeBy: sum
+		sourceColumn: ExchangeRate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition sales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Text.Combine({pq_par_csvFolderPath,"\","sales.csv"})),[Delimiter=",", Columns=13, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderKey", Int64.Type}, {"LineNumber", Int64.Type}, {"OrderDate", type date}, {"DeliveryDate", type date}, {"CustomerKey", Int64.Type}, {"StoreKey", Int64.Type}, {"ProductKey", Int64.Type}, {"Quantity", Int64.Type}, {"UnitPrice", type number}, {"NetPrice", type number}, {"UnitCost", type number}, {"CurrencyCode", type text}, {"ExchangeRate", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,639 @@
+table ConditionalFormattingRules_pbir
+	lineageTag: 34e6dd9e-809d-45b4-815f-d364ca873030
+
+	column ReportName
+		dataType: string
+		lineageTag: 3ac2fcc0-7dec-477a-9503-e154169ac356
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualId
+		dataType: string
+		lineageTag: 59cdc429-2989-4607-af19-bf6f8f26a5d6
+		summarizeBy: none
+		sourceColumn: VisualId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageOrdinal
+		dataType: string
+		lineageTag: cc143663-00f7-47c4-90c8-1279d77f4542
+		summarizeBy: none
+		sourceColumn: PageOrdinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualType
+		dataType: string
+		lineageTag: 99b0f8ba-87b3-4a66-a347-994e55bb67ee
+		summarizeBy: none
+		sourceColumn: VisualType
+
+		annotation SummarizationSetBy = Automatic
+
+	column TableName
+		dataType: string
+		lineageTag: d8c0a37d-9a26-43f2-bfa2-f6ce7ba73754
+		summarizeBy: none
+		sourceColumn: TableName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectName
+		dataType: string
+		lineageTag: 56395e47-05f6-49b9-816c-f16961096cc1
+		summarizeBy: none
+		sourceColumn: ObjectName
+
+		annotation SummarizationSetBy = Automatic
+
+	column FormattingProperty
+		dataType: string
+		lineageTag: df2404b0-7a69-499c-b38e-b3dc9421bdd1
+		summarizeBy: none
+		sourceColumn: FormattingProperty
+
+		annotation SummarizationSetBy = Automatic
+
+	column BandIndex
+		dataType: int64
+		formatString: 0
+		lineageTag: 7a6bd84a-eb71-4702-8ac1-c7fd64feeafa
+		summarizeBy: sum
+		sourceColumn: BandIndex
+
+		annotation SummarizationSetBy = Automatic
+
+	column BandCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 39520cc1-88a0-42bc-98b5-1577b4abdd52
+		summarizeBy: sum
+		sourceColumn: BandCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		lineageTag: 1f32f641-037e-4708-9a1f-4731dac7473e
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column LowerBound
+		dataType: string
+		lineageTag: 55163ee9-d6bb-49d6-af58-8f7d711efdfa
+		summarizeBy: none
+		sourceColumn: LowerBound
+
+		annotation SummarizationSetBy = Automatic
+
+	column LowerOperator
+		dataType: string
+		lineageTag: e54c6c4f-d562-42d8-b0ac-9fbb896a4601
+		summarizeBy: none
+		sourceColumn: LowerOperator
+
+		annotation SummarizationSetBy = Automatic
+
+	column UpperBound
+		dataType: string
+		lineageTag: 19ff520b-267f-421e-867b-0890f788ec86
+		summarizeBy: none
+		sourceColumn: UpperBound
+
+		annotation SummarizationSetBy = Automatic
+
+	column UpperOperator
+		dataType: string
+		lineageTag: 64ff12d9-1455-4513-bda7-b3ff9aff0c8b
+		summarizeBy: none
+		sourceColumn: UpperOperator
+
+		annotation SummarizationSetBy = Automatic
+
+	column ColorBar
+		dataType: string
+		lineageTag: 11990b5a-a264-4024-92f9-8c2b7cc0d55e
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: ColorBar
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageId
+		dataType: string
+		lineageTag: 540e5998-b5e0-4ebb-b850-5e627c704f2f
+		summarizeBy: none
+		sourceColumn: PageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column CFType
+		dataType: string
+		lineageTag: d2976be2-d0ef-4532-8279-629fbdbeba63
+		summarizeBy: none
+		sourceColumn: CFType
+
+		annotation SummarizationSetBy = Automatic
+
+	column InputTableName
+		dataType: string
+		lineageTag: 2d78b551-b163-4c47-8481-d11f39aeec44
+		summarizeBy: none
+		sourceColumn: InputTableName
+
+		annotation SummarizationSetBy = Automatic
+
+	column InputObjectName
+		dataType: string
+		lineageTag: 29fe42bf-b165-4b0a-b37b-c1316cdc9a93
+		summarizeBy: none
+		sourceColumn: InputObjectName
+
+		annotation SummarizationSetBy = Automatic
+
+	column GradientType
+		dataType: string
+		lineageTag: 49114192-ce20-439a-9168-1075807314a7
+		summarizeBy: none
+		sourceColumn: GradientType
+
+		annotation SummarizationSetBy = Automatic
+
+	column MinColor
+		dataType: string
+		lineageTag: 1114eae1-7cc4-4cc5-abe2-4321bc1aa77b
+		summarizeBy: none
+		sourceColumn: MinColor
+
+		annotation SummarizationSetBy = Automatic
+
+	column MidColor
+		dataType: string
+		lineageTag: 38fef181-fe25-4ae1-92a6-f2f372c9ba90
+		summarizeBy: none
+		sourceColumn: MidColor
+
+		annotation SummarizationSetBy = Automatic
+
+	column MaxColor
+		dataType: string
+		lineageTag: a5880891-cd17-4d4a-9b1d-551db6278c58
+		summarizeBy: none
+		sourceColumn: MaxColor
+
+		annotation SummarizationSetBy = Automatic
+
+	column NullStrategy
+		dataType: string
+		lineageTag: 09d2e8db-8401-41fa-ba97-5624d08a6401
+		summarizeBy: none
+		sourceColumn: NullStrategy
+
+		annotation SummarizationSetBy = Automatic
+
+	column PositiveColor
+		dataType: string
+		lineageTag: f216f6c4-f62c-4ea4-988a-12438f9d2b44
+		summarizeBy: none
+		sourceColumn: PositiveColor
+
+		annotation SummarizationSetBy = Automatic
+
+	column NegativeColor
+		dataType: string
+		lineageTag: 2ab64037-f676-409c-9161-4709ce1dc4a8
+		summarizeBy: none
+		sourceColumn: NegativeColor
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShowBarOnly
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 21939b20-6330-4613-803d-b4478e1dc2bf
+		summarizeBy: none
+		sourceColumn: ShowBarOnly
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ConditionalFormattingRules_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    PageIds = Data[PageIds],
+				    PageData = Data[PageData],
+				    
+				    // ComparisonKind mapping — handles null and any type
+				    fnComparisonOp = (kind as any) as text =>
+				        if kind = null then ""
+				        else
+				            let
+				                k = try Number.From(kind) otherwise -1
+				            in
+				                if k = 0 then "="
+				                else if k = 1 then ">"
+				                else if k = 2 then ">="
+				                else if k = 3 then "<"
+				                else if k = 4 then "<="
+				                else "",
+				    
+				    // Clean literal values: remove D/L/M suffix (decimal/long/currency) and surrounding quotes
+				    fnCleanLiteral = (val as any) as text =>
+				        let
+				            asText = try Text.From(val) otherwise "",
+				            unquoted = if Text.StartsWith(asText, "'") and Text.EndsWith(asText, "'") and Text.Length(asText) > 2
+				                then Text.Range(asText, 1, Text.Length(asText) - 2)
+				                else asText,
+				            cleaned = if Text.EndsWith(unquoted, "D") or Text.EndsWith(unquoted, "L") or Text.EndsWith(unquoted, "M")
+				                then Text.Start(unquoted, Text.Length(unquoted) - 1)
+				                else unquoted
+				        in
+				            cleaned,
+				    
+				    // Extract entity and property from a Measure or Column reference node
+				    fnExtractRef = (node as record) as record =>
+				        let
+				            MEntity = try node[Measure][Expression][SourceRef][Entity] otherwise null,
+				            MProp = try node[Measure][Property] otherwise null,
+				            CEntity = try node[Column][Expression][SourceRef][Entity] otherwise null,
+				            CProp = try node[Column][Property] otherwise null,
+				            Entity = if MEntity <> null then MEntity else CEntity,
+				            Prop = if MProp <> null then MProp else CProp
+				        in
+				            [Entity = Entity, Property = Prop],
+				    
+				    fnGetCFRules = (pageId as text, pageOrdinal as number, vJson as record) as list =>
+				        let
+				            VisualName = try vJson[name] otherwise "",
+				            V = try vJson[visual] otherwise Record.FromList({}, {}),
+				            VisualType = try V[visualType] otherwise "unknown",
+				            
+				            ValuesEntries = try V[objects][values] otherwise {},
+				            
+				            // =====================================================================
+				            // PART 1: objects.values[] — Rules, Gradient, and Field Value CF
+				            // =====================================================================
+				            // Each entry in objects.values[] can have backColor and/or fontColor.
+				            // Each color property can be one of three CF types:
+				            //   - Rules:       expr.Conditional.Cases[]
+				            //   - Gradient:    expr.FillRule
+				            //   - Field Value: expr.Measure or expr.Column (direct reference)
+				            
+				            ValuesCFRules = List.Combine(
+				                List.Transform(ValuesEntries, each
+				                    let
+				                        entry = _,
+				                        props = try entry[properties] otherwise Record.FromList({}, {}),
+				                        propNames = try Record.FieldNames(props) otherwise {},
+				                        metadata = try entry[selector][metadata] otherwise "",
+				                        parsedMeta = fn_pbir_ParseQueryRef(metadata),
+				                        
+				                        // Check each property (backColor, fontColor) for CF expressions
+				                        cfProps = List.Select(propNames, each _ = "backColor" or _ = "fontColor")
+				                    in
+				                        List.Combine(
+				                            List.Transform(cfProps, (pn) =>
+				                                let
+				                                    exprNode = try Record.Field(props, pn)[solid][color][expr] otherwise Record.FromList({}, {}),
+				                                    exprFields = try Record.FieldNames(exprNode) otherwise {},
+				                                    
+				                                    // Detect which CF type this is
+				                                    HasConditional = List.Contains(exprFields, "Conditional"),
+				                                    HasFillRule = List.Contains(exprFields, "FillRule"),
+				                                    HasMeasure = List.Contains(exprFields, "Measure"),
+				                                    HasColumn = List.Contains(exprFields, "Column")
+				                                in
+				                                    // ─── RULES-BASED CF (Conditional.Cases) ───
+				                                    if HasConditional then
+				                                        let
+				                                            Cases = try exprNode[Conditional][Cases] otherwise {},
+				                                            BandCount = List.Count(Cases),
+				                                            
+				                                            // Build vertical SVG: one colored row per band, low→high (fits 150px cell)
+				                                            fnBuildSVG = (allCases as list) as text =>
+				                                                let
+				                                                    reversed = List.Reverse(allCases),
+				                                                    n = List.Count(reversed),
+				                                                    w = 150,
+				                                                    rowH = 10,
+				                                                    h = n * rowH,
+				                                                    rects = List.Transform(
+				                                                        List.Zip({reversed, List.Positions(reversed)}),
+				                                                        each
+				                                                            let
+				                                                                c = _{0},
+				                                                                idx = _{1},
+				                                                                col = fnCleanLiteral(try c[Value][Literal][Value] otherwise ""),
+				                                                                yPos = idx * rowH
+				                                                            in
+				                                                                "<rect x='0' y='" & Text.From(yPos) & "' width='" & Text.From(w) & "' height='" & Text.From(rowH) & "' fill='" & Text.Replace(col, "#", "%23") & "'/>"
+				                                                    ),
+				                                                    body = Text.Combine(rects),
+				                                                    svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='" & Text.From(w) & "' height='" & Text.From(h) & "'>" & body & "</svg>"
+				                                                in
+				                                                    svg
+				                                        in
+				                                            if BandCount > 0 then
+				                                                let
+				                                                    SVG = fnBuildSVG(Cases)
+				                                                in
+				                                                List.Transform(
+				                                                    List.Zip({Cases, List.Positions(Cases)}),
+				                                                    each
+				                                                        let
+				                                                            pair = _,
+				                                                            case = pair{0},
+				                                                            bandIdx = pair{1},
+				                                                            
+				                                                            Color = fnCleanLiteral(try case[Value][Literal][Value] otherwise ""),
+				                                                            
+				                                                            // Handle both And-wrapped and bare Comparison conditions
+				                                                            Cond = try case[Condition] otherwise Record.FromList({}, {}),
+				                                                            HasAnd = try (Cond[And] <> null) otherwise false,
+				                                                            
+				                                                            // Lower bound
+				                                                            LowerKind = if HasAnd then
+				                                                                    try Cond[And][Left][Comparison][ComparisonKind] otherwise null
+				                                                                else
+				                                                                    try Cond[Comparison][ComparisonKind] otherwise null,
+				                                                            LowerValRaw = if HasAnd then
+				                                                                    try Cond[And][Left][Comparison][Right][Literal][Value] otherwise ""
+				                                                                else
+				                                                                    try Cond[Comparison][Right][Literal][Value] otherwise "",
+				                                                            
+				                                                            // Upper bound (only exists in And-wrapped conditions)
+				                                                            UpperKind = if HasAnd then
+				                                                                    try Cond[And][Right][Comparison][ComparisonKind] otherwise null
+				                                                                else
+				                                                                    null,
+				                                                            UpperValRaw = if HasAnd then
+				                                                                    try Cond[And][Right][Comparison][Right][Literal][Value] otherwise ""
+				                                                                else
+				                                                                    ""
+				                                                        in
+				                                                            [
+				                                                                ReportName = ReportName,
+				                                                                VisualId = VisualName,
+				                                                                PageId = pageId,
+				                                                                PageOrdinal = pageOrdinal,
+				                                                                VisualType = VisualType,
+				                                                                CFType = "Rules",
+				                                                                FormattingProperty = pn,
+				                                                                TableName = parsedMeta[TableName],
+				                                                                ObjectName = parsedMeta[ObjectName],
+				                                                                InputTableName = null,
+				                                                                InputObjectName = null,
+				                                                                BandIndex = bandIdx,
+				                                                                BandCount = BandCount,
+				                                                                Color = Color,
+				                                                                LowerBound = fnCleanLiteral(LowerValRaw),
+				                                                                LowerOperator = fnComparisonOp(LowerKind),
+				                                                                UpperBound = fnCleanLiteral(UpperValRaw),
+				                                                                UpperOperator = fnComparisonOp(UpperKind),
+				                                                                GradientType = null,
+				                                                                MinColor = null,
+				                                                                MidColor = null,
+				                                                                MaxColor = null,
+				                                                                NullStrategy = null,
+				                                                                PositiveColor = null,
+				                                                                NegativeColor = null,
+				                                                                ShowBarOnly = null,
+				                                                                ColorBar = SVG
+				                                                            ]
+				                                                )
+				                                            else
+				                                                {}
+				                                    
+				                                    // ─── GRADIENT CF (FillRule) ───
+				                                    else if HasFillRule then
+				                                        let
+				                                            FR = exprNode[FillRule],
+				                                            InputNode = try FR[Input] otherwise Record.FromList({}, {}),
+				                                            InputRef = fnExtractRef(InputNode),
+				                                            
+				                                            Rule = try FR[FillRule] otherwise Record.FromList({}, {}),
+				                                            RuleFields = try Record.FieldNames(Rule) otherwise {},
+				                                            
+				                                            // Detect gradient type: linearGradient2 or linearGradient3
+				                                            GradType = if List.Contains(RuleFields, "linearGradient3") then "linearGradient3"
+				                                                else if List.Contains(RuleFields, "linearGradient2") then "linearGradient2"
+				                                                else "unknown",
+				                                            
+				                                            Grad = try Record.Field(Rule, GradType) otherwise Record.FromList({}, {}),
+				                                            
+				                                            MinColor = fnCleanLiteral(try Grad[min][color][Literal][Value] otherwise ""),
+				                                            MaxColor = fnCleanLiteral(try Grad[max][color][Literal][Value] otherwise ""),
+				                                            MidColor = if GradType = "linearGradient3" then
+				                                                    fnCleanLiteral(try Grad[mid][color][Literal][Value] otherwise "")
+				                                                else null,
+				                                            NullStrategy = fnCleanLiteral(try Grad[nullColoringStrategy][strategy][Literal][Value] otherwise ""),
+				                                            
+				                                            // Build gradient SVG (fits 150px cell)
+				                                            GradSVG = 
+				                                                let
+				                                                    w = 150,
+				                                                    h = 30,
+				                                                    minC = Text.Replace(MinColor, "#", "%23"),
+				                                                    maxC = Text.Replace(MaxColor, "#", "%23"),
+				                                                    midC = if MidColor <> null then Text.Replace(MidColor, "#", "%23") else null,
+				                                                    
+				                                                    stops = if midC <> null then
+				                                                        "<stop offset='0%25' stop-color='" & minC & "'/>" &
+				                                                        "<stop offset='50%25' stop-color='" & midC & "'/>" &
+				                                                        "<stop offset='100%25' stop-color='" & maxC & "'/>"
+				                                                    else
+				                                                        "<stop offset='0%25' stop-color='" & minC & "'/>" &
+				                                                        "<stop offset='100%25' stop-color='" & maxC & "'/>"
+				                                                in
+				                                                    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='" & Text.From(w) & "' height='" & Text.From(h) & "'>" &
+				                                                    "<defs><linearGradient id='g'>" & stops & "</linearGradient></defs>" &
+				                                                    "<rect width='" & Text.From(w) & "' height='" & Text.From(h) & "' fill='url(%23g)' rx='3'/>" &
+				                                                    "</svg>"
+				                                        in
+				                                            {[
+				                                                ReportName = ReportName,
+				                                                VisualId = VisualName,
+				                                                PageId = pageId,
+				                                                PageOrdinal = pageOrdinal,
+				                                                VisualType = VisualType,
+				                                                CFType = "Gradient",
+				                                                FormattingProperty = pn,
+				                                                TableName = parsedMeta[TableName],
+				                                                ObjectName = parsedMeta[ObjectName],
+				                                                InputTableName = InputRef[Entity],
+				                                                InputObjectName = InputRef[Property],
+				                                                BandIndex = null,
+				                                                BandCount = null,
+				                                                Color = null,
+				                                                LowerBound = null,
+				                                                LowerOperator = null,
+				                                                UpperBound = null,
+				                                                UpperOperator = null,
+				                                                GradientType = GradType,
+				                                                MinColor = MinColor,
+				                                                MidColor = MidColor,
+				                                                MaxColor = MaxColor,
+				                                                NullStrategy = NullStrategy,
+				                                                PositiveColor = null,
+				                                                NegativeColor = null,
+				                                                ShowBarOnly = null,
+				                                                ColorBar = GradSVG
+				                                            ]}
+				                                    
+				                                    // ─── FIELD VALUE CF (direct Measure or Column reference) ───
+				                                    else if HasMeasure or HasColumn then
+				                                        let
+				                                            InputRef = fnExtractRef(exprNode)
+				                                        in
+				                                            {[
+				                                                ReportName = ReportName,
+				                                                VisualId = VisualName,
+				                                                PageId = pageId,
+				                                                PageOrdinal = pageOrdinal,
+				                                                VisualType = VisualType,
+				                                                CFType = "FieldValue",
+				                                                FormattingProperty = pn,
+				                                                TableName = parsedMeta[TableName],
+				                                                ObjectName = parsedMeta[ObjectName],
+				                                                InputTableName = InputRef[Entity],
+				                                                InputObjectName = InputRef[Property],
+				                                                BandIndex = null,
+				                                                BandCount = null,
+				                                                Color = null,
+				                                                LowerBound = null,
+				                                                LowerOperator = null,
+				                                                UpperBound = null,
+				                                                UpperOperator = null,
+				                                                GradientType = null,
+				                                                MinColor = null,
+				                                                MidColor = null,
+				                                                MaxColor = null,
+				                                                NullStrategy = null,
+				                                                PositiveColor = null,
+				                                                NegativeColor = null,
+				                                                ShowBarOnly = null,
+				                                                ColorBar = null
+				                                            ]}
+				                                    
+				                                    else
+				                                        {}
+				                            )
+				                        )
+				                )
+				            ),
+				            
+				            // =====================================================================
+				            // PART 2: objects.columnFormatting[] — Data Bars
+				            // =====================================================================
+				            // Data bars live under a completely different JSON path
+				            ColumnFmtEntries = try V[objects][columnFormatting] otherwise {},
+				            
+				            DataBarRules = List.Combine(
+				                List.Transform(ColumnFmtEntries, each
+				                    let
+				                        cfEntry = _,
+				                        hasBars = try (cfEntry[properties][dataBars] <> null) otherwise false,
+				                        metadata = try cfEntry[selector][metadata] otherwise "",
+				                        parsedMeta = fn_pbir_ParseQueryRef(metadata)
+				                    in
+				                        if hasBars then
+				                            let
+				                                bars = cfEntry[properties][dataBars],
+				                                PosColor = fnCleanLiteral(try bars[positiveColor][solid][color][expr][Literal][Value] otherwise ""),
+				                                NegColor = fnCleanLiteral(try bars[negativeColor][solid][color][expr][Literal][Value] otherwise ""),
+				                                HideText = try bars[hideText][expr][Literal][Value] otherwise "false",
+				                                ShowBarOnly = HideText = "true",
+				                                
+				                                // Build data bar SVG (fits 150px cell)
+				                                BarSVG =
+				                                    let
+				                                        w = 150, h = 30,
+				                                        posC = Text.Replace(PosColor, "#", "%23"),
+				                                        negC = Text.Replace(NegColor, "#", "%23"),
+				                                        // Show a sample bar at 70% width
+				                                        barW = Number.RoundDown(w * 0.7)
+				                                    in
+				                                        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='" & Text.From(w) & "' height='" & Text.From(h) & "'>" &
+				                                        "<rect x='0' y='2' width='" & Text.From(w) & "' height='" & Text.From(h - 4) & "' fill='%23f0f0f0' rx='3'/>" &
+				                                        "<rect x='0' y='2' width='" & Text.From(barW) & "' height='" & Text.From(h - 4) & "' fill='" & posC & "' rx='3'/>" &
+				                                        "</svg>"
+				                            in
+				                                {[
+				                                    ReportName = ReportName,
+				                                    VisualId = VisualName,
+				                                    PageId = pageId,
+				                                    PageOrdinal = pageOrdinal,
+				                                    VisualType = VisualType,
+				                                    CFType = "DataBars",
+				                                    FormattingProperty = "dataBars",
+				                                    TableName = parsedMeta[TableName],
+				                                    ObjectName = parsedMeta[ObjectName],
+				                                    InputTableName = null,
+				                                    InputObjectName = null,
+				                                    BandIndex = null,
+				                                    BandCount = null,
+				                                    Color = null,
+				                                    LowerBound = null,
+				                                    LowerOperator = null,
+				                                    UpperBound = null,
+				                                    UpperOperator = null,
+				                                    GradientType = null,
+				                                    MinColor = null,
+				                                    MidColor = null,
+				                                    MaxColor = null,
+				                                    NullStrategy = null,
+				                                    PositiveColor = PosColor,
+				                                    NegativeColor = NegColor,
+				                                    ShowBarOnly = ShowBarOnly,
+				                                    ColorBar = BarSVG
+				                                ]}
+				                        else
+				                            {}
+				                )
+				            ),
+				            
+				            Combined = List.Combine({ValuesCFRules, DataBarRules})
+				        in
+				            Combined,
+				    
+				    AllRules = List.Combine(
+				        List.Transform(
+				            List.Zip({PageData, List.Positions(PageIds)}),
+				            each
+				                let
+				                    pair = _,
+				                    pd = pair{0},
+				                    ordinal = pair{1},
+				                    VisualRules = List.Combine(
+				                        List.Transform(
+				                            pd[VisualJsonList],
+				                            each try fnGetCFRules(pd[PageId], ordinal, _) otherwise {}
+				                        )
+				                    )
+				                in
+				                    VisualRules
+				        )
+				    ),
+				    
+				    Result = Table.FromRecords(AllRules),
+				    Typed = Table.TransformColumnTypes(Result, {
+				        {"BandIndex", Int64.Type},
+				        {"BandCount", Int64.Type},
+				        {"ShowBarOnly", type logical}
+				    }),
+				    Sorted = Table.Sort(Typed, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}, {"CFType", Order.Ascending}, {"TableName", Order.Ascending}, {"BandIndex", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

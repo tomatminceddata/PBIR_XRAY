@@ -1,0 +1,304 @@
+table Bookmarks_pbir
+	lineageTag: b779e550-a583-4d89-b64b-ad3bb98d133a
+
+	column ReportName
+		dataType: string
+		lineageTag: 1bf9c966-edb7-4401-a385-3bc5688b51ee
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkId
+		dataType: string
+		lineageTag: 405c35ac-9047-4636-a441-b9c0e5b3401d
+		summarizeBy: none
+		sourceColumn: BookmarkId
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkName
+		dataType: string
+		lineageTag: fb3194c1-aadd-4b52-9df3-55a029565ebe
+		summarizeBy: none
+		sourceColumn: BookmarkName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetPageId
+		dataType: string
+		lineageTag: e4a8ef8c-313f-4766-b20d-113777ab7933
+		summarizeBy: none
+		sourceColumn: TargetPageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetPageName
+		dataType: string
+		lineageTag: 85f47d63-a146-4232-8ea4-48403c63caf3
+		summarizeBy: none
+		sourceColumn: TargetPageName
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsScoped
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d7d1b8e0-f127-4f56-85bf-4a909ee6be4b
+		summarizeBy: none
+		sourceColumn: IsScoped
+
+		annotation SummarizationSetBy = Automatic
+
+	column AffectedVisualCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 0116b1c3-6cc5-4e75-adcc-ca6027606f55
+		summarizeBy: sum
+		sourceColumn: AffectedVisualCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column HiddenVisualCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 117b7339-487d-4539-b723-26c653308e53
+		summarizeBy: sum
+		sourceColumn: HiddenVisualCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column HiddenVisualIds
+		dataType: string
+		lineageTag: 66e2c8bf-e5f0-452d-b9ea-7ba0c3bbfa25
+		summarizeBy: none
+		sourceColumn: HiddenVisualIds
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualsWithFilterCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e9e5cfb-eb9f-463e-9893-6b9418724e54
+		summarizeBy: sum
+		sourceColumn: VisualsWithFilterCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column TriggerVisualIds
+		dataType: string
+		lineageTag: 1eb47bd6-aede-42a0-9e8e-503c3719992e
+		summarizeBy: none
+		sourceColumn: TriggerVisualIds
+
+		annotation SummarizationSetBy = Automatic
+
+	column TriggerVisualTypes
+		dataType: string
+		lineageTag: 3d91d07e-bd4e-447b-a15b-c24a2d5479c9
+		summarizeBy: none
+		sourceColumn: TriggerVisualTypes
+
+		annotation SummarizationSetBy = Automatic
+
+	column TriggerPageNames
+		dataType: string
+		lineageTag: 42722a53-1901-499f-9a3f-f263ce216340
+		summarizeBy: none
+		sourceColumn: TriggerPageNames
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasReportObjects
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 65b5943d-05ce-4bee-b4f1-9ebf77aeb330
+		summarizeBy: none
+		sourceColumn: HasReportObjects
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkVersion
+		dataType: string
+		lineageTag: 7b7daf8c-4764-4ceb-a2a2-9a5d0a9c58f3
+		summarizeBy: none
+		sourceColumn: BookmarkVersion
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Bookmarks_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    BookmarkData = Data[BookmarkData],
+				    PageData = Data[PageData],
+				    PageIds = Data[PageIds],
+				    
+				    // Build a lookup: pageId → displayName
+				    PageNameLookup = Record.FromList(
+				        List.Transform(PageData, each [PageJson][displayName]? ?? [PageId]),
+				        List.Transform(PageData, each [PageId])
+				    ),
+				    
+				    // Find all visuals that reference bookmarks via visualLink
+				    // Returns a flat list of records: {VisualId, VisualType, PageId, PageName, LinkType, BookmarkId}
+				    VisualBookmarkLinks = List.Combine(
+				        List.Transform(
+				            PageData,
+				            each
+				                let
+				                    pd = _,
+				                    pageId = pd[PageId],
+				                    pageName = pd[PageJson][displayName]? ?? pageId
+				                in
+				                    List.Combine(
+				                        List.Transform(pd[VisualJsonList], each
+				                            let
+				                                vId = [name]? ?? "unknown",
+				                                vType = [visual][visualType]? ?? "unknown",
+				                                vco = try [visual][visualContainerObjects] otherwise Record.FromList({}, {}),
+				                                vLink = try vco[visualLink]{0}[properties] otherwise null,
+				                                linkShow = try vLink[show][expr][Literal][Value] otherwise "false",
+				                                linkType = try Text.Trim(vLink[type][expr][Literal][Value], "'") otherwise null,
+				                                linkBookmark = try Text.Trim(vLink[bookmark][expr][Literal][Value], "'") otherwise null
+				                            in
+				                                if linkType <> null and linkShow = "true" then
+				                                    {[
+				                                        VisualId = vId,
+				                                        VisualType = vType,
+				                                        PageId = pageId,
+				                                        PageName = pageName,
+				                                        LinkType = linkType,
+				                                        BookmarkId = linkBookmark
+				                                    ]}
+				                                else
+				                                    {}
+				                        )
+				                    )
+				        )
+				    ),
+				    
+				    // Process each bookmark
+				    Bookmarks = List.Transform(BookmarkData, each
+				        let
+				            bId = [BookmarkId],
+				            bJson = [BookmarkJson],
+				            
+				            DisplayName = try bJson[displayName] otherwise bId,
+				            
+				            // Target page from explorationState.activeSection
+				            ActiveSection = try bJson[explorationState][activeSection] otherwise null,
+				            TargetPageName = if ActiveSection <> null 
+				                then (try Record.Field(PageNameLookup, ActiveSection) otherwise ActiveSection) 
+				                else null,
+				            
+				            // Get the visuals affected in the explorationState
+				            Sections = try bJson[explorationState][sections] otherwise Record.FromList({}, {}),
+				            SectionNames = Record.FieldNames(Sections),
+				            
+				            // Count total affected visuals across all sections
+				            AffectedVisuals = List.Combine(
+				                List.Transform(SectionNames, each
+				                    let
+				                        sectionData = Record.Field(Sections, _),
+				                        containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+				                        containerIds = Record.FieldNames(containers)
+				                    in
+				                        containerIds
+				                )
+				            ),
+				            AffectedVisualCount = List.Count(AffectedVisuals),
+				            
+				            // Detect which visuals are hidden/shown by this bookmark
+				            HiddenVisuals = List.Combine(
+				                List.Transform(SectionNames, each
+				                    let
+				                        sectionData = Record.Field(Sections, _),
+				                        containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+				                        containerIds = Record.FieldNames(containers)
+				                    in
+				                        List.Select(containerIds, each
+				                            let
+				                                vc = Record.Field(containers, _),
+				                                displayMode = try vc[singleVisual][display][mode] otherwise null
+				                            in
+				                                displayMode = "hidden"
+				                        )
+				                )
+				            ),
+				            HiddenVisualCount = List.Count(HiddenVisuals),
+				            HiddenVisualIds = Text.Combine(HiddenVisuals, ", "),
+				            
+				            // Detect visuals with filter state changes
+				            VisualsWithFilters = List.Combine(
+				                List.Transform(SectionNames, each
+				                    let
+				                        sectionData = Record.Field(Sections, _),
+				                        containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+				                        containerIds = Record.FieldNames(containers)
+				                    in
+				                        List.Select(containerIds, each
+				                            let
+				                                vc = Record.Field(containers, _),
+				                                hasFilters = try List.Count(vc[filters][byExpr]) > 0 otherwise false
+				                            in
+				                                hasFilters
+				                        )
+				                )
+				            ),
+				            VisualsWithFilterCount = List.Count(VisualsWithFilters),
+				            
+				            // Find which visuals trigger this bookmark
+				            TriggerVisuals = List.Select(VisualBookmarkLinks, each [BookmarkId] = bId),
+				            TriggerVisualIds = Text.Combine(List.Transform(TriggerVisuals, each [VisualId]), ", "),
+				            TriggerVisualTypes = Text.Combine(List.Distinct(List.Transform(TriggerVisuals, each [VisualType])), ", "),
+				            TriggerPageNames = Text.Combine(List.Distinct(List.Transform(TriggerVisuals, each [PageName])), ", "),
+				            
+				            // Detect if bookmark uses targetVisualNames (scoped bookmarks)
+				            TargetVisualNames = try bJson[options][targetVisualNames] otherwise {},
+				            IsScoped = List.Count(TargetVisualNames) > 0,
+				            
+				            // Bookmark options
+				            BookmarkVersion = try bJson[explorationState][version] otherwise null,
+				            
+				            // Report-level object changes (e.g. filter pane state)
+				            HasReportObjects = try Record.FieldCount(bJson[explorationState][objects]) > 0 otherwise false
+				        in
+				            [
+				                ReportName = ReportName,
+				                BookmarkId = bId,
+				                BookmarkName = DisplayName,
+				                TargetPageId = ActiveSection,
+				                TargetPageName = TargetPageName,
+				                IsScoped = IsScoped,
+				                AffectedVisualCount = AffectedVisualCount,
+				                HiddenVisualCount = HiddenVisualCount,
+				                HiddenVisualIds = HiddenVisualIds,
+				                VisualsWithFilterCount = VisualsWithFilterCount,
+				                TriggerVisualIds = TriggerVisualIds,
+				                TriggerVisualTypes = TriggerVisualTypes,
+				                TriggerPageNames = TriggerPageNames,
+				                HasReportObjects = HasReportObjects,
+				                BookmarkVersion = BookmarkVersion
+				            ]
+				    ),
+				    
+				    Result = Table.FromRecords(Bookmarks),
+				    Typed = Table.TransformColumnTypes(Result, {
+				        {"AffectedVisualCount", Int64.Type},
+				        {"HiddenVisualCount", Int64.Type},
+				        {"VisualsWithFilterCount", Int64.Type},
+				        {"IsScoped", type logical},
+				        {"HasReportObjects", type logical}
+				    }),
+				    Sorted = Table.Sort(Typed, {{"BookmarkName", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

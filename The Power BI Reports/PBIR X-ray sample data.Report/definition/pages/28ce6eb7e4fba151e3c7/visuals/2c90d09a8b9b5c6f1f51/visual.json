@@ -1,0 +1,89 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "2c90d09a8b9b5c6f1f51",
+  "position": {
+    "x": 860,
+    "y": 760,
+    "height": 300,
+    "width": 400,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "aiNarratives",
+    "objects": {
+      "narrativeSelection": [
+        {
+          "properties": {
+            "dismissSelectionScreen": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "userPrompt": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Summarize the data.'"
+                }
+              }
+            },
+            "selectedVisualsJson": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{\"isEntireReportSelected\":false,\"sections\":{\"28ce6eb7e4fba151e3c7\":{\"isEntireSectionSelected\":true}}}'"
+                }
+              }
+            },
+            "useAllVisuals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "36bb54c5067cb6957e42",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "product"
+              }
+            },
+            "Property": "Color"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1a503f0defa4afef462d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "sales"
+              }
+            },
+            "Property": "Sales revenue"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

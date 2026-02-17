@@ -1,0 +1,28 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["pq_pbir_ReportFolderPath","fn_pbir_ParseQueryRef","fn_pbir_ReportData","ReportSettings_pbir","Pages_pbir","Visuals_pbir","ModelReferences_pbir","UnusedObjectsFinder_pbir","SlicerInventory_pbir","ConditionalFormattingRules_pbir","Bookmarks_pbir","BookmarkActions_pbir","Buttons_pbir","SchemaCoverageAudit_pbir"]
+
+annotation PBI_ProTooling = ["DevMode","TMDLView_Desktop"]
+
+ref table ReportSettings_pbir
+ref table Pages_pbir
+ref table Visuals_pbir
+ref table ModelReferences_pbir
+ref table UnusedObjectsFinder_pbir
+ref table SlicerInventory_pbir
+ref table ConditionalFormattingRules_pbir
+ref table SyncGroups
+ref table Bookmarks_pbir
+ref table BookmarkActions_pbir
+ref table Buttons_pbir
+
+ref cultureInfo en-US
+

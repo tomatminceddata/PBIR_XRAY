@@ -1,0 +1,47 @@
+relationship AutoDetected_0a9bdb1b-357e-481b-83e3-180bd2e93186
+	fromColumn: Pages_pbir.ReportName
+	toColumn: ReportSettings_pbir.ReportName
+
+relationship AutoDetected_5b878d50-adf3-453d-86c4-c0329230c51b
+	crossFilteringBehavior: bothDirections
+	fromColumn: ModelReferences_pbir.VisualId
+	toColumn: Visuals_pbir.VisualId
+
+relationship AutoDetected_3324997c-4f35-458b-b31f-45ebdc8cc3aa
+	fromColumn: SlicerInventory_pbir.VisualId
+	toColumn: Visuals_pbir.VisualId
+
+relationship AutoDetected_41b17ee9-8341-4ff1-a37f-b131df906790
+	crossFilteringBehavior: bothDirections
+	fromColumn: ConditionalFormattingRules_pbir.VisualId
+	toColumn: Visuals_pbir.VisualId
+
+relationship AutoDetected_c2b34a5d-29c1-425a-9f7d-d2a2ddd95926
+	crossFilteringBehavior: bothDirections
+	fromColumn: Visuals_pbir.PageId
+	toColumn: Pages_pbir.PageId
+
+relationship AutoDetected_6e46d668-babe-4702-ba1e-1070edf3d121
+	fromColumn: Bookmarks_pbir.ReportName
+	toColumn: ReportSettings_pbir.ReportName
+
+relationship AutoDetected_f9f3854e-0d2f-4b77-ab8a-01e21027c2eb
+	isActive: false
+	fromColumn: BookmarkActions_pbir.VisualId
+	toColumn: Visuals_pbir.VisualId
+
+relationship AutoDetected_ed32a6d2-897d-44de-9933-148ca6bb1ba1
+	fromColumn: BookmarkActions_pbir.BookmarkId
+	toColumn: Bookmarks_pbir.BookmarkId
+
+relationship AutoDetected_32f1603f-3754-4d73-b62c-850ede7ae72e
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Buttons_pbir.VisualId
+	toColumn: Visuals_pbir.VisualId
+
+relationship AutoDetected_98a9e168-f5ca-4b59-8980-06d7fd258a22
+	isActive: false
+	fromColumn: Buttons_pbir.BookmarkId
+	toColumn: Bookmarks_pbir.BookmarkId
+

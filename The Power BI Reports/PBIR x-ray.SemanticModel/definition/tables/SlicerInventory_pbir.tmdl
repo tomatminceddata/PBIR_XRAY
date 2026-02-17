@@ -1,0 +1,162 @@
+table SlicerInventory_pbir
+	lineageTag: fa13cd01-4975-461f-9417-1a00ba4d50fd
+
+	column ReportName
+		dataType: string
+		lineageTag: 0ed684c9-ea0b-4617-b751-e9c3082ade1f
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualId
+		dataType: string
+		lineageTag: bb7523af-cf78-42ca-8dff-563973988367
+		summarizeBy: none
+		sourceColumn: VisualId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageName
+		dataType: string
+		lineageTag: 241080b6-9004-425b-9a22-cdaaeb665570
+		summarizeBy: none
+		sourceColumn: PageName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageOrdinal
+		dataType: string
+		lineageTag: f6eebbe2-1068-4b0c-951c-771a72982341
+		summarizeBy: none
+		sourceColumn: PageOrdinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerTable
+		dataType: string
+		lineageTag: 0435cfec-a55c-4bad-a2ff-6fac667e1655
+		summarizeBy: none
+		sourceColumn: SlicerTable
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerField
+		dataType: string
+		lineageTag: 443c1924-229a-45f1-b464-86e320b8aa12
+		summarizeBy: none
+		sourceColumn: SlicerField
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerQueryRef
+		dataType: string
+		lineageTag: fda8f758-0863-44e2-8351-e6a84705a76b
+		summarizeBy: none
+		sourceColumn: SlicerQueryRef
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerMode
+		dataType: string
+		lineageTag: 033a83bb-649d-493a-9113-691b95a287a0
+		summarizeBy: none
+		sourceColumn: SlicerMode
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerOrientation
+		dataType: string
+		lineageTag: 0ba28805-ae30-4dcb-a535-288b4419ad69
+		summarizeBy: none
+		sourceColumn: SlicerOrientation
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasSelfFilter
+		dataType: string
+		lineageTag: c54117a8-c813-4f76-9481-9b59eba97823
+		summarizeBy: none
+		sourceColumn: HasSelfFilter
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasDefaultFilter
+		dataType: string
+		lineageTag: 58bc13c3-ca7a-4bd7-8431-9155008ec51a
+		summarizeBy: none
+		sourceColumn: HasDefaultFilter
+
+		annotation SummarizationSetBy = Automatic
+
+	column StrictSingleSelect
+		dataType: string
+		lineageTag: 4d687262-66b0-402d-9f83-deb90c788d8d
+		summarizeBy: none
+		sourceColumn: StrictSingleSelect
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasFieldParameters
+		dataType: string
+		lineageTag: 7a810511-ae2a-4581-803d-4c40000769d5
+		summarizeBy: none
+		sourceColumn: HasFieldParameters
+
+		annotation SummarizationSetBy = Automatic
+
+	column SyncGroupName
+		dataType: string
+		lineageTag: 8108d4e5-f65a-47ec-bf44-0802cbfc1ab3
+		summarizeBy: none
+		sourceColumn: SyncGroupName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Width
+		dataType: string
+		lineageTag: 718d2b2b-808b-4605-b406-f76261525d70
+		summarizeBy: none
+		sourceColumn: Width
+
+		annotation SummarizationSetBy = Automatic
+
+	column Height
+		dataType: string
+		lineageTag: e0bf9775-20ec-41a9-896c-f4285d7f7854
+		summarizeBy: none
+		sourceColumn: Height
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SlicerInventory_pbir = m
+		mode: import
+		source = ```
+				let
+				    Source = Visuals_pbir,
+				    SlicersOnly = Table.SelectRows(Source, each [VisualType] = "slicer" or [VisualType] = "advancedSlicerVisual" or [VisualType] = "listSlicer"),
+				    
+				    Refs = ModelReferences_pbir,
+				    SlicerRefs = Table.SelectRows(Refs, each [Role] = "Values" and [Source] = "Projection"),
+				    
+				    Joined = Table.NestedJoin(SlicersOnly, {"VisualId"}, SlicerRefs, {"VisualId"}, "RefData", JoinKind.LeftOuter),
+				    Expanded = Table.ExpandTableColumn(Joined, "RefData", {"TableName", "ObjectName", "QueryRef"}, {"SlicerTable", "SlicerField", "SlicerQueryRef"}),
+				    
+				    Selected = Table.SelectColumns(Expanded, {
+				        "ReportName", "VisualId", "PageName", "PageOrdinal",
+				        "SlicerTable", "SlicerField", "SlicerQueryRef",
+				        "SlicerMode", "SlicerOrientation",
+				        "HasSelfFilter", "HasDefaultFilter", "StrictSingleSelect",
+				        "HasFieldParameters", "SyncGroupName",
+				        "Width", "Height"
+				    }),
+				    
+				    Sorted = Table.Sort(Selected, {{"PageOrdinal", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

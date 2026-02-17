@@ -1,0 +1,263 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "1cfa0d83b15e405462d8",
+  "position": {
+    "x": 200,
+    "y": 48,
+    "z": 2000,
+    "height": 662,
+    "width": 560,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageName"
+                }
+              },
+              "queryRef": "Pages_pbir.PageName",
+              "nativeQueryRef": "PageName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "VisualType"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.VisualType",
+              "nativeQueryRef": "Visual"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "TableName"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.TableName",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "ObjectName"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.ObjectName",
+              "nativeQueryRef": "Object"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "Role"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.Role",
+              "nativeQueryRef": "Role"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "RefType"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.RefType",
+              "nativeQueryRef": "Type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "Source"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.Source",
+              "nativeQueryRef": "Source"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "ModelReferences_pbir"
+                  }
+                },
+                "Property": "TableName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Which tables and columns each visual uses'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "810716623a3b0e536ca9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "VisualType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f09f03a26c859c70eb19",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "TableName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d53ea0184302c140e6b4",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "ObjectName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "82cc2f6b0170112a9e6f",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "Role"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "bb6a27acab6b7ac7e542",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "RefType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c6d87034a0ed51531c03",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "Source"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "aac9327bc2292acb04ea",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageName"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

@@ -1,0 +1,148 @@
+table product
+	lineageTag: fbbf3862-a349-45a0-a035-286186c7612e
+
+	measure 'revenue contribution of Brand' =
+			
+			DIVIDE(
+			    [Sales revenue],
+			    CALCULATE( 'sales'[Sales revenue] , ALL( 'product'[Brand] ) )
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: b0906b35-794e-4846-bc38-87ebf51b4ea2
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c7222ce-df35-47d5-b7dd-9e1b9e48472c
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductCode
+		dataType: int64
+		formatString: 0
+		lineageTag: bd35c25f-621e-41ad-808c-125867072a3f
+		summarizeBy: count
+		sourceColumn: ProductCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: 077e7138-e7cd-4158-adf9-fd8a1198d5e0
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Manufacturer
+		dataType: string
+		lineageTag: a867ba48-9844-4c53-805f-6d4aea256024
+		summarizeBy: none
+		sourceColumn: Manufacturer
+
+		annotation SummarizationSetBy = Automatic
+
+	column Brand
+		dataType: string
+		lineageTag: 4be2c8f0-0839-4743-8a73-74c330aa0b0e
+		summarizeBy: none
+		sourceColumn: Brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		lineageTag: 9cb14446-1fcd-4a00-a36c-7d84b60bd0e5
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeightUnit
+		dataType: string
+		lineageTag: 7d7d4f13-74a0-44cb-831f-2d31331f72db
+		summarizeBy: none
+		sourceColumn: WeightUnit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weight
+		dataType: double
+		lineageTag: 8f12dbae-8365-4af2-be3f-07a7250a42e8
+		summarizeBy: sum
+		sourceColumn: Weight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Cost
+		dataType: double
+		lineageTag: 818b618e-1744-400d-a7e2-3559163bfb0e
+		summarizeBy: sum
+		sourceColumn: Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Price
+		dataType: double
+		lineageTag: 39fef0a1-1433-4d54-af88-55c65c73fb53
+		summarizeBy: sum
+		sourceColumn: Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: a135fc24-9604-4b0c-9af4-25474090182a
+		summarizeBy: count
+		sourceColumn: CategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CategoryName
+		dataType: string
+		lineageTag: 3d582ad7-e5ca-4b89-9ee2-a3799285db7e
+		summarizeBy: none
+		sourceColumn: CategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c82dec0c-f386-48f7-b6d4-4958c991e1b0
+		summarizeBy: count
+		sourceColumn: SubCategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubCategoryName
+		dataType: string
+		lineageTag: b031ea33-e0cb-49f3-8444-1c7e9ea3f12b
+		summarizeBy: none
+		sourceColumn: SubCategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	partition product = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Text.Combine({pq_par_csvFolderPath,"\","product.csv"})),[Delimiter=",", Columns=14, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductKey", Int64.Type}, {"ProductCode", Int64.Type}, {"ProductName", type text}, {"Manufacturer", type text}, {"Brand", type text}, {"Color", type text}, {"WeightUnit", type text}, {"Weight", type number}, {"Cost", type number}, {"Price", type number}, {"CategoryKey", Int64.Type}, {"CategoryName", type text}, {"SubCategoryKey", Int64.Type}, {"SubCategoryName", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,84 @@
+table orders
+	lineageTag: 91982f4b-cf1f-4f7e-b9c6-f9ed2bdd894f
+
+	column OrderKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 69bc1431-a1c3-4374-b00a-1eafd69a92c6
+		summarizeBy: none
+		sourceColumn: OrderKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 01598b4a-42fd-495d-a4e7-396484c53031
+		summarizeBy: count
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 9f552a84-3875-4c72-86d7-6c7b027a7ecb
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c59a076f-1ae3-467c-aad7-aa6588d966b7
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		variation Variation
+			isDefault
+			relationship: d2672949-4f54-40fc-9118-a498c7f19b6f
+			defaultHierarchy: LocalDateTable_e06a7250-a314-417a-92f8-b8fac3598966.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DeliveryDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 71af3c09-fc0e-495b-ab4a-ed0b099f094f
+		summarizeBy: none
+		sourceColumn: DeliveryDate
+
+		variation Variation
+			isDefault
+			relationship: 30a315e6-d0c2-47b3-84b2-7b91de7e2dcb
+			defaultHierarchy: LocalDateTable_9ffcc9b7-35c8-4e97-8696-0246215445af.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CurrencyCode
+		dataType: string
+		lineageTag: 1f7b902b-193f-4fbc-ae41-f44ad7d297c2
+		summarizeBy: none
+		sourceColumn: CurrencyCode
+
+		annotation SummarizationSetBy = Automatic
+
+	partition orders = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Text.Combine({pq_par_csvFolderPath,"\","orders.csv"})),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"StoreKey", Int64.Type}, {"OrderDate", type date}, {"DeliveryDate", type date}, {"CurrencyCode", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,189 @@
+table Pages_pbir
+	lineageTag: 45cd4c73-f5ca-48d0-9ca3-27a72e6572c1
+
+	measure 'vizAid Page visibility' = ```
+			
+			var currentPageVisibility = SELECTEDVALUE( 'Pages_pbir'[PageVisibility] , BLANK() )
+			return
+			SWITCH( currentPageVisibility,
+			    "HiddenInViewMode" , "🙈" ,
+			    "🐵"
+			)
+			
+			```
+		lineageTag: 4bb73f7b-c00a-4582-84d1-da67b196a1b1
+
+	column ReportName
+		dataType: string
+		lineageTag: d0149a66-cdc9-4896-b75d-6250bd3fbaa2
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageName
+		dataType: string
+		lineageTag: 02a470bb-c754-42ef-bf5a-d15391b395e5
+		summarizeBy: none
+		sourceColumn: PageName
+		sortByColumn: PageOrdinal
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageId
+		dataType: string
+		lineageTag: bb942139-88e0-4e06-8693-f3f2201edace
+		summarizeBy: none
+		sourceColumn: PageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageOrdinal
+		dataType: int64
+		formatString: 0
+		lineageTag: 71be3114-79b4-4650-a4fe-987eb3f09f26
+		summarizeBy: sum
+		sourceColumn: PageOrdinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Width
+		dataType: double
+		lineageTag: cc79c1ec-b716-43eb-b8c9-7c40d8c9ba0f
+		summarizeBy: sum
+		sourceColumn: Width
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Height
+		dataType: double
+		lineageTag: c48feae1-9aa5-40da-945d-253ecb37596d
+		summarizeBy: sum
+		sourceColumn: Height
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DisplayOption
+		dataType: string
+		lineageTag: d2a35213-006b-4b1b-ba1f-afc3a6bf4b81
+		summarizeBy: none
+		sourceColumn: DisplayOption
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 6564604a-ce0e-42c1-bcd2-a947daeb5be9
+		summarizeBy: sum
+		sourceColumn: VisualCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column SlicerCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 88cd85ff-1e42-4984-9285-80dfc460f3f6
+		summarizeBy: sum
+		sourceColumn: SlicerCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualTypeList
+		dataType: string
+		lineageTag: 8cc519aa-fce0-4952-bc20-d419cdf00fd3
+		summarizeBy: none
+		sourceColumn: VisualTypeList
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageVisibility
+		dataType: string
+		lineageTag: 0b8983ca-bc50-4cea-96b2-89a8bbe8c683
+		summarizeBy: none
+		sourceColumn: PageVisibility
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageType
+		dataType: string
+		lineageTag: d6f7e765-af2b-43f6-91be-ac784e88818c
+		summarizeBy: none
+		sourceColumn: PageType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Pages_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    PageIds = Data[PageIds],
+				    PageData = Data[PageData],
+				    
+				    Pages = List.Transform(
+				        List.Zip({PageData, List.Positions(PageIds)}),
+				        each
+				            let
+				                pair = _,
+				                pd = pair{0},
+				                ordinal = pair{1},
+				                
+				                PageJson = pd[PageJson],
+				                DisplayName = try PageJson[displayName] otherwise pd[PageId],
+				                Width = try PageJson[width] otherwise 0,
+				                Height = try PageJson[height] otherwise 0,
+				                DisplayOption = try PageJson[displayOption] otherwise null,
+				                PageVisibility = try PageJson[visibility] otherwise null,
+				                PageType = try PageJson[type] otherwise null,
+				                
+				                VisualCount = List.Count(pd[VisualJsonList]),
+				                
+				                // Parse each visual to get types
+				                VisualTypes = List.Transform(
+				                    pd[VisualJsonList],
+				                    each try _[visual][visualType] otherwise "unknown"
+				                ),
+				                
+				                SlicerCount = List.Count(List.Select(VisualTypes, each _ = "slicer" or _ = "advancedSlicerVisual" or _ = "listSlicer"))
+				            in
+				                [
+				                    ReportName = ReportName,
+				                    PageName = DisplayName,
+				                    PageId = pd[PageId],
+				                    PageOrdinal = ordinal,
+				                    Width = Width,
+				                    Height = Height,
+				                    DisplayOption = DisplayOption,
+				                    PageVisibility = PageVisibility,
+				                    PageType = PageType,
+				                    VisualCount = VisualCount,
+				                    SlicerCount = SlicerCount,
+				                    VisualTypeList = Text.Combine(List.Sort(List.Distinct(VisualTypes)), ", ")
+				                ]
+				    ),
+				    
+				    Result = Table.FromRecords(Pages),
+				    Typed = Table.TransformColumnTypes(Result, {
+				        {"PageOrdinal", Int64.Type},
+				        {"Width", type number},
+				        {"Height", type number},
+				        {"VisualCount", Int64.Type},
+				        {"SlicerCount", Int64.Type}
+				    }),
+				    Sorted = Table.Sort(Typed, {{"PageOrdinal", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

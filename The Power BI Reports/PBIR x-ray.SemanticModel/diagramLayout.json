@@ -1,0 +1,179 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 311
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 979,
+            "y": 141.97658351769974
+          },
+          "nodeIndex": "ModelReferences_pbir",
+          "nodeLineageTag": "b49d1ed0-f6f8-4112-9f4c-56a255d4944a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 400.05995421605087,
+            "y": 247.62898964360085
+          },
+          "nodeIndex": "Pages_pbir",
+          "nodeLineageTag": "45cd4c73-f5ca-48d0-9ca3-27a72e6572c1",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 105.90948922302869,
+            "y": 422.39960501282286
+          },
+          "nodeIndex": "ReportSettings_pbir",
+          "nodeLineageTag": "ec387455-55ae-4f3e-8ede-9201e9fadf79",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1651,
+            "y": 156.39960501282286
+          },
+          "nodeIndex": "SlicerInventory_pbir",
+          "nodeLineageTag": "fa13cd01-4975-461f-9417-1a00ba4d50fd",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 42,
+            "y": 196.576562500458
+          },
+          "nodeIndex": "UnusedObjectsFinder_pbir",
+          "nodeLineageTag": "496a46a9-2dd7-4c6d-a89f-ce51f919e707",
+          "size": {
+            "height": 174,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 710.97138493911871,
+            "y": 311.39960501282286
+          },
+          "nodeIndex": "Visuals_pbir",
+          "nodeLineageTag": "2c8c5e72-d70e-484d-8f90-b5a88689ba2b",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1152,
+            "y": 483.5996155214437
+          },
+          "nodeIndex": "ConditionalFormattingRules_pbir",
+          "nodeLineageTag": "34e6dd9e-809d-45b4-815f-d364ca873030",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 114,
+            "y": 781.32552783923325
+          },
+          "nodeIndex": "SyncGroups",
+          "nodeLineageTag": "37e54e9c-e018-4e31-96f1-0a5c683098a8",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 730,
+            "y": 701.30537614953482
+          },
+          "nodeIndex": "BookmarkActions_pbir",
+          "nodeLineageTag": "4e1050e9-fa52-4f04-8c34-dbee1aefb020",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 398,
+            "y": 652.30537614953482
+          },
+          "nodeIndex": "Bookmarks_pbir",
+          "nodeLineageTag": "b779e550-a583-4d89-b64b-ad3bb98d133a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1195.5,
+            "y": 921.48992415515067
+          },
+          "nodeIndex": "Buttons_pbir",
+          "nodeLineageTag": "3caa57a6-fe5f-4cfc-8c80-ce8dacb41b20",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    },
+    {
+      "ordinal": 1,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [],
+      "name": "check",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

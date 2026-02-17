@@ -1,0 +1,302 @@
+table Buttons_pbir
+	lineageTag: 3caa57a6-fe5f-4cfc-8c80-ce8dacb41b20
+
+	column ReportName
+		dataType: string
+		lineageTag: f878fb15-1f5a-406d-9c1f-faf5919f41c7
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageId
+		dataType: string
+		lineageTag: 9c061ef2-6657-4318-8d01-5fc9058cc956
+		summarizeBy: none
+		sourceColumn: PageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageName
+		dataType: string
+		lineageTag: e03cf5e0-2609-4f50-8de3-d16f1f14736e
+		summarizeBy: none
+		sourceColumn: PageName
+		sortByColumn: PageOrdinal
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column PageOrdinal
+		dataType: string
+		lineageTag: 4e1a8167-f72e-4698-a27d-1d0b503e9d6e
+		summarizeBy: none
+		sourceColumn: PageOrdinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualId
+		dataType: string
+		lineageTag: 4ceb289c-48b2-4923-911e-6a3c72ca8096
+		summarizeBy: none
+		sourceColumn: VisualId
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualType
+		dataType: string
+		lineageTag: 73eb6ba0-dd36-484e-a32e-8ca583979af3
+		summarizeBy: none
+		sourceColumn: VisualType
+
+		annotation SummarizationSetBy = Automatic
+
+	column HowCreated
+		dataType: string
+		lineageTag: 9221254f-78b6-4fb8-9393-08d70e79f2df
+		summarizeBy: none
+		sourceColumn: HowCreated
+
+		annotation SummarizationSetBy = Automatic
+
+	column LinkType
+		dataType: string
+		lineageTag: b364b9ad-11b8-46ae-908b-08aaf8f6761d
+		summarizeBy: none
+		sourceColumn: LinkType
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkId
+		dataType: string
+		lineageTag: 0c839aa5-9736-48e2-8d68-9e01038b3efe
+		summarizeBy: none
+		sourceColumn: BookmarkId
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkName
+		dataType: string
+		lineageTag: eeb39993-4240-4bd6-900d-0e97dd4c0fea
+		summarizeBy: none
+		sourceColumn: BookmarkName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetPageId
+		dataType: string
+		lineageTag: e4b184dc-5c0b-4605-97c9-f4cca8619a97
+		summarizeBy: none
+		sourceColumn: TargetPageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column TargetPageName
+		dataType: string
+		lineageTag: f33f29af-91a4-4071-b31d-adbffd39cc02
+		summarizeBy: none
+		sourceColumn: TargetPageName
+
+		annotation SummarizationSetBy = Automatic
+
+	column WebUrl
+		dataType: string
+		lineageTag: 8e3340bb-c256-4332-ac47-9eea2becf0b8
+		summarizeBy: none
+		sourceColumn: WebUrl
+
+		annotation SummarizationSetBy = Automatic
+
+	column ButtonText
+		dataType: string
+		lineageTag: 2b7ae7cc-7f4d-4cf5-855b-bd963003fc93
+		summarizeBy: none
+		sourceColumn: ButtonText
+
+		annotation SummarizationSetBy = Automatic
+
+	column IconShape
+		dataType: string
+		lineageTag: c1166033-2f59-410a-a924-cfc53853bdc8
+		summarizeBy: none
+		sourceColumn: IconShape
+
+		annotation SummarizationSetBy = Automatic
+
+	column TooltipText
+		dataType: string
+		lineageTag: a315e6ad-b74c-4952-a22c-6e81ba9c3986
+		summarizeBy: none
+		sourceColumn: TooltipText
+
+		annotation SummarizationSetBy = Automatic
+
+	column TooltipMeasure
+		dataType: string
+		lineageTag: 03fcb6e4-d302-4b16-871c-61541256030f
+		summarizeBy: none
+		sourceColumn: TooltipMeasure
+
+		annotation SummarizationSetBy = Automatic
+
+	column ImageSourceMeasure
+		dataType: string
+		lineageTag: a66d4ec5-6448-4c83-ab8a-f2f4988041f2
+		summarizeBy: none
+		sourceColumn: ImageSourceMeasure
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Buttons_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    PageIds = Data[PageIds],
+				    PageData = Data[PageData],
+				    BookmarkData = Data[BookmarkData],
+				    
+				    // Build lookups for cross-referencing
+				    // Bookmark ID → display name
+				    BookmarkNameLookup = Record.FromList(
+				        List.Transform(BookmarkData, each try [BookmarkJson][displayName] otherwise [BookmarkId]),
+				        List.Transform(BookmarkData, each [BookmarkId])
+				    ),
+				    
+				    // Page ID → display name
+				    PageNameLookup = Record.FromList(
+				        List.Transform(PageData, each try [PageJson][displayName] otherwise [PageId]),
+				        List.Transform(PageData, each [PageId])
+				    ),
+				    
+				    fnGetButtons = (pageDisplayName as text, pageId as text, pageOrdinal as number, vJson as record) as list =>
+				        let
+				            VisualName = try vJson[name] otherwise "",
+				            V = try vJson[visual] otherwise Record.FromList({}, {}),
+				            VisualType = try V[visualType] otherwise
+				                (if try (vJson[visualGroup] <> null) otherwise false then "visualGroup" else "unknown"),
+				            HowCreated = try vJson[howCreated] otherwise null,
+				            
+				            // Check for visualLink in visualContainerObjects
+				            vLink = try V[visualContainerObjects][visualLink]{0}[properties] otherwise null
+				        in
+				            if vLink <> null then
+				                let
+				                    LinkShow = try vLink[show][expr][Literal][Value] otherwise "false",
+				                    LinkType = try Text.Trim(vLink[type][expr][Literal][Value], "'") otherwise null,
+				                    
+				                    // Bookmark target
+				                    LinkBookmarkId = try Text.Trim(vLink[bookmark][expr][Literal][Value], "'") otherwise null,
+				                    LinkBookmarkName = if LinkBookmarkId <> null
+				                        then try Record.Field(BookmarkNameLookup, LinkBookmarkId) otherwise LinkBookmarkId
+				                        else null,
+				                    
+				                    // Page navigation target
+				                    LinkPageId = try Text.Trim(vLink[pageName][expr][Literal][Value], "'") otherwise null,
+				                    LinkPageName = if LinkPageId <> null
+				                        then try Record.Field(PageNameLookup, LinkPageId) otherwise LinkPageId
+				                        else null,
+				                    
+				                    // Web URL target
+				                    LinkWebUrl = try Text.Trim(vLink[webUrl][expr][Literal][Value], "'") otherwise null,
+				                    
+				                    // Tooltip — can be static text or measure-driven
+				                    TooltipText = try Text.Trim(vLink[tooltipPlaceholderText][expr][Literal][Value], "'") otherwise null,
+				                    TooltipMeasureEntity = try vLink[tooltip][expr][Measure][Expression][SourceRef][Entity] otherwise null,
+				                    TooltipMeasureProp = try vLink[tooltip][expr][Measure][Property] otherwise null,
+				                    TooltipMeasure = if TooltipMeasureEntity <> null and TooltipMeasureProp <> null
+				                        then TooltipMeasureEntity & "." & TooltipMeasureProp
+				                        else null,
+				                    
+				                    // Button text (actionButton specific: objects.text[].properties.text)
+				                    TextEntries = try V[objects][text] otherwise {},
+				                    ButtonText = try Text.Trim(
+				                        List.First(
+				                            List.RemoveNulls(
+				                                List.Transform(TextEntries, each
+				                                    try [properties][text][expr][Literal][Value] otherwise null
+				                                )
+				                            )
+				                        ),
+				                        "'"
+				                    ) otherwise null,
+				                    
+				                    // Icon shape (actionButton specific: objects.icon[].properties.shapeType)
+				                    IconEntries = try V[objects][icon] otherwise {},
+				                    IconShape = try Text.Trim(
+				                        List.First(
+				                            List.RemoveNulls(
+				                                List.Transform(IconEntries, each
+				                                    try [properties][shapeType][expr][Literal][Value] otherwise null
+				                                )
+				                            )
+				                        ),
+				                        "'"
+				                    ) otherwise null,
+				                    
+				                    // Image source measure (image visual repurposed as button)
+				                    ImageMeasureEntity = try V[objects][image]{0}[properties][sourceField][expr][Measure][Expression][SourceRef][Entity] otherwise null,
+				                    ImageMeasureProp = try V[objects][image]{0}[properties][sourceField][expr][Measure][Property] otherwise null,
+				                    ImageSourceMeasure = if ImageMeasureEntity <> null and ImageMeasureProp <> null
+				                        then ImageMeasureEntity & "." & ImageMeasureProp
+				                        else null
+				                in
+				                    if LinkShow = "true" and LinkType <> null then
+				                        {[
+				                            ReportName = ReportName,
+				                            PageId = pageId,
+				                            PageName = pageDisplayName,
+				                            PageOrdinal = pageOrdinal,
+				                            VisualId = VisualName,
+				                            VisualType = VisualType,
+				                            HowCreated = HowCreated,
+				                            LinkType = LinkType,
+				                            BookmarkId = LinkBookmarkId,
+				                            BookmarkName = LinkBookmarkName,
+				                            TargetPageId = LinkPageId,
+				                            TargetPageName = LinkPageName,
+				                            WebUrl = LinkWebUrl,
+				                            ButtonText = ButtonText,
+				                            IconShape = IconShape,
+				                            TooltipText = TooltipText,
+				                            TooltipMeasure = TooltipMeasure,
+				                            ImageSourceMeasure = ImageSourceMeasure
+				                        ]}
+				                    else
+				                        {}
+				            else
+				                {},
+				    
+				    AllButtons = List.Combine(
+				        List.Transform(
+				            List.Zip({PageData, List.Positions(PageIds)}),
+				            each
+				                let
+				                    pair = _,
+				                    pd = pair{0},
+				                    ordinal = pair{1},
+				                    PageDisplayName = try pd[PageJson][displayName] otherwise pd[PageId],
+				                    
+				                    PageButtons = List.Combine(
+				                        List.Transform(
+				                            pd[VisualJsonList],
+				                            each try fnGetButtons(PageDisplayName, pd[PageId], ordinal, _) otherwise {}
+				                        )
+				                    )
+				                in
+				                    PageButtons
+				        )
+				    ),
+				    
+				    Result = Table.FromRecords(AllButtons),
+				    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

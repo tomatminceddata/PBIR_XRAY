@@ -1,0 +1,3579 @@
+createOrReplace
+
+	model Model
+		culture: en-US
+		defaultPowerBIDataSourceVersion: powerBI_V3
+		sourceQueryCulture: en-US
+		dataAccessOptions
+			legacyRedirects
+			returnErrorValuesAsNull
+
+		table ReportSettings_pbir
+			lineageTag: ec387455-55ae-4f3e-8ede-9201e9fadf79
+
+			column ReportName
+				dataType: string
+				lineageTag: cba477d2-34dd-4021-aa11-d65e8a0c647b
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column Schema
+				dataType: string
+				lineageTag: 415ff895-5e0c-471e-9907-6f1450c8e52d
+				summarizeBy: none
+				sourceColumn: Schema
+
+				annotation SummarizationSetBy = Automatic
+
+			column ThemeName
+				dataType: string
+				lineageTag: 11c8e135-80ef-4471-8f22-5f17ae64e82d
+				summarizeBy: none
+				sourceColumn: ThemeName
+
+				annotation SummarizationSetBy = Automatic
+
+			column UseStylableVisualContainerHeader
+				dataType: string
+				lineageTag: 7cd4be5f-3cbd-4f4b-ae87-12c85aa9978f
+				summarizeBy: none
+				sourceColumn: UseStylableVisualContainerHeader
+
+				annotation SummarizationSetBy = Automatic
+
+			column ExportDataMode
+				dataType: string
+				lineageTag: c89ae5a1-549f-42ec-863c-ae7ee938f55e
+				summarizeBy: none
+				sourceColumn: ExportDataMode
+
+				annotation SummarizationSetBy = Automatic
+
+			column DefaultDrillFilterOtherVisuals
+				dataType: string
+				lineageTag: 8019c6ee-0a1a-47cf-84d3-c9455df7a0c9
+				summarizeBy: none
+				sourceColumn: DefaultDrillFilterOtherVisuals
+
+				annotation SummarizationSetBy = Automatic
+
+			column AllowChangeFilterTypes
+				dataType: string
+				lineageTag: b1bb3f3d-87cd-4e89-904c-1a5f42ff3375
+				summarizeBy: none
+				sourceColumn: AllowChangeFilterTypes
+
+				annotation SummarizationSetBy = Automatic
+
+			column UseEnhancedTooltips
+				dataType: string
+				lineageTag: eb5d2424-0434-4e5f-8f95-97b8f8bb2aad
+				summarizeBy: none
+				sourceColumn: UseEnhancedTooltips
+
+				annotation SummarizationSetBy = Automatic
+
+			column UseDefaultAggregateDisplayName
+				dataType: string
+				lineageTag: f087e7ec-f43c-4100-ad2e-dedf33d9dedc
+				summarizeBy: none
+				sourceColumn: UseDefaultAggregateDisplayName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageCount
+				dataType: string
+				lineageTag: 9063e6c6-3992-4c12-94d5-78a824eb5500
+				summarizeBy: none
+				sourceColumn: PageCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column TotalVisuals
+				dataType: string
+				lineageTag: 7b137370-ec36-42c8-880e-73039158e850
+				summarizeBy: none
+				sourceColumn: TotalVisuals
+
+				annotation SummarizationSetBy = Automatic
+
+			partition ReportSettings_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    
+						    Report = Data[ReportJson],
+						    Settings = try Report[settings] otherwise Record.FromList({}, {}),
+						    Theme = try Report[themeCollection][baseTheme][name] otherwise null,
+						    SchemaUrl = try Report[#"$schema"] otherwise null,
+						    
+						    PageCount = List.Count(Data[PageIds]),
+						    
+						    TotalVisuals = List.Sum(
+						        List.Transform(Data[PageData], each List.Count(_[VisualJsonList]))
+						    ),
+						    
+						    Result = Table.FromRecords({[
+						        ReportName = ReportName,
+						        Schema = SchemaUrl,
+						        ThemeName = Theme,
+						        UseStylableVisualContainerHeader = try Settings[useStylableVisualContainerHeader] otherwise null,
+						        ExportDataMode = try Settings[exportDataMode] otherwise null,
+						        DefaultDrillFilterOtherVisuals = try Settings[defaultDrillFilterOtherVisuals] otherwise null,
+						        AllowChangeFilterTypes = try Settings[allowChangeFilterTypes] otherwise null,
+						        UseEnhancedTooltips = try Settings[useEnhancedTooltips] otherwise null,
+						        UseDefaultAggregateDisplayName = try Settings[useDefaultAggregateDisplayName] otherwise null,
+						        PageCount = PageCount,
+						        TotalVisuals = TotalVisuals
+						    ]})
+						in
+						    Result
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table Pages_pbir
+			lineageTag: 45cd4c73-f5ca-48d0-9ca3-27a72e6572c1
+
+			measure 'vizAid Page visibility' = ```
+					
+					var currentPageVisibility = SELECTEDVALUE( 'Pages_pbir'[PageVisibility] , BLANK() )
+					return
+					SWITCH( currentPageVisibility,
+					    "HiddenInViewMode" , "🙈" ,
+					    "🐵"
+					)
+					
+					```
+				lineageTag: 4bb73f7b-c00a-4582-84d1-da67b196a1b1
+
+			column ReportName
+				dataType: string
+				lineageTag: d0149a66-cdc9-4896-b75d-6250bd3fbaa2
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageName
+				dataType: string
+				lineageTag: 02a470bb-c754-42ef-bf5a-d15391b395e5
+				summarizeBy: none
+				sourceColumn: PageName
+				sortByColumn: PageOrdinal
+
+				changedProperty = SortByColumn
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageId
+				dataType: string
+				lineageTag: bb942139-88e0-4e06-8693-f3f2201edace
+				summarizeBy: none
+				sourceColumn: PageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageOrdinal
+				dataType: int64
+				formatString: 0
+				lineageTag: 71be3114-79b4-4650-a4fe-987eb3f09f26
+				summarizeBy: sum
+				sourceColumn: PageOrdinal
+
+				annotation SummarizationSetBy = Automatic
+
+			column Width
+				dataType: double
+				lineageTag: cc79c1ec-b716-43eb-b8c9-7c40d8c9ba0f
+				summarizeBy: sum
+				sourceColumn: Width
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column Height
+				dataType: double
+				lineageTag: c48feae1-9aa5-40da-945d-253ecb37596d
+				summarizeBy: sum
+				sourceColumn: Height
+
+				annotation SummarizationSetBy = Automatic
+
+				annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+			column DisplayOption
+				dataType: string
+				lineageTag: d2a35213-006b-4b1b-ba1f-afc3a6bf4b81
+				summarizeBy: none
+				sourceColumn: DisplayOption
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 6564604a-ce0e-42c1-bcd2-a947daeb5be9
+				summarizeBy: sum
+				sourceColumn: VisualCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 88cd85ff-1e42-4984-9285-80dfc460f3f6
+				summarizeBy: sum
+				sourceColumn: SlicerCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualTypeList
+				dataType: string
+				lineageTag: 8cc519aa-fce0-4952-bc20-d419cdf00fd3
+				summarizeBy: none
+				sourceColumn: VisualTypeList
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageVisibility
+				dataType: string
+				lineageTag: 0b8983ca-bc50-4cea-96b2-89a8bbe8c683
+				summarizeBy: none
+				sourceColumn: PageVisibility
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageType
+				dataType: string
+				lineageTag: d6f7e765-af2b-43f6-91be-ac784e88818c
+				summarizeBy: none
+				sourceColumn: PageType
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Pages_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    PageIds = Data[PageIds],
+						    PageData = Data[PageData],
+						    
+						    Pages = List.Transform(
+						        List.Zip({PageData, List.Positions(PageIds)}),
+						        each
+						            let
+						                pair = _,
+						                pd = pair{0},
+						                ordinal = pair{1},
+						                
+						                PageJson = pd[PageJson],
+						                DisplayName = try PageJson[displayName] otherwise pd[PageId],
+						                Width = try PageJson[width] otherwise 0,
+						                Height = try PageJson[height] otherwise 0,
+						                DisplayOption = try PageJson[displayOption] otherwise null,
+						                PageVisibility = try PageJson[visibility] otherwise null,
+						                PageType = try PageJson[type] otherwise null,
+						                
+						                VisualCount = List.Count(pd[VisualJsonList]),
+						                
+						                // Parse each visual to get types
+						                VisualTypes = List.Transform(
+						                    pd[VisualJsonList],
+						                    each try _[visual][visualType] otherwise "unknown"
+						                ),
+						                
+						                SlicerCount = List.Count(List.Select(VisualTypes, each _ = "slicer"))
+						            in
+						                [
+						                    ReportName = ReportName,
+						                    PageName = DisplayName,
+						                    PageId = pd[PageId],
+						                    PageOrdinal = ordinal,
+						                    Width = Width,
+						                    Height = Height,
+						                    DisplayOption = DisplayOption,
+						                    PageVisibility = PageVisibility,
+						                    PageType = PageType,
+						                    VisualCount = VisualCount,
+						                    SlicerCount = SlicerCount,
+						                    VisualTypeList = Text.Combine(List.Sort(List.Distinct(VisualTypes)), ", ")
+						                ]
+						    ),
+						    
+						    Result = Table.FromRecords(Pages),
+						    Typed = Table.TransformColumnTypes(Result, {
+						        {"PageOrdinal", Int64.Type},
+						        {"Width", type number},
+						        {"Height", type number},
+						        {"VisualCount", Int64.Type},
+						        {"SlicerCount", Int64.Type}
+						    }),
+						    Sorted = Table.Sort(Typed, {{"PageOrdinal", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table Visuals_pbir
+			lineageTag: 2c8c5e72-d70e-484d-8f90-b5a88689ba2b
+
+			measure 'Slicer Sync Status' =
+					
+					VAR _selectedGroup =
+					    SELECTEDVALUE( SyncGroups[SyncGroupName] )
+					VAR _slicers =
+					    FILTER(
+					        Visuals_pbir,
+					        Visuals_pbir[VisualType] = "slicer"
+					            && Visuals_pbir[PageId] IN VALUES( Pages_pbir[PageId] )
+					    )
+					VAR _inGroup =
+					    FILTER(
+					        _slicers,
+					        Visuals_pbir[SyncGroupName] = _selectedGroup
+					    )
+					VAR _countInGroup = COUNTROWS( _inGroup )
+					VAR _isHidden =
+					    MAXX( _inGroup, Visuals_pbir[IsHidden] )
+					RETURN
+					    SWITCH(
+					        TRUE(),
+					        _countInGroup > 0 && _isHidden,
+					            "Hidden, Synced",
+					        _countInGroup > 0,
+					            "Visible, Synced",
+					        "No Slicer"
+					    )
+				lineageTag: 8e23218d-78de-40a1-ba84-e549468868cf
+
+			measure 'Slicer Sync HTML' = ```
+					
+					VAR _selectedGroup = SELECTEDVALUE( SyncGroups[SyncGroupName] )
+					VAR _pages = 
+					    ADDCOLUMNS(
+					        ALL( Pages_pbir[PageName], Pages_pbir[PageId], Pages_pbir[PageOrdinal] ),
+					        "@HasSlicer", 
+					            COUNTROWS(
+					                FILTER(
+					                    ALL( Visuals_pbir ),
+					                    Visuals_pbir[VisualType] = "slicer"
+					                        && Visuals_pbir[SyncGroupName] = _selectedGroup
+					                        && Visuals_pbir[PageId] = Pages_pbir[PageId]
+					                )
+					            ) > 0,
+					        "@IsHidden",
+					            CALCULATE(
+					                MAX( Visuals_pbir[IsHidden] ),
+					                FILTER(
+					                    ALL( Visuals_pbir ),
+					                    Visuals_pbir[VisualType] = "slicer"
+					                        && Visuals_pbir[SyncGroupName] = _selectedGroup
+					                        && Visuals_pbir[PageId] = Pages_pbir[PageId]
+					                )
+					            )
+					    )
+					VAR _css = "
+					<style>
+					    .sync-table { 
+					        width: 100%; 
+					        border-collapse: collapse; 
+					        font-family: Segoe UI, sans-serif; 
+					        font-size: 12px; 
+					    }
+					    .sync-table th { 
+					        background: #f3f3f3; 
+					        padding: 6px 12px; 
+					        text-align: left; 
+					        border-bottom: 2px solid #118dff; 
+					        font-weight: 600; 
+					    }
+					    .sync-table td { 
+					        padding: 5px 12px; 
+					        border-bottom: 1px solid #ededed; 
+					    }
+					    .sync-table tr:hover { 
+					        background: #f5f9ff; 
+					    }
+					    .icon-sync { 
+					        color: #107c10; 
+					        font-size: 16px; 
+					        font-weight: bold; 
+					    }
+					    .icon-none { 
+					        color: #d1d1d1; 
+					        font-size: 14px; 
+					    }
+					    .icon-hidden { 
+					        color: #e67700; 
+					        font-size: 14px; 
+					    }
+					    .page-name { 
+					        max-width: 220px; 
+					        overflow: hidden; 
+					        text-overflow: ellipsis; 
+					        white-space: nowrap; 
+					    }
+					    .header-icon { 
+					        text-align: center; 
+					        width: 40px; 
+					    }
+					    .cell-icon { 
+					        text-align: center; 
+					    }
+					</style>
+					"
+					VAR _header = "
+					<table class='sync-table'>
+					<tr>
+					    <th class='page-name'>Page name</th>
+					    <th class='header-icon' title='Synced'>&#x1f504;</th>
+					    <th class='header-icon' title='Visible'>&#x1f441;</th>
+					</tr>
+					"
+					VAR _rows = 
+					    CONCATENATEX(
+					        _pages,
+					        VAR _hasSlicer = [@HasSlicer]
+					        VAR _isHidden = [@IsHidden]
+					        VAR _syncIcon = 
+					            IF( _hasSlicer, 
+					                "<span class='icon-sync'>&#x2713;</span>", 
+					                "<span class='icon-none'>&#x2717;</span>" 
+					            )
+					        VAR _visIcon = 
+					            IF( NOT _hasSlicer,
+					                "<span class='icon-none'>&#x2717;</span>",
+					                IF( _isHidden,
+					                    "<span class='icon-hidden'>&#x1f6ab;</span>",
+					                    "<span class='icon-sync'>&#x2713;</span>"
+					                )
+					            )
+					        RETURN
+					            "<tr>" &
+					            "<td class='page-name'>" & [PageName] & "</td>" &
+					            "<td class='cell-icon'>" & _syncIcon & "</td>" &
+					            "<td class='cell-icon'>" & _visIcon & "</td>" &
+					            "</tr>",
+					            ,
+						        [PageOrdinal], ASC
+					    )
+					VAR _footer = "</table>"
+					RETURN
+					    _css & _header & _rows & _footer
+					```
+				lineageTag: 6a85d590-a811-418c-93d3-199fd07f7b80
+
+			measure 'Page Navigation HTML' =
+					
+					VAR _navVisual =
+					    MAXX(
+					        FILTER( ALL( Visuals_pbir ), Visuals_pbir[VisualType] = "pageNavigator" ),
+					        Visuals_pbir[PageNavigationDetails]
+					    )
+					VAR _hasNav = NOT ISBLANK( _navVisual )
+					// Parse the JSON-encoded settings
+					VAR _showHidden =
+					    IF( _hasNav,
+					        CONTAINSSTRING( _navVisual, """showHiddenPages"":true" ),
+					        FALSE()
+					    )
+					VAR _showTooltip =
+					    IF( _hasNav,
+					        CONTAINSSTRING( _navVisual, """showTooltipPages"":true" ),
+					        FALSE()
+					    )
+					// Extract excluded page IDs from the JSON
+					VAR _excludedRaw =
+					    IF( _hasNav,
+					        MID(
+					            _navVisual,
+					            FIND( """excludedPages"":[", _navVisual, 1, 0 ) + 17,
+					            FIND( "]", _navVisual,
+					                FIND( """excludedPages"":[", _navVisual, 1, 0 ) + 17, 0
+					            ) - FIND( """excludedPages"":[", _navVisual, 1, 0 ) - 17
+					        ),
+					        ""
+					    )
+					VAR _pages =
+					    ADDCOLUMNS(
+					        ALL( Pages_pbir[PageName], Pages_pbir[PageId], Pages_pbir[PageOrdinal],
+					             Pages_pbir[PageVisibility], Pages_pbir[PageType] ),
+					        "@IsExcluded", CONTAINSSTRING( _excludedRaw, Pages_pbir[PageId] ),
+					        "@IsHiddenPage", Pages_pbir[PageVisibility] = "HiddenInViewMode",
+					        "@IsDrillthrough", Pages_pbir[PageType] = "Drillthrough",
+					        "@IsTooltip", Pages_pbir[PageType] = "Tooltip"
+					    )
+					VAR _css = "
+					<style>
+					    .nav-table {
+					        width: 100%;
+					        border-collapse: collapse;
+					        font-family: Segoe UI, sans-serif;
+					        font-size: 12px;
+					    }
+					    .nav-table th {
+					        background: #f3f3f3;
+					        padding: 6px 12px;
+					        text-align: left;
+					        border-bottom: 2px solid #118dff;
+					        font-weight: 600;
+					    }
+					    .nav-table td {
+					        padding: 5px 12px;
+					        border-bottom: 1px solid #ededed;
+					    }
+					    .nav-table tr:hover {
+					        background: #f5f9ff;
+					    }
+					    .icon-show {
+					        color: #107c10;
+					        font-size: 16px;
+					        font-weight: bold;
+					    }
+					    .icon-hide {
+					        color: #d1d1d1;
+					        font-size: 14px;
+					    }
+					    .icon-excluded {
+					        color: #e67700;
+					        font-size: 14px;
+					    }
+					    .page-name {
+					        max-width: 220px;
+					        overflow: hidden;
+					        text-overflow: ellipsis;
+					        white-space: nowrap;
+					    }
+					    .header-icon {
+					        text-align: center;
+					        width: 40px;
+					    }
+					    .cell-icon {
+					        text-align: center;
+					    }
+					    .settings-bar {
+					        font-size: 11px;
+					        color: #666;
+					        padding: 4px 12px 8px 12px;
+					    }
+					    .settings-bar span {
+					        margin-right: 16px;
+					    }
+					    .setting-on { color: #107c10; font-weight: 600; }
+					    .setting-off { color: #a4262c; font-weight: 600; }
+					</style>
+					"
+					VAR _settingsBar = "
+					<div class='settings-bar'>
+					    <span>Show hidden pages: <span class='" & IF( _showHidden, "setting-on", "setting-off" ) & "'>" & IF( _showHidden, "On", "Off" ) & "</span></span>
+					    <span>Show tooltip pages: <span class='" & IF( _showTooltip, "setting-on", "setting-off" ) & "'>" & IF( _showTooltip, "On", "Off" ) & "</span></span>
+					</div>
+					"
+					VAR _header = "
+					<table class='nav-table'>
+					<tr>
+					    <th class='page-name'>Page name</th>
+					    <th class='header-icon' title='In Navigator'>&#x1f4c4;</th>
+					    <th class='header-icon' title='Reason'>&#x2139;</th>
+					</tr>
+					"
+					VAR _rows =
+					    CONCATENATEX(
+					        _pages,
+					        VAR _isExcluded = [@IsExcluded]
+					        VAR _isHiddenPage = [@IsHiddenPage]
+					        VAR _isDrillthrough = [@IsDrillthrough]
+					        VAR _isTooltip = [@IsTooltip]
+					        VAR _effectivelyHidden =
+					            _isExcluded
+					            || ( _isHiddenPage && NOT _showHidden )
+					            || ( _isTooltip && NOT _showTooltip )
+					        VAR _navIcon =
+					            IF( _isExcluded,
+					                "<span class='icon-excluded'>&#x1f6ab;</span>",
+					                IF( _effectivelyHidden,
+					                    "<span class='icon-hide'>&#x2717;</span>",
+					                    "<span class='icon-show'>&#x2713;</span>"
+					                )
+					            )
+					        VAR _reason =
+					            IF( _isExcluded, "Excluded",
+					                IF( _isHiddenPage && NOT _showHidden, "Hidden page",
+					                    IF( _isDrillthrough && _isHiddenPage && NOT _showHidden, "Drillthrough",
+					                        IF( _isTooltip && NOT _showTooltip, "Tooltip",
+					                            ""
+					                        )
+					                    )
+					                )
+					            )
+					        RETURN
+					            "<tr>" &
+					            "<td class='page-name'>" & [PageName] & "</td>" &
+					            "<td class='cell-icon'>" & _navIcon & "</td>" &
+					            "<td>" & _reason & "</td>" &
+					            "</tr>",
+					            ,
+					            [PageOrdinal], ASC
+					    )
+					VAR _footer = "</table>"
+					VAR _noNav = "<div style='font-family: Segoe UI, sans-serif; font-size: 12px; color: #666; padding: 12px;'>No page navigator visual found in this report.</div>"
+					RETURN
+					    IF( _hasNav,
+					        _css & _settingsBar & _header & _rows & _footer,
+					        _noNav
+					    )
+				lineageTag: 35b8373a-a09c-40b4-bda4-2b91fd3cce04
+
+			column ReportName
+				dataType: string
+				lineageTag: 1e4b4114-4dcf-4fac-9f10-e2a33fdd7eaf
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualId
+				dataType: string
+				lineageTag: 3cdf83d4-338b-49d5-b270-8cfc6f3a71d2
+				summarizeBy: none
+				sourceColumn: VisualId
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageName
+				dataType: string
+				lineageTag: ce540d98-5534-467f-bb5a-a115a9c74779
+				summarizeBy: none
+				sourceColumn: PageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageOrdinal
+				dataType: string
+				lineageTag: 39549149-1191-4ec6-b3cf-a1e9f0adc5d8
+				summarizeBy: none
+				sourceColumn: PageOrdinal
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualType
+				dataType: string
+				lineageTag: d6cbc7ec-abe3-47b9-a4e7-d04e3b27a19c
+				summarizeBy: none
+				sourceColumn: VisualType
+
+				annotation SummarizationSetBy = Automatic
+
+			column X
+				dataType: string
+				lineageTag: 4a305785-f38d-4834-807a-bb559ad35474
+				summarizeBy: none
+				sourceColumn: X
+
+				annotation SummarizationSetBy = Automatic
+
+			column Y
+				dataType: string
+				lineageTag: 59875627-a6fb-4837-ac2a-4e83da0e0a1e
+				summarizeBy: none
+				sourceColumn: Y
+
+				annotation SummarizationSetBy = Automatic
+
+			column Width
+				dataType: string
+				lineageTag: eaf258d0-5bc0-4eae-9d7c-20b654797b9b
+				summarizeBy: none
+				sourceColumn: Width
+
+				annotation SummarizationSetBy = Automatic
+
+			column Height
+				dataType: string
+				lineageTag: 4c8942f5-a752-488d-8de9-f4ea87a63ee3
+				summarizeBy: none
+				sourceColumn: Height
+
+				annotation SummarizationSetBy = Automatic
+
+			column ZOrder
+				dataType: string
+				lineageTag: 0107efc7-8088-49e3-82ee-aef1cda11d48
+				summarizeBy: none
+				sourceColumn: ZOrder
+
+				annotation SummarizationSetBy = Automatic
+
+			column FieldCount
+				dataType: string
+				lineageTag: ad0e428f-143a-431d-b084-6dd3bcc4da71
+				summarizeBy: none
+				sourceColumn: FieldCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column ProjectionRoles
+				dataType: string
+				lineageTag: 64d04632-4b85-4160-ba1e-37606ed3fb65
+				summarizeBy: none
+				sourceColumn: ProjectionRoles
+
+				annotation SummarizationSetBy = Automatic
+
+			column ObjectKeys
+				dataType: string
+				lineageTag: 30d0c0c6-58a9-42bb-9695-4fd320987a56
+				summarizeBy: none
+				sourceColumn: ObjectKeys
+
+				annotation SummarizationSetBy = Automatic
+
+			column VcObjectKeys
+				dataType: string
+				lineageTag: 7f280b03-be12-490b-b3cf-43408869183a
+				summarizeBy: none
+				sourceColumn: VcObjectKeys
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerMode
+				dataType: string
+				lineageTag: 9396123b-0ee3-4c47-acab-0f91ef7801c5
+				summarizeBy: none
+				sourceColumn: SlicerMode
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerOrientation
+				dataType: string
+				lineageTag: 8a7962eb-34d1-4f10-a6d0-81de95a19ab8
+				summarizeBy: none
+				sourceColumn: SlicerOrientation
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasSelfFilter
+				dataType: string
+				lineageTag: 3616145c-396d-4e9b-93b6-6b22fb1e7c55
+				summarizeBy: none
+				sourceColumn: HasSelfFilter
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasDefaultFilter
+				dataType: string
+				lineageTag: 4b5f50e1-eb1a-4d78-a8cc-9c7d3ba2c798
+				summarizeBy: none
+				sourceColumn: HasDefaultFilter
+
+				annotation SummarizationSetBy = Automatic
+
+			column StrictSingleSelect
+				dataType: string
+				lineageTag: 12ab8455-5c32-455e-b8e3-74939cf5c32c
+				summarizeBy: none
+				sourceColumn: StrictSingleSelect
+
+				annotation SummarizationSetBy = Automatic
+
+			column ValuesOnRow
+				dataType: string
+				lineageTag: 22e84f52-0820-4b0d-b53e-865744090a87
+				summarizeBy: none
+				sourceColumn: ValuesOnRow
+
+				annotation SummarizationSetBy = Automatic
+
+			column ShowColumnSubtotals
+				dataType: string
+				lineageTag: f12a86d6-e3a0-472e-886c-b2acc5562e85
+				summarizeBy: none
+				sourceColumn: ShowColumnSubtotals
+
+				annotation SummarizationSetBy = Automatic
+
+			column ShowRowSubtotals
+				dataType: string
+				lineageTag: 62ef0af9-dd80-44b6-bd00-9dec73b5ef02
+				summarizeBy: none
+				sourceColumn: ShowRowSubtotals
+
+				annotation SummarizationSetBy = Automatic
+
+			column LabelDisplayUnits
+				dataType: string
+				lineageTag: 756357c6-0b93-4ef0-b749-4d2bcc79af92
+				summarizeBy: none
+				sourceColumn: LabelDisplayUnits
+
+				annotation SummarizationSetBy = Automatic
+
+			column ColumnAdjustment
+				dataType: string
+				lineageTag: 5393076a-fa90-4ec0-bd3a-b8a777f92517
+				summarizeBy: none
+				sourceColumn: ColumnAdjustment
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasBorder
+				dataType: string
+				lineageTag: 3434ff48-3734-4f52-869c-5e66b9151fdc
+				summarizeBy: none
+				sourceColumn: HasBorder
+
+				annotation SummarizationSetBy = Automatic
+
+			column DrillFilterOtherVisuals
+				dataType: string
+				lineageTag: ac4271a3-ddc4-4d65-920d-519c4df96e30
+				summarizeBy: none
+				sourceColumn: DrillFilterOtherVisuals
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasFieldParameters
+				dataType: string
+				lineageTag: 3a6990c0-fd30-4e8f-97b6-c7b555bc627d
+				summarizeBy: none
+				sourceColumn: HasFieldParameters
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasConditionalFormatting
+				dataType: string
+				lineageTag: 56f7d76f-ebcc-4282-a708-0128aca490c0
+				summarizeBy: none
+				sourceColumn: HasConditionalFormatting
+
+				annotation SummarizationSetBy = Automatic
+
+			column ConditionalFormattingCount
+				dataType: string
+				lineageTag: 467dfe7f-e0e4-4203-b4ce-eec9a87c16a3
+				summarizeBy: none
+				sourceColumn: ConditionalFormattingCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column SyncGroupName
+				dataType: string
+				lineageTag: 0028ebab-d811-41a2-883c-6a4fca2bfbdf
+				summarizeBy: none
+				sourceColumn: SyncGroupName
+
+				annotation SummarizationSetBy = Automatic
+
+			column ParentGroup
+				dataType: string
+				lineageTag: b9b81b81-e595-4e02-a35c-63ea3957017a
+				summarizeBy: none
+				sourceColumn: ParentGroup
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageId
+				dataType: string
+				lineageTag: ea54e266-4aa7-47d8-95e1-abd6e9dd0894
+				summarizeBy: none
+				sourceColumn: PageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsHidden
+				dataType: string
+				lineageTag: c28638c5-d781-442f-8e6f-3c1085759666
+				summarizeBy: none
+				sourceColumn: IsHidden
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualTitle
+				dataType: string
+				lineageTag: b7720e76-1dfa-4707-af39-6a19afdd1413
+				summarizeBy: none
+				sourceColumn: VisualTitle
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageNavigationDetails
+				dataType: string
+				lineageTag: c7933473-0753-405e-8fe7-5efb52cf5c21
+				summarizeBy: none
+				sourceColumn: PageNavigationDetails
+
+				annotation SummarizationSetBy = Automatic
+
+			column HowCreated
+				dataType: string
+				lineageTag: c29e12ef-4374-4dd5-9ad4-be4de89e26fc
+				summarizeBy: none
+				sourceColumn: HowCreated
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Visuals_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    PageIds = Data[PageIds],
+						    PageData = Data[PageData],
+						    
+						    // Helper: count conditional formatting rules in objects.values[]
+						    // CF is encoded as Conditional expressions inside properties like backColor or fontColor
+						    // Path: entry.properties.{propertyName}.solid.color.expr.Conditional
+						    // Helper: count conditional formatting rules across all CF types
+						    // Counts entries from two JSON locations:
+						    //   1. objects.values[] — Rules (Conditional), Gradient (FillRule), Field Value (direct Measure/Column)
+						    //   2. objects.columnFormatting[] — Data Bars
+						    fnCountConditionalFormatting = (visualRecord as record) as number =>
+						        let
+						            // Count CF entries in objects.values[] (Rules, Gradient, Field Value)
+						            ValuesEntries = try visualRecord[objects][values] otherwise {},
+						            ValuesCFCount = List.Count(
+						                List.Select(ValuesEntries, each
+						                    let
+						                        props = try _[properties] otherwise Record.FromList({}, {}),
+						                        propNames = try Record.FieldNames(props) otherwise {},
+						                        cfProps = List.Select(propNames, each _ = "backColor" or _ = "fontColor")
+						                    in
+						                        List.AnyTrue(
+						                            List.Transform(cfProps, (pn) =>
+						                                let
+						                                    exprNode = try Record.Field(props, pn)[solid][color][expr] otherwise Record.FromList({}, {}),
+						                                    exprFields = try Record.FieldNames(exprNode) otherwise {}
+						                                in
+						                                    List.ContainsAny(exprFields, {"Conditional", "FillRule", "Measure", "Column"})
+						                            )
+						                        )
+						                )
+						            ),
+						            
+						            // Count CF entries in objects.columnFormatting[] (Data Bars)
+						            ColumnFmtEntries = try visualRecord[objects][columnFormatting] otherwise {},
+						            DataBarCount = List.Count(
+						                List.Select(ColumnFmtEntries, each
+						                    try (_[properties][dataBars] <> null) otherwise false
+						                )
+						            )
+						        in
+						            ValuesCFCount + DataBarCount,
+						    
+						    fnGetVisual = (pageDisplayName as text, pageId as text, pageOrdinal as number, vJson as record) as record =>
+						        let
+						            VisualName = try vJson[name] otherwise "",
+						            
+						            // Position — directly at top level
+						            Pos = try vJson[position] otherwise Record.FromList({}, {}),
+						            PosX = try Pos[x] otherwise 0,
+						            PosY = try Pos[y] otherwise 0,
+						            PosW = try Pos[width] otherwise 0,
+						            PosH = try Pos[height] otherwise 0,
+						            PosZ = try Pos[z] otherwise 0,
+						            
+						            // Visual node — may not exist for visual groups
+						            V = try vJson[visual] otherwise Record.FromList({}, {}),
+						            VisualType = try V[visualType] otherwise 
+						                (if try (vJson[visualGroup] <> null) otherwise false then "visualGroup" else "unknown"),
+						            
+						            // Objects — directly in visual node
+						            ObjectKeysList = try Record.FieldNames(V[objects]) otherwise {},
+						            VcObjectKeysList = try Record.FieldNames(V[visualContainerObjects]) otherwise {},
+						            
+						            // Slicer-specific
+						            SlicerMode = try V[objects][data]{0}[properties][mode][expr][Literal][Value] otherwise null,
+						            SlicerOrientation = try V[objects][general]{0}[properties][orientation][expr][Literal][Value] otherwise null,
+						            HasSelfFilter = try (V[objects][general]{0}[properties][selfFilterEnabled][expr][Literal][Value] = "true") otherwise false,
+						            HasDefaultFilter = try (V[objects][general]{0}[properties][filter] <> null) otherwise false,
+						            StrictSingleSelect = try (V[objects][selection]{0}[properties][strictSingleSelect][expr][Literal][Value] = "true") otherwise false,
+						            
+						            // Table/Matrix specific
+						            ValuesOnRow = try (V[objects][values]{0}[properties][valuesOnRow][expr][Literal][Value] = "true") otherwise false,
+						            ShowColumnSubtotals = try V[objects][subTotals]{0}[properties][columnSubtotals][expr][Literal][Value] otherwise null,
+						            ShowRowSubtotals = try V[objects][subTotals]{0}[properties][rowSubtotals][expr][Literal][Value] otherwise null,
+						            
+						            // Card specific
+						            LabelDisplayUnits = try V[objects][labels]{0}[properties][labelDisplayUnits][expr][Literal][Value] otherwise null,
+						            
+						            // Column headers
+						            ColumnAdjustment = try V[objects][columnHeaders]{0}[properties][columnAdjustment][expr][Literal][Value] otherwise null,
+						            
+						            // Visual container formatting (note: visualContainerObjects in folder-based PBIR)
+						            HasBorder = try (V[visualContainerObjects][border]{0}[properties][show][expr][Literal][Value] = "true") otherwise false,
+						            
+						            // Behavior flags
+						            DrillFilterOtherVisuals = try V[drillFilterOtherVisuals] otherwise null,
+						            
+						            // SyncGroup (slicer sync)
+						            SyncGroupName = try V[syncGroup][groupName] otherwise null,
+						            
+						            // Parent group
+						            ParentGroup = try vJson[parentGroupName] otherwise null,
+						            
+						            // Visibility — top level on visual container, not inside visual node
+						            IsHidden = try vJson[isHidden] otherwise false,
+						            
+						            // How the visual was created — top level on visual container
+						            // Written by Power BI Desktop but not in Microsoft's published schema
+						            // Known values: "InsertVisualButton" (for actionButton, pageNavigator, bookmarkNavigator)
+						            HowCreated = try vJson[howCreated] otherwise null,
+						            
+						            // Visual title — from visualContainerObjects.title[].properties.text
+						            TitleRaw = try V[visualContainerObjects][title]{0}[properties][text][expr][Literal][Value] otherwise null,
+						            TitleCleaned = if TitleRaw <> null 
+						                then Text.BetweenDelimiters(TitleRaw, "'", "'") 
+						                else null,
+						            VisualTitle = if TitleCleaned <> null 
+						                then TitleCleaned & " (" & VisualName & ")" 
+						                else VisualName,
+						            
+						            // Projections — now in visual.query.queryState
+						            QS = try V[query][queryState] otherwise Record.FromList({}, {}),
+						            ProjectionRolesList = try Record.FieldNames(QS) otherwise {},
+						            ProjectionRoles = Text.Combine(ProjectionRolesList, ", "),
+						            
+						            FieldCount = try List.Sum(
+						                List.Transform(ProjectionRolesList, each 
+						                    try List.Count(Record.Field(QS, _)[projections]) otherwise 0
+						                )
+						            ) otherwise 0,
+						            
+						            // Field parameters — now in queryState role level
+						            HasFieldParameters = try List.AnyTrue(
+						                List.Transform(ProjectionRolesList, each
+						                    try (Record.Field(QS, _)[fieldParameters] <> null) otherwise false
+						                )
+						            ) otherwise false,
+						            
+						            // Conditional formatting — scan objects.values[] for Conditional expressions
+						            CFCount = fnCountConditionalFormatting(V),
+						            
+						            // Page Navigator details — encoded JSON with global options and per-page overrides
+						            // Only populated for pageNavigator visuals; null for everything else
+						            // Note: when all settings are at defaults, Power BI strips the objects.pages
+						            // node entirely from the visual.json — the absence of objects means "all defaults"
+						            // Power BI defaults: showHiddenPages=false, showTooltipPages=false, no exclusions
+						            PageNavigationDetails = if VisualType = "pageNavigator" then
+						                let
+						                    HasObjects = try (V[objects] <> null) otherwise false,
+						                    PagesEntries = if HasObjects then (try V[objects][pages] otherwise {}) else {},
+						                    
+						                    // Scan entries for showHiddenPages/showTooltipPages properties
+						                    // Default is "false" (Power BI's default when objects.pages is absent)
+						                    ShowHiddenPages = try List.First(
+						                        List.RemoveNulls(
+						                            List.Transform(PagesEntries, each
+						                                try [properties][showHiddenPages][expr][Literal][Value] otherwise null
+						                            )
+						                        )
+						                    ) otherwise "false",
+						                    ShowTooltipPages = try List.First(
+						                        List.RemoveNulls(
+						                            List.Transform(PagesEntries, each
+						                                try [properties][showTooltipPages][expr][Literal][Value] otherwise null
+						                            )
+						                        )
+						                    ) otherwise "false",
+						                    
+						                    // Per-page entries: have selector.id and showPage = false
+						                    ExcludedPageIds = List.RemoveNulls(
+						                        List.Transform(PagesEntries, each
+						                            let
+						                                pageId = try [selector][id] otherwise null,
+						                                showPage = try [properties][showPage][expr][Literal][Value] otherwise "true"
+						                            in
+						                                if pageId <> null and showPage = "false" then pageId else null
+						                        )
+						                    ),
+						                    
+						                    Detail = "{""showHiddenPages"":" & ShowHiddenPages 
+						                        & ",""showTooltipPages"":" & ShowTooltipPages 
+						                        & ",""excludedPages"":[" 
+						                        & Text.Combine(List.Transform(ExcludedPageIds, each """" & _ & """"), ",") 
+						                        & "]}"
+						                in
+						                    Detail
+						            else
+						                null
+						        in
+						            [
+						                ReportName = ReportName,
+						                VisualId = VisualName,
+						                VisualTitle = VisualTitle,
+						                PageName = pageDisplayName,
+						                PageId = pageId,
+						                PageOrdinal = pageOrdinal,
+						                VisualType = VisualType,
+						                X = PosX,
+						                Y = PosY,
+						                Width = PosW,
+						                Height = PosH,
+						                ZOrder = PosZ,
+						                FieldCount = FieldCount,
+						                ProjectionRoles = ProjectionRoles,
+						                ObjectKeys = Text.Combine(ObjectKeysList, ", "),
+						                VcObjectKeys = Text.Combine(VcObjectKeysList, ", "),
+						                SlicerMode = SlicerMode,
+						                SlicerOrientation = SlicerOrientation,
+						                HasSelfFilter = HasSelfFilter,
+						                HasDefaultFilter = HasDefaultFilter,
+						                StrictSingleSelect = StrictSingleSelect,
+						                ValuesOnRow = ValuesOnRow,
+						                ShowColumnSubtotals = ShowColumnSubtotals,
+						                ShowRowSubtotals = ShowRowSubtotals,
+						                LabelDisplayUnits = LabelDisplayUnits,
+						                ColumnAdjustment = ColumnAdjustment,
+						                HasBorder = HasBorder,
+						                DrillFilterOtherVisuals = DrillFilterOtherVisuals,
+						                HasFieldParameters = HasFieldParameters,
+						                HasConditionalFormatting = CFCount > 0,
+						                ConditionalFormattingCount = CFCount,
+						                SyncGroupName = SyncGroupName,
+						                ParentGroup = ParentGroup,
+						                IsHidden = IsHidden,
+						                HowCreated = HowCreated,
+						                PageNavigationDetails = PageNavigationDetails
+						            ],
+						    
+						    AllVisuals = List.Combine(
+						        List.Transform(
+						            List.Zip({PageData, List.Positions(PageIds)}),
+						            each
+						                let
+						                    pair = _,
+						                    pd = pair{0},
+						                    ordinal = pair{1},
+						                    PageDisplayName = try pd[PageJson][displayName] otherwise pd[PageId],
+						                    
+						                    VisualRecords = List.Transform(
+						                        pd[VisualJsonList],
+						                        each fnGetVisual(PageDisplayName, pd[PageId], ordinal, _)
+						                    )
+						                in
+						                    VisualRecords
+						        )
+						    ),
+						    
+						    Result = Table.FromRecords(AllVisuals),
+						    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"ZOrder", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table ModelReferences_pbir
+			lineageTag: b49d1ed0-f6f8-4112-9f4c-56a255d4944a
+
+			column ReportName
+				dataType: string
+				lineageTag: 40d0b497-6508-4f19-985e-d74eca9fd527
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualId
+				dataType: string
+				lineageTag: 3cd4dcd7-3690-4c19-944f-73a2bb799b70
+				summarizeBy: none
+				sourceColumn: VisualId
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageName
+				dataType: string
+				lineageTag: 1b2e62c3-6ab0-4d10-ba81-0af371f4ef40
+				summarizeBy: none
+				sourceColumn: PageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageOrdinal
+				dataType: string
+				lineageTag: 38f08253-3cc5-40f6-be9b-fad0296ef69c
+				summarizeBy: none
+				sourceColumn: PageOrdinal
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualType
+				dataType: string
+				lineageTag: 7e9dfee1-01b5-4b65-b029-982ecd11b22c
+				summarizeBy: none
+				sourceColumn: VisualType
+
+				annotation SummarizationSetBy = Automatic
+
+			column Role
+				dataType: string
+				lineageTag: 52143043-6074-4582-9871-b0989e1b6fcf
+				summarizeBy: none
+				sourceColumn: Role
+
+				annotation SummarizationSetBy = Automatic
+
+			column QueryRef
+				dataType: string
+				lineageTag: edaf63fa-dcfa-4687-8030-2af70710a8dd
+				summarizeBy: none
+				sourceColumn: QueryRef
+
+				annotation SummarizationSetBy = Automatic
+
+			column RefType
+				dataType: string
+				lineageTag: 13a7f26c-b237-4612-a5bc-65f723c0a66e
+				summarizeBy: none
+				sourceColumn: RefType
+
+				annotation SummarizationSetBy = Automatic
+
+			column TableName
+				dataType: string
+				lineageTag: 677f68db-1964-44ff-92be-92176fad5a07
+				summarizeBy: none
+				sourceColumn: TableName
+
+				annotation SummarizationSetBy = Automatic
+
+			column ObjectName
+				dataType: string
+				lineageTag: d9f7a74f-9094-4e99-9ffb-b060c3b69ae7
+				summarizeBy: none
+				sourceColumn: ObjectName
+
+				annotation SummarizationSetBy = Automatic
+
+			column AggFunction
+				dataType: string
+				lineageTag: 0b5ef8d7-acfd-44f3-a6ab-98a368f8e7f4
+				summarizeBy: none
+				sourceColumn: AggFunction
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsActive
+				dataType: string
+				lineageTag: 1ac0c599-998c-49ac-98ee-0922ee5eaeb0
+				summarizeBy: none
+				sourceColumn: IsActive
+
+				annotation SummarizationSetBy = Automatic
+
+			column Source
+				dataType: string
+				lineageTag: a02647b4-d937-4a37-b51c-d6e6dfbf939a
+				summarizeBy: none
+				sourceColumn: Source
+
+				annotation SummarizationSetBy = Automatic
+
+			partition ModelReferences_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    PageIds = Data[PageIds],
+						    PageData = Data[PageData],
+						    
+						    // Helper: extract entity and property from a Measure or Column reference node
+						    fnExtractCFRef = (node as record) as record =>
+						        let
+						            MEntity = try node[Measure][Expression][SourceRef][Entity] otherwise null,
+						            MProp = try node[Measure][Property] otherwise null,
+						            CEntity = try node[Column][Expression][SourceRef][Entity] otherwise null,
+						            CProp = try node[Column][Property] otherwise null,
+						            Entity = if MEntity <> null then MEntity else CEntity,
+						            Property = if MProp <> null then MProp else CProp
+						        in
+						            [Entity = Entity, Property = Property],
+						    
+						    fnGetRefs = (pageDisplayName as text, pageOrdinal as number, vJson as record) as list =>
+						        let
+						            VisualName = try vJson[name] otherwise "",
+						            V = try vJson[visual] otherwise Record.FromList({}, {}),
+						            VisualType = try V[visualType] otherwise "unknown",
+						            
+						            // Query state with projections
+						            QS = try V[query][queryState] otherwise Record.FromList({}, {}),
+						            RoleNames = try Record.FieldNames(QS) otherwise {},
+						            
+						            // Extract projection references
+						            ProjectionRefs = List.Combine(
+						                List.Transform(RoleNames, each
+						                    let
+						                        role = _,
+						                        roleData = try Record.Field(QS, role) otherwise Record.FromList({}, {}),
+						                        items = try roleData[projections] otherwise {}
+						                    in
+						                        List.Transform(items, each
+						                            let
+						                                qr = try _[queryRef] otherwise "",
+						                                parsed = fn_pbir_ParseQueryRef(qr)
+						                            in
+						                                [
+						                                    ReportName = ReportName,
+						                                    VisualId = VisualName,
+						                                    PageName = pageDisplayName,
+						                                    PageOrdinal = pageOrdinal,
+						                                    VisualType = VisualType,
+						                                    Role = role,
+						                                    QueryRef = qr,
+						                                    RefType = parsed[RefType],
+						                                    TableName = parsed[TableName],
+						                                    ObjectName = parsed[ObjectName],
+						                                    AggFunction = parsed[AggFunction],
+						                                    IsActive = try _[active] otherwise null,
+						                                    Source = "Projection"
+						                                ]
+						                        )
+						                )
+						            ),
+						            
+						            // Extract field parameter references (now at role level)
+						            FieldParamRefs = List.Combine(
+						                List.Transform(RoleNames, each
+						                    let
+						                        role = _,
+						                        roleData = try Record.Field(QS, role) otherwise Record.FromList({}, {}),
+						                        fpList = try roleData[fieldParameters] otherwise {}
+						                    in
+						                        List.Transform(fpList, each
+						                            let
+						                                entity = try _[parameterExpr][Column][Expression][SourceRef][Entity] otherwise "",
+						                                prop = try _[parameterExpr][Column][Property] otherwise ""
+						                            in
+						                                [
+						                                    ReportName = ReportName,
+						                                    VisualId = VisualName,
+						                                    PageName = pageDisplayName,
+						                                    PageOrdinal = pageOrdinal,
+						                                    VisualType = VisualType,
+						                                    Role = role & " (FieldParameter)",
+						                                    QueryRef = entity & "." & prop,
+						                                    RefType = "FieldParameter",
+						                                    TableName = entity,
+						                                    ObjectName = prop,
+						                                    AggFunction = null,
+						                                    IsActive = null,
+						                                    Source = "FieldParameter"
+						                                ]
+						                        )
+						                )
+						            ),
+						            
+						            // Extract conditional formatting references from all CF types:
+						            //   1. Rules (Conditional.Cases) — measure/column in the condition
+						            //   2. Gradient (FillRule) — input measure/column that drives the gradient
+						            //   3. Field Value (direct Measure/Column) — the measure that returns the color
+						            //   4. Data Bars (columnFormatting) — no additional model reference (uses the target column itself)
+						            ValuesEntries = try V[objects][values] otherwise {},
+						            
+						            CFRefs = List.Combine(
+						                List.Transform(ValuesEntries, each
+						                    let
+						                        entry = _,
+						                        props = try entry[properties] otherwise Record.FromList({}, {}),
+						                        propNames = try Record.FieldNames(props) otherwise {},
+						                        cfProps = List.Select(propNames, each _ = "backColor" or _ = "fontColor")
+						                    in
+						                        List.Combine(
+						                            List.Transform(cfProps, (pn) =>
+						                                let
+						                                    exprNode = try Record.Field(props, pn)[solid][color][expr] otherwise Record.FromList({}, {}),
+						                                    exprFields = try Record.FieldNames(exprNode) otherwise {}
+						                                in
+						                                    // ─── Rules: extract from Cases[].Condition ───
+						                                    if List.Contains(exprFields, "Conditional") then
+						                                        let
+						                                            Cases = try exprNode[Conditional][Cases] otherwise {},
+						                                            FirstCase = try Cases{0} otherwise Record.FromList({}, {}),
+						                                            Cond = try FirstCase[Condition] otherwise Record.FromList({}, {}),
+						                                            HasAnd = try (Cond[And] <> null) otherwise false,
+						                                            CompNode = if HasAnd then
+						                                                    try Cond[And][Left][Comparison][Left] otherwise Record.FromList({}, {})
+						                                                else
+						                                                    try Cond[Comparison][Left] otherwise Record.FromList({}, {}),
+						                                            Extracted = fnExtractCFRef(CompNode)
+						                                        in
+						                                            if Extracted[Entity] <> null and Extracted[Property] <> null then
+						                                                {[
+						                                                    ReportName = ReportName,
+						                                                    VisualId = VisualName,
+						                                                    PageName = pageDisplayName,
+						                                                    PageOrdinal = pageOrdinal,
+						                                                    VisualType = VisualType,
+						                                                    Role = "Values (ConditionalFormatting)",
+						                                                    QueryRef = Extracted[Entity] & "." & Extracted[Property],
+						                                                    RefType = "Column/Measure",
+						                                                    TableName = Extracted[Entity],
+						                                                    ObjectName = Extracted[Property],
+						                                                    AggFunction = null,
+						                                                    IsActive = null,
+						                                                    Source = "ConditionalFormatting"
+						                                                ]}
+						                                            else {}
+						                                    
+						                                    // ─── Gradient: extract from FillRule.Input ───
+						                                    else if List.Contains(exprFields, "FillRule") then
+						                                        let
+						                                            InputNode = try exprNode[FillRule][Input] otherwise Record.FromList({}, {}),
+						                                            Extracted = fnExtractCFRef(InputNode)
+						                                        in
+						                                            if Extracted[Entity] <> null and Extracted[Property] <> null then
+						                                                {[
+						                                                    ReportName = ReportName,
+						                                                    VisualId = VisualName,
+						                                                    PageName = pageDisplayName,
+						                                                    PageOrdinal = pageOrdinal,
+						                                                    VisualType = VisualType,
+						                                                    Role = "Values (ConditionalFormatting)",
+						                                                    QueryRef = Extracted[Entity] & "." & Extracted[Property],
+						                                                    RefType = "Column/Measure",
+						                                                    TableName = Extracted[Entity],
+						                                                    ObjectName = Extracted[Property],
+						                                                    AggFunction = null,
+						                                                    IsActive = null,
+						                                                    Source = "ConditionalFormatting"
+						                                                ]}
+						                                            else {}
+						                                    
+						                                    // ─── Field Value: extract direct Measure/Column reference ───
+						                                    else if List.Contains(exprFields, "Measure") or List.Contains(exprFields, "Column") then
+						                                        let
+						                                            Extracted = fnExtractCFRef(exprNode)
+						                                        in
+						                                            if Extracted[Entity] <> null and Extracted[Property] <> null then
+						                                                {[
+						                                                    ReportName = ReportName,
+						                                                    VisualId = VisualName,
+						                                                    PageName = pageDisplayName,
+						                                                    PageOrdinal = pageOrdinal,
+						                                                    VisualType = VisualType,
+						                                                    Role = "Values (ConditionalFormatting)",
+						                                                    QueryRef = Extracted[Entity] & "." & Extracted[Property],
+						                                                    RefType = "Column/Measure",
+						                                                    TableName = Extracted[Entity],
+						                                                    ObjectName = Extracted[Property],
+						                                                    AggFunction = null,
+						                                                    IsActive = null,
+						                                                    Source = "ConditionalFormatting"
+						                                                ]}
+						                                            else {}
+						                                    
+						                                    else {}
+						                            )
+						                        )
+						                )
+						            ),
+						            
+						            Combined = List.Combine({ProjectionRefs, FieldParamRefs, CFRefs})
+						        in
+						            Combined,
+						    
+						    AllRefs = List.Combine(
+						        List.Transform(
+						            List.Zip({PageData, List.Positions(PageIds)}),
+						            each
+						                let
+						                    pair = _,
+						                    pd = pair{0},
+						                    ordinal = pair{1},
+						                    PageDisplayName = try pd[PageJson][displayName] otherwise pd[PageId],
+						                    
+						                    VisualRefs = List.Combine(
+						                        List.Transform(
+						                            pd[VisualJsonList],
+						                            each try fnGetRefs(PageDisplayName, ordinal, _) otherwise {}
+						                        )
+						                    )
+						                in
+						                    VisualRefs
+						        )
+						    ),
+						    
+						    Result = Table.FromRecords(AllRefs),
+						    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}, {"Role", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table UnusedObjectsFinder_pbir
+			lineageTag: 496a46a9-2dd7-4c6d-a89f-ce51f919e707
+
+			column ReportName
+				dataType: string
+				lineageTag: 4fcfb983-c1ca-4070-8c97-6995a5c862fa
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column TableName
+				dataType: string
+				lineageTag: 6641488f-e9e9-4c22-b23c-538948b66cb4
+				summarizeBy: none
+				sourceColumn: TableName
+
+				annotation SummarizationSetBy = Automatic
+
+			column ObjectName
+				dataType: string
+				lineageTag: 7aaf6575-fbfb-40d8-9d79-baafefe217be
+				summarizeBy: none
+				sourceColumn: ObjectName
+
+				annotation SummarizationSetBy = Automatic
+
+			column RefType
+				dataType: string
+				lineageTag: 7a8a7b16-fe85-4240-b0cb-a83b54c48bb3
+				summarizeBy: none
+				sourceColumn: RefType
+
+				annotation SummarizationSetBy = Automatic
+
+			column ModelObjectKey
+				dataType: string
+				lineageTag: 602c8639-35a4-48f5-89ee-275d9184456d
+				summarizeBy: none
+				sourceColumn: ModelObjectKey
+
+				annotation SummarizationSetBy = Automatic
+
+			partition UnusedObjectsFinder_pbir = m
+				mode: import
+				source = ```
+						let
+						    Source = ModelReferences_pbir,
+						    
+						    UniqueRefs = Table.Distinct(
+						        Table.SelectColumns(Source, {"ReportName", "TableName", "ObjectName", "RefType"})
+						    ),
+						    
+						    WithKey = Table.AddColumn(UniqueRefs, "ModelObjectKey", 
+						        each [TableName] & "." & [ObjectName], type text
+						    ),
+						    
+						    Sorted = Table.Sort(WithKey, {{"TableName", Order.Ascending}, {"ObjectName", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table SlicerInventory_pbir
+			lineageTag: fa13cd01-4975-461f-9417-1a00ba4d50fd
+
+			column ReportName
+				dataType: string
+				lineageTag: 0ed684c9-ea0b-4617-b751-e9c3082ade1f
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualId
+				dataType: string
+				lineageTag: bb7523af-cf78-42ca-8dff-563973988367
+				summarizeBy: none
+				sourceColumn: VisualId
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageName
+				dataType: string
+				lineageTag: 241080b6-9004-425b-9a22-cdaaeb665570
+				summarizeBy: none
+				sourceColumn: PageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageOrdinal
+				dataType: string
+				lineageTag: f6eebbe2-1068-4b0c-951c-771a72982341
+				summarizeBy: none
+				sourceColumn: PageOrdinal
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerTable
+				dataType: string
+				lineageTag: 0435cfec-a55c-4bad-a2ff-6fac667e1655
+				summarizeBy: none
+				sourceColumn: SlicerTable
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerField
+				dataType: string
+				lineageTag: 443c1924-229a-45f1-b464-86e320b8aa12
+				summarizeBy: none
+				sourceColumn: SlicerField
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerQueryRef
+				dataType: string
+				lineageTag: fda8f758-0863-44e2-8351-e6a84705a76b
+				summarizeBy: none
+				sourceColumn: SlicerQueryRef
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerMode
+				dataType: string
+				lineageTag: 033a83bb-649d-493a-9113-691b95a287a0
+				summarizeBy: none
+				sourceColumn: SlicerMode
+
+				annotation SummarizationSetBy = Automatic
+
+			column SlicerOrientation
+				dataType: string
+				lineageTag: 0ba28805-ae30-4dcb-a535-288b4419ad69
+				summarizeBy: none
+				sourceColumn: SlicerOrientation
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasSelfFilter
+				dataType: string
+				lineageTag: c54117a8-c813-4f76-9481-9b59eba97823
+				summarizeBy: none
+				sourceColumn: HasSelfFilter
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasDefaultFilter
+				dataType: string
+				lineageTag: 58bc13c3-ca7a-4bd7-8431-9155008ec51a
+				summarizeBy: none
+				sourceColumn: HasDefaultFilter
+
+				annotation SummarizationSetBy = Automatic
+
+			column StrictSingleSelect
+				dataType: string
+				lineageTag: 4d687262-66b0-402d-9f83-deb90c788d8d
+				summarizeBy: none
+				sourceColumn: StrictSingleSelect
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasFieldParameters
+				dataType: string
+				lineageTag: 7a810511-ae2a-4581-803d-4c40000769d5
+				summarizeBy: none
+				sourceColumn: HasFieldParameters
+
+				annotation SummarizationSetBy = Automatic
+
+			column SyncGroupName
+				dataType: string
+				lineageTag: 8108d4e5-f65a-47ec-bf44-0802cbfc1ab3
+				summarizeBy: none
+				sourceColumn: SyncGroupName
+
+				annotation SummarizationSetBy = Automatic
+
+			column Width
+				dataType: string
+				lineageTag: 718d2b2b-808b-4605-b406-f76261525d70
+				summarizeBy: none
+				sourceColumn: Width
+
+				annotation SummarizationSetBy = Automatic
+
+			column Height
+				dataType: string
+				lineageTag: e0bf9775-20ec-41a9-896c-f4285d7f7854
+				summarizeBy: none
+				sourceColumn: Height
+
+				annotation SummarizationSetBy = Automatic
+
+			partition SlicerInventory_pbir = m
+				mode: import
+				source = ```
+						let
+						    Source = Visuals_pbir,
+						    SlicersOnly = Table.SelectRows(Source, each [VisualType] = "slicer"),
+						    
+						    Refs = ModelReferences_pbir,
+						    SlicerRefs = Table.SelectRows(Refs, each [Role] = "Values" and [Source] = "Projection"),
+						    
+						    Joined = Table.NestedJoin(SlicersOnly, {"VisualId"}, SlicerRefs, {"VisualId"}, "RefData", JoinKind.LeftOuter),
+						    Expanded = Table.ExpandTableColumn(Joined, "RefData", {"TableName", "ObjectName", "QueryRef"}, {"SlicerTable", "SlicerField", "SlicerQueryRef"}),
+						    
+						    Selected = Table.SelectColumns(Expanded, {
+						        "ReportName", "VisualId", "PageName", "PageOrdinal",
+						        "SlicerTable", "SlicerField", "SlicerQueryRef",
+						        "SlicerMode", "SlicerOrientation",
+						        "HasSelfFilter", "HasDefaultFilter", "StrictSingleSelect",
+						        "HasFieldParameters", "SyncGroupName",
+						        "Width", "Height"
+						    }),
+						    
+						    Sorted = Table.Sort(Selected, {{"PageOrdinal", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table ConditionalFormattingRules_pbir
+			lineageTag: 34e6dd9e-809d-45b4-815f-d364ca873030
+
+			column ReportName
+				dataType: string
+				lineageTag: 3ac2fcc0-7dec-477a-9503-e154169ac356
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualId
+				dataType: string
+				lineageTag: 59cdc429-2989-4607-af19-bf6f8f26a5d6
+				summarizeBy: none
+				sourceColumn: VisualId
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageOrdinal
+				dataType: string
+				lineageTag: cc143663-00f7-47c4-90c8-1279d77f4542
+				summarizeBy: none
+				sourceColumn: PageOrdinal
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualType
+				dataType: string
+				lineageTag: 99b0f8ba-87b3-4a66-a347-994e55bb67ee
+				summarizeBy: none
+				sourceColumn: VisualType
+
+				annotation SummarizationSetBy = Automatic
+
+			column TableName
+				dataType: string
+				lineageTag: d8c0a37d-9a26-43f2-bfa2-f6ce7ba73754
+				summarizeBy: none
+				sourceColumn: TableName
+
+				annotation SummarizationSetBy = Automatic
+
+			column ObjectName
+				dataType: string
+				lineageTag: 56395e47-05f6-49b9-816c-f16961096cc1
+				summarizeBy: none
+				sourceColumn: ObjectName
+
+				annotation SummarizationSetBy = Automatic
+
+			column FormattingProperty
+				dataType: string
+				lineageTag: df2404b0-7a69-499c-b38e-b3dc9421bdd1
+				summarizeBy: none
+				sourceColumn: FormattingProperty
+
+				annotation SummarizationSetBy = Automatic
+
+			column BandIndex
+				dataType: int64
+				formatString: 0
+				lineageTag: 7a6bd84a-eb71-4702-8ac1-c7fd64feeafa
+				summarizeBy: sum
+				sourceColumn: BandIndex
+
+				annotation SummarizationSetBy = Automatic
+
+			column BandCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 39520cc1-88a0-42bc-98b5-1577b4abdd52
+				summarizeBy: sum
+				sourceColumn: BandCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column Color
+				dataType: string
+				lineageTag: 1f32f641-037e-4708-9a1f-4731dac7473e
+				summarizeBy: none
+				sourceColumn: Color
+
+				annotation SummarizationSetBy = Automatic
+
+			column LowerBound
+				dataType: string
+				lineageTag: 55163ee9-d6bb-49d6-af58-8f7d711efdfa
+				summarizeBy: none
+				sourceColumn: LowerBound
+
+				annotation SummarizationSetBy = Automatic
+
+			column LowerOperator
+				dataType: string
+				lineageTag: e54c6c4f-d562-42d8-b0ac-9fbb896a4601
+				summarizeBy: none
+				sourceColumn: LowerOperator
+
+				annotation SummarizationSetBy = Automatic
+
+			column UpperBound
+				dataType: string
+				lineageTag: 19ff520b-267f-421e-867b-0890f788ec86
+				summarizeBy: none
+				sourceColumn: UpperBound
+
+				annotation SummarizationSetBy = Automatic
+
+			column UpperOperator
+				dataType: string
+				lineageTag: 64ff12d9-1455-4513-bda7-b3ff9aff0c8b
+				summarizeBy: none
+				sourceColumn: UpperOperator
+
+				annotation SummarizationSetBy = Automatic
+
+			column ColorBar
+				dataType: string
+				lineageTag: 11990b5a-a264-4024-92f9-8c2b7cc0d55e
+				dataCategory: ImageUrl
+				summarizeBy: none
+				sourceColumn: ColorBar
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageId
+				dataType: string
+				lineageTag: 540e5998-b5e0-4ebb-b850-5e627c704f2f
+				summarizeBy: none
+				sourceColumn: PageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column CFType
+				dataType: string
+				lineageTag: d2976be2-d0ef-4532-8279-629fbdbeba63
+				summarizeBy: none
+				sourceColumn: CFType
+
+				annotation SummarizationSetBy = Automatic
+
+			column InputTableName
+				dataType: string
+				lineageTag: 2d78b551-b163-4c47-8481-d11f39aeec44
+				summarizeBy: none
+				sourceColumn: InputTableName
+
+				annotation SummarizationSetBy = Automatic
+
+			column InputObjectName
+				dataType: string
+				lineageTag: 29fe42bf-b165-4b0a-b37b-c1316cdc9a93
+				summarizeBy: none
+				sourceColumn: InputObjectName
+
+				annotation SummarizationSetBy = Automatic
+
+			column GradientType
+				dataType: string
+				lineageTag: 49114192-ce20-439a-9168-1075807314a7
+				summarizeBy: none
+				sourceColumn: GradientType
+
+				annotation SummarizationSetBy = Automatic
+
+			column MinColor
+				dataType: string
+				lineageTag: 1114eae1-7cc4-4cc5-abe2-4321bc1aa77b
+				summarizeBy: none
+				sourceColumn: MinColor
+
+				annotation SummarizationSetBy = Automatic
+
+			column MidColor
+				dataType: string
+				lineageTag: 38fef181-fe25-4ae1-92a6-f2f372c9ba90
+				summarizeBy: none
+				sourceColumn: MidColor
+
+				annotation SummarizationSetBy = Automatic
+
+			column MaxColor
+				dataType: string
+				lineageTag: a5880891-cd17-4d4a-9b1d-551db6278c58
+				summarizeBy: none
+				sourceColumn: MaxColor
+
+				annotation SummarizationSetBy = Automatic
+
+			column NullStrategy
+				dataType: string
+				lineageTag: 09d2e8db-8401-41fa-ba97-5624d08a6401
+				summarizeBy: none
+				sourceColumn: NullStrategy
+
+				annotation SummarizationSetBy = Automatic
+
+			column PositiveColor
+				dataType: string
+				lineageTag: f216f6c4-f62c-4ea4-988a-12438f9d2b44
+				summarizeBy: none
+				sourceColumn: PositiveColor
+
+				annotation SummarizationSetBy = Automatic
+
+			column NegativeColor
+				dataType: string
+				lineageTag: 2ab64037-f676-409c-9161-4709ce1dc4a8
+				summarizeBy: none
+				sourceColumn: NegativeColor
+
+				annotation SummarizationSetBy = Automatic
+
+			column ShowBarOnly
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: 21939b20-6330-4613-803d-b4478e1dc2bf
+				summarizeBy: none
+				sourceColumn: ShowBarOnly
+
+				annotation SummarizationSetBy = Automatic
+
+			partition ConditionalFormattingRules_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    PageIds = Data[PageIds],
+						    PageData = Data[PageData],
+						    
+						    // ComparisonKind mapping — handles null and any type
+						    fnComparisonOp = (kind as any) as text =>
+						        if kind = null then ""
+						        else
+						            let
+						                k = try Number.From(kind) otherwise -1
+						            in
+						                if k = 0 then "="
+						                else if k = 1 then ">"
+						                else if k = 2 then ">="
+						                else if k = 3 then "<"
+						                else if k = 4 then "<="
+						                else "",
+						    
+						    // Clean literal values: remove D/L/M suffix (decimal/long/currency) and surrounding quotes
+						    fnCleanLiteral = (val as any) as text =>
+						        let
+						            asText = try Text.From(val) otherwise "",
+						            unquoted = if Text.StartsWith(asText, "'") and Text.EndsWith(asText, "'") and Text.Length(asText) > 2
+						                then Text.Range(asText, 1, Text.Length(asText) - 2)
+						                else asText,
+						            cleaned = if Text.EndsWith(unquoted, "D") or Text.EndsWith(unquoted, "L") or Text.EndsWith(unquoted, "M")
+						                then Text.Start(unquoted, Text.Length(unquoted) - 1)
+						                else unquoted
+						        in
+						            cleaned,
+						    
+						    // Extract entity and property from a Measure or Column reference node
+						    fnExtractRef = (node as record) as record =>
+						        let
+						            MEntity = try node[Measure][Expression][SourceRef][Entity] otherwise null,
+						            MProp = try node[Measure][Property] otherwise null,
+						            CEntity = try node[Column][Expression][SourceRef][Entity] otherwise null,
+						            CProp = try node[Column][Property] otherwise null,
+						            Entity = if MEntity <> null then MEntity else CEntity,
+						            Prop = if MProp <> null then MProp else CProp
+						        in
+						            [Entity = Entity, Property = Prop],
+						    
+						    fnGetCFRules = (pageId as text, pageOrdinal as number, vJson as record) as list =>
+						        let
+						            VisualName = try vJson[name] otherwise "",
+						            V = try vJson[visual] otherwise Record.FromList({}, {}),
+						            VisualType = try V[visualType] otherwise "unknown",
+						            
+						            ValuesEntries = try V[objects][values] otherwise {},
+						            
+						            // =====================================================================
+						            // PART 1: objects.values[] — Rules, Gradient, and Field Value CF
+						            // =====================================================================
+						            // Each entry in objects.values[] can have backColor and/or fontColor.
+						            // Each color property can be one of three CF types:
+						            //   - Rules:       expr.Conditional.Cases[]
+						            //   - Gradient:    expr.FillRule
+						            //   - Field Value: expr.Measure or expr.Column (direct reference)
+						            
+						            ValuesCFRules = List.Combine(
+						                List.Transform(ValuesEntries, each
+						                    let
+						                        entry = _,
+						                        props = try entry[properties] otherwise Record.FromList({}, {}),
+						                        propNames = try Record.FieldNames(props) otherwise {},
+						                        metadata = try entry[selector][metadata] otherwise "",
+						                        parsedMeta = fn_pbir_ParseQueryRef(metadata),
+						                        
+						                        // Check each property (backColor, fontColor) for CF expressions
+						                        cfProps = List.Select(propNames, each _ = "backColor" or _ = "fontColor")
+						                    in
+						                        List.Combine(
+						                            List.Transform(cfProps, (pn) =>
+						                                let
+						                                    exprNode = try Record.Field(props, pn)[solid][color][expr] otherwise Record.FromList({}, {}),
+						                                    exprFields = try Record.FieldNames(exprNode) otherwise {},
+						                                    
+						                                    // Detect which CF type this is
+						                                    HasConditional = List.Contains(exprFields, "Conditional"),
+						                                    HasFillRule = List.Contains(exprFields, "FillRule"),
+						                                    HasMeasure = List.Contains(exprFields, "Measure"),
+						                                    HasColumn = List.Contains(exprFields, "Column")
+						                                in
+						                                    // ─── RULES-BASED CF (Conditional.Cases) ───
+						                                    if HasConditional then
+						                                        let
+						                                            Cases = try exprNode[Conditional][Cases] otherwise {},
+						                                            BandCount = List.Count(Cases),
+						                                            
+						                                            // Build vertical SVG: one colored row per band, low→high (fits 150px cell)
+						                                            fnBuildSVG = (allCases as list) as text =>
+						                                                let
+						                                                    reversed = List.Reverse(allCases),
+						                                                    n = List.Count(reversed),
+						                                                    w = 150,
+						                                                    rowH = 10,
+						                                                    h = n * rowH,
+						                                                    rects = List.Transform(
+						                                                        List.Zip({reversed, List.Positions(reversed)}),
+						                                                        each
+						                                                            let
+						                                                                c = _{0},
+						                                                                idx = _{1},
+						                                                                col = fnCleanLiteral(try c[Value][Literal][Value] otherwise ""),
+						                                                                yPos = idx * rowH
+						                                                            in
+						                                                                "<rect x='0' y='" & Text.From(yPos) & "' width='" & Text.From(w) & "' height='" & Text.From(rowH) & "' fill='" & Text.Replace(col, "#", "%23") & "'/>"
+						                                                    ),
+						                                                    body = Text.Combine(rects),
+						                                                    svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='" & Text.From(w) & "' height='" & Text.From(h) & "'>" & body & "</svg>"
+						                                                in
+						                                                    svg
+						                                        in
+						                                            if BandCount > 0 then
+						                                                let
+						                                                    SVG = fnBuildSVG(Cases)
+						                                                in
+						                                                List.Transform(
+						                                                    List.Zip({Cases, List.Positions(Cases)}),
+						                                                    each
+						                                                        let
+						                                                            pair = _,
+						                                                            case = pair{0},
+						                                                            bandIdx = pair{1},
+						                                                            
+						                                                            Color = fnCleanLiteral(try case[Value][Literal][Value] otherwise ""),
+						                                                            
+						                                                            // Handle both And-wrapped and bare Comparison conditions
+						                                                            Cond = try case[Condition] otherwise Record.FromList({}, {}),
+						                                                            HasAnd = try (Cond[And] <> null) otherwise false,
+						                                                            
+						                                                            // Lower bound
+						                                                            LowerKind = if HasAnd then
+						                                                                    try Cond[And][Left][Comparison][ComparisonKind] otherwise null
+						                                                                else
+						                                                                    try Cond[Comparison][ComparisonKind] otherwise null,
+						                                                            LowerValRaw = if HasAnd then
+						                                                                    try Cond[And][Left][Comparison][Right][Literal][Value] otherwise ""
+						                                                                else
+						                                                                    try Cond[Comparison][Right][Literal][Value] otherwise "",
+						                                                            
+						                                                            // Upper bound (only exists in And-wrapped conditions)
+						                                                            UpperKind = if HasAnd then
+						                                                                    try Cond[And][Right][Comparison][ComparisonKind] otherwise null
+						                                                                else
+						                                                                    null,
+						                                                            UpperValRaw = if HasAnd then
+						                                                                    try Cond[And][Right][Comparison][Right][Literal][Value] otherwise ""
+						                                                                else
+						                                                                    ""
+						                                                        in
+						                                                            [
+						                                                                ReportName = ReportName,
+						                                                                VisualId = VisualName,
+						                                                                PageId = pageId,
+						                                                                PageOrdinal = pageOrdinal,
+						                                                                VisualType = VisualType,
+						                                                                CFType = "Rules",
+						                                                                FormattingProperty = pn,
+						                                                                TableName = parsedMeta[TableName],
+						                                                                ObjectName = parsedMeta[ObjectName],
+						                                                                InputTableName = null,
+						                                                                InputObjectName = null,
+						                                                                BandIndex = bandIdx,
+						                                                                BandCount = BandCount,
+						                                                                Color = Color,
+						                                                                LowerBound = fnCleanLiteral(LowerValRaw),
+						                                                                LowerOperator = fnComparisonOp(LowerKind),
+						                                                                UpperBound = fnCleanLiteral(UpperValRaw),
+						                                                                UpperOperator = fnComparisonOp(UpperKind),
+						                                                                GradientType = null,
+						                                                                MinColor = null,
+						                                                                MidColor = null,
+						                                                                MaxColor = null,
+						                                                                NullStrategy = null,
+						                                                                PositiveColor = null,
+						                                                                NegativeColor = null,
+						                                                                ShowBarOnly = null,
+						                                                                ColorBar = SVG
+						                                                            ]
+						                                                )
+						                                            else
+						                                                {}
+						                                    
+						                                    // ─── GRADIENT CF (FillRule) ───
+						                                    else if HasFillRule then
+						                                        let
+						                                            FR = exprNode[FillRule],
+						                                            InputNode = try FR[Input] otherwise Record.FromList({}, {}),
+						                                            InputRef = fnExtractRef(InputNode),
+						                                            
+						                                            Rule = try FR[FillRule] otherwise Record.FromList({}, {}),
+						                                            RuleFields = try Record.FieldNames(Rule) otherwise {},
+						                                            
+						                                            // Detect gradient type: linearGradient2 or linearGradient3
+						                                            GradType = if List.Contains(RuleFields, "linearGradient3") then "linearGradient3"
+						                                                else if List.Contains(RuleFields, "linearGradient2") then "linearGradient2"
+						                                                else "unknown",
+						                                            
+						                                            Grad = try Record.Field(Rule, GradType) otherwise Record.FromList({}, {}),
+						                                            
+						                                            MinColor = fnCleanLiteral(try Grad[min][color][Literal][Value] otherwise ""),
+						                                            MaxColor = fnCleanLiteral(try Grad[max][color][Literal][Value] otherwise ""),
+						                                            MidColor = if GradType = "linearGradient3" then
+						                                                    fnCleanLiteral(try Grad[mid][color][Literal][Value] otherwise "")
+						                                                else null,
+						                                            NullStrategy = fnCleanLiteral(try Grad[nullColoringStrategy][strategy][Literal][Value] otherwise ""),
+						                                            
+						                                            // Build gradient SVG (fits 150px cell)
+						                                            GradSVG = 
+						                                                let
+						                                                    w = 150,
+						                                                    h = 30,
+						                                                    minC = Text.Replace(MinColor, "#", "%23"),
+						                                                    maxC = Text.Replace(MaxColor, "#", "%23"),
+						                                                    midC = if MidColor <> null then Text.Replace(MidColor, "#", "%23") else null,
+						                                                    
+						                                                    stops = if midC <> null then
+						                                                        "<stop offset='0%25' stop-color='" & minC & "'/>" &
+						                                                        "<stop offset='50%25' stop-color='" & midC & "'/>" &
+						                                                        "<stop offset='100%25' stop-color='" & maxC & "'/>"
+						                                                    else
+						                                                        "<stop offset='0%25' stop-color='" & minC & "'/>" &
+						                                                        "<stop offset='100%25' stop-color='" & maxC & "'/>"
+						                                                in
+						                                                    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='" & Text.From(w) & "' height='" & Text.From(h) & "'>" &
+						                                                    "<defs><linearGradient id='g'>" & stops & "</linearGradient></defs>" &
+						                                                    "<rect width='" & Text.From(w) & "' height='" & Text.From(h) & "' fill='url(%23g)' rx='3'/>" &
+						                                                    "</svg>"
+						                                        in
+						                                            {[
+						                                                ReportName = ReportName,
+						                                                VisualId = VisualName,
+						                                                PageId = pageId,
+						                                                PageOrdinal = pageOrdinal,
+						                                                VisualType = VisualType,
+						                                                CFType = "Gradient",
+						                                                FormattingProperty = pn,
+						                                                TableName = parsedMeta[TableName],
+						                                                ObjectName = parsedMeta[ObjectName],
+						                                                InputTableName = InputRef[Entity],
+						                                                InputObjectName = InputRef[Property],
+						                                                BandIndex = null,
+						                                                BandCount = null,
+						                                                Color = null,
+						                                                LowerBound = null,
+						                                                LowerOperator = null,
+						                                                UpperBound = null,
+						                                                UpperOperator = null,
+						                                                GradientType = GradType,
+						                                                MinColor = MinColor,
+						                                                MidColor = MidColor,
+						                                                MaxColor = MaxColor,
+						                                                NullStrategy = NullStrategy,
+						                                                PositiveColor = null,
+						                                                NegativeColor = null,
+						                                                ShowBarOnly = null,
+						                                                ColorBar = GradSVG
+						                                            ]}
+						                                    
+						                                    // ─── FIELD VALUE CF (direct Measure or Column reference) ───
+						                                    else if HasMeasure or HasColumn then
+						                                        let
+						                                            InputRef = fnExtractRef(exprNode)
+						                                        in
+						                                            {[
+						                                                ReportName = ReportName,
+						                                                VisualId = VisualName,
+						                                                PageId = pageId,
+						                                                PageOrdinal = pageOrdinal,
+						                                                VisualType = VisualType,
+						                                                CFType = "FieldValue",
+						                                                FormattingProperty = pn,
+						                                                TableName = parsedMeta[TableName],
+						                                                ObjectName = parsedMeta[ObjectName],
+						                                                InputTableName = InputRef[Entity],
+						                                                InputObjectName = InputRef[Property],
+						                                                BandIndex = null,
+						                                                BandCount = null,
+						                                                Color = null,
+						                                                LowerBound = null,
+						                                                LowerOperator = null,
+						                                                UpperBound = null,
+						                                                UpperOperator = null,
+						                                                GradientType = null,
+						                                                MinColor = null,
+						                                                MidColor = null,
+						                                                MaxColor = null,
+						                                                NullStrategy = null,
+						                                                PositiveColor = null,
+						                                                NegativeColor = null,
+						                                                ShowBarOnly = null,
+						                                                ColorBar = null
+						                                            ]}
+						                                    
+						                                    else
+						                                        {}
+						                            )
+						                        )
+						                )
+						            ),
+						            
+						            // =====================================================================
+						            // PART 2: objects.columnFormatting[] — Data Bars
+						            // =====================================================================
+						            // Data bars live under a completely different JSON path
+						            ColumnFmtEntries = try V[objects][columnFormatting] otherwise {},
+						            
+						            DataBarRules = List.Combine(
+						                List.Transform(ColumnFmtEntries, each
+						                    let
+						                        cfEntry = _,
+						                        hasBars = try (cfEntry[properties][dataBars] <> null) otherwise false,
+						                        metadata = try cfEntry[selector][metadata] otherwise "",
+						                        parsedMeta = fn_pbir_ParseQueryRef(metadata)
+						                    in
+						                        if hasBars then
+						                            let
+						                                bars = cfEntry[properties][dataBars],
+						                                PosColor = fnCleanLiteral(try bars[positiveColor][solid][color][expr][Literal][Value] otherwise ""),
+						                                NegColor = fnCleanLiteral(try bars[negativeColor][solid][color][expr][Literal][Value] otherwise ""),
+						                                HideText = try bars[hideText][expr][Literal][Value] otherwise "false",
+						                                ShowBarOnly = HideText = "true",
+						                                
+						                                // Build data bar SVG (fits 150px cell)
+						                                BarSVG =
+						                                    let
+						                                        w = 150, h = 30,
+						                                        posC = Text.Replace(PosColor, "#", "%23"),
+						                                        negC = Text.Replace(NegColor, "#", "%23"),
+						                                        // Show a sample bar at 70% width
+						                                        barW = Number.RoundDown(w * 0.7)
+						                                    in
+						                                        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='" & Text.From(w) & "' height='" & Text.From(h) & "'>" &
+						                                        "<rect x='0' y='2' width='" & Text.From(w) & "' height='" & Text.From(h - 4) & "' fill='%23f0f0f0' rx='3'/>" &
+						                                        "<rect x='0' y='2' width='" & Text.From(barW) & "' height='" & Text.From(h - 4) & "' fill='" & posC & "' rx='3'/>" &
+						                                        "</svg>"
+						                            in
+						                                {[
+						                                    ReportName = ReportName,
+						                                    VisualId = VisualName,
+						                                    PageId = pageId,
+						                                    PageOrdinal = pageOrdinal,
+						                                    VisualType = VisualType,
+						                                    CFType = "DataBars",
+						                                    FormattingProperty = "dataBars",
+						                                    TableName = parsedMeta[TableName],
+						                                    ObjectName = parsedMeta[ObjectName],
+						                                    InputTableName = null,
+						                                    InputObjectName = null,
+						                                    BandIndex = null,
+						                                    BandCount = null,
+						                                    Color = null,
+						                                    LowerBound = null,
+						                                    LowerOperator = null,
+						                                    UpperBound = null,
+						                                    UpperOperator = null,
+						                                    GradientType = null,
+						                                    MinColor = null,
+						                                    MidColor = null,
+						                                    MaxColor = null,
+						                                    NullStrategy = null,
+						                                    PositiveColor = PosColor,
+						                                    NegativeColor = NegColor,
+						                                    ShowBarOnly = ShowBarOnly,
+						                                    ColorBar = BarSVG
+						                                ]}
+						                        else
+						                            {}
+						                )
+						            ),
+						            
+						            Combined = List.Combine({ValuesCFRules, DataBarRules})
+						        in
+						            Combined,
+						    
+						    AllRules = List.Combine(
+						        List.Transform(
+						            List.Zip({PageData, List.Positions(PageIds)}),
+						            each
+						                let
+						                    pair = _,
+						                    pd = pair{0},
+						                    ordinal = pair{1},
+						                    VisualRules = List.Combine(
+						                        List.Transform(
+						                            pd[VisualJsonList],
+						                            each try fnGetCFRules(pd[PageId], ordinal, _) otherwise {}
+						                        )
+						                    )
+						                in
+						                    VisualRules
+						        )
+						    ),
+						    
+						    Result = Table.FromRecords(AllRules),
+						    Typed = Table.TransformColumnTypes(Result, {
+						        {"BandIndex", Int64.Type},
+						        {"BandCount", Int64.Type},
+						        {"ShowBarOnly", type logical}
+						    }),
+						    Sorted = Table.Sort(Typed, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}, {"CFType", Order.Ascending}, {"TableName", Order.Ascending}, {"BandIndex", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table SyncGroups
+			lineageTag: 37e54e9c-e018-4e31-96f1-0a5c683098a8
+
+			column SyncGroupName
+				lineageTag: cd657db2-2fc1-4cf0-a26a-374b908450f7
+				summarizeBy: none
+				isNameInferred
+				sourceColumn: Visuals_pbir[SyncGroupName]
+				columnOrigin: Visuals_pbir.SyncGroupName
+
+				annotation SummarizationSetBy = Automatic
+
+			partition SyncGroups = calculated
+				mode: import
+				source =
+						
+						distinct(
+						    ALLNOBLANKROW( 'Visuals_pbir'[SyncGroupName] )
+						)
+
+			annotation PBI_Id = 7f59a6194e344225b1a0c1580b863331
+
+		table Bookmarks_pbir
+			lineageTag: b779e550-a583-4d89-b64b-ad3bb98d133a
+
+			column ReportName
+				dataType: string
+				lineageTag: 1bf9c966-edb7-4401-a385-3bc5688b51ee
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkId
+				dataType: string
+				lineageTag: 405c35ac-9047-4636-a441-b9c0e5b3401d
+				summarizeBy: none
+				sourceColumn: BookmarkId
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkName
+				dataType: string
+				lineageTag: fb3194c1-aadd-4b52-9df3-55a029565ebe
+				summarizeBy: none
+				sourceColumn: BookmarkName
+
+				annotation SummarizationSetBy = Automatic
+
+			column TargetPageId
+				dataType: string
+				lineageTag: e4a8ef8c-313f-4766-b20d-113777ab7933
+				summarizeBy: none
+				sourceColumn: TargetPageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column TargetPageName
+				dataType: string
+				lineageTag: 85f47d63-a146-4232-8ea4-48403c63caf3
+				summarizeBy: none
+				sourceColumn: TargetPageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsScoped
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: d7d1b8e0-f127-4f56-85bf-4a909ee6be4b
+				summarizeBy: none
+				sourceColumn: IsScoped
+
+				annotation SummarizationSetBy = Automatic
+
+			column AffectedVisualCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 0116b1c3-6cc5-4e75-adcc-ca6027606f55
+				summarizeBy: sum
+				sourceColumn: AffectedVisualCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column HiddenVisualCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 117b7339-487d-4539-b723-26c653308e53
+				summarizeBy: sum
+				sourceColumn: HiddenVisualCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column HiddenVisualIds
+				dataType: string
+				lineageTag: 66e2c8bf-e5f0-452d-b9ea-7ba0c3bbfa25
+				summarizeBy: none
+				sourceColumn: HiddenVisualIds
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualsWithFilterCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 0e9e5cfb-eb9f-463e-9893-6b9418724e54
+				summarizeBy: sum
+				sourceColumn: VisualsWithFilterCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column TriggerVisualIds
+				dataType: string
+				lineageTag: 1eb47bd6-aede-42a0-9e8e-503c3719992e
+				summarizeBy: none
+				sourceColumn: TriggerVisualIds
+
+				annotation SummarizationSetBy = Automatic
+
+			column TriggerVisualTypes
+				dataType: string
+				lineageTag: 3d91d07e-bd4e-447b-a15b-c24a2d5479c9
+				summarizeBy: none
+				sourceColumn: TriggerVisualTypes
+
+				annotation SummarizationSetBy = Automatic
+
+			column TriggerPageNames
+				dataType: string
+				lineageTag: 42722a53-1901-499f-9a3f-f263ce216340
+				summarizeBy: none
+				sourceColumn: TriggerPageNames
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasReportObjects
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: 65b5943d-05ce-4bee-b4f1-9ebf77aeb330
+				summarizeBy: none
+				sourceColumn: HasReportObjects
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkVersion
+				dataType: string
+				lineageTag: 7b7daf8c-4764-4ceb-a2a2-9a5d0a9c58f3
+				summarizeBy: none
+				sourceColumn: BookmarkVersion
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Bookmarks_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    BookmarkData = Data[BookmarkData],
+						    PageData = Data[PageData],
+						    PageIds = Data[PageIds],
+						    
+						    // Build a lookup: pageId → displayName
+						    PageNameLookup = Record.FromList(
+						        List.Transform(PageData, each [PageJson][displayName]? ?? [PageId]),
+						        List.Transform(PageData, each [PageId])
+						    ),
+						    
+						    // Find all visuals that reference bookmarks via visualLink
+						    // Returns a flat list of records: {VisualId, VisualType, PageId, PageName, LinkType, BookmarkId}
+						    VisualBookmarkLinks = List.Combine(
+						        List.Transform(
+						            PageData,
+						            each
+						                let
+						                    pd = _,
+						                    pageId = pd[PageId],
+						                    pageName = pd[PageJson][displayName]? ?? pageId
+						                in
+						                    List.Combine(
+						                        List.Transform(pd[VisualJsonList], each
+						                            let
+						                                vId = [name]? ?? "unknown",
+						                                vType = [visual][visualType]? ?? "unknown",
+						                                vco = try [visual][visualContainerObjects] otherwise Record.FromList({}, {}),
+						                                vLink = try vco[visualLink]{0}[properties] otherwise null,
+						                                linkShow = try vLink[show][expr][Literal][Value] otherwise "false",
+						                                linkType = try Text.Trim(vLink[type][expr][Literal][Value], "'") otherwise null,
+						                                linkBookmark = try Text.Trim(vLink[bookmark][expr][Literal][Value], "'") otherwise null
+						                            in
+						                                if linkType <> null and linkShow = "true" then
+						                                    {[
+						                                        VisualId = vId,
+						                                        VisualType = vType,
+						                                        PageId = pageId,
+						                                        PageName = pageName,
+						                                        LinkType = linkType,
+						                                        BookmarkId = linkBookmark
+						                                    ]}
+						                                else
+						                                    {}
+						                        )
+						                    )
+						        )
+						    ),
+						    
+						    // Process each bookmark
+						    Bookmarks = List.Transform(BookmarkData, each
+						        let
+						            bId = [BookmarkId],
+						            bJson = [BookmarkJson],
+						            
+						            DisplayName = try bJson[displayName] otherwise bId,
+						            
+						            // Target page from explorationState.activeSection
+						            ActiveSection = try bJson[explorationState][activeSection] otherwise null,
+						            TargetPageName = if ActiveSection <> null 
+						                then (try Record.Field(PageNameLookup, ActiveSection) otherwise ActiveSection) 
+						                else null,
+						            
+						            // Get the visuals affected in the explorationState
+						            Sections = try bJson[explorationState][sections] otherwise Record.FromList({}, {}),
+						            SectionNames = Record.FieldNames(Sections),
+						            
+						            // Count total affected visuals across all sections
+						            AffectedVisuals = List.Combine(
+						                List.Transform(SectionNames, each
+						                    let
+						                        sectionData = Record.Field(Sections, _),
+						                        containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+						                        containerIds = Record.FieldNames(containers)
+						                    in
+						                        containerIds
+						                )
+						            ),
+						            AffectedVisualCount = List.Count(AffectedVisuals),
+						            
+						            // Detect which visuals are hidden/shown by this bookmark
+						            HiddenVisuals = List.Combine(
+						                List.Transform(SectionNames, each
+						                    let
+						                        sectionData = Record.Field(Sections, _),
+						                        containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+						                        containerIds = Record.FieldNames(containers)
+						                    in
+						                        List.Select(containerIds, each
+						                            let
+						                                vc = Record.Field(containers, _),
+						                                displayMode = try vc[singleVisual][display][mode] otherwise null
+						                            in
+						                                displayMode = "hidden"
+						                        )
+						                )
+						            ),
+						            HiddenVisualCount = List.Count(HiddenVisuals),
+						            HiddenVisualIds = Text.Combine(HiddenVisuals, ", "),
+						            
+						            // Detect visuals with filter state changes
+						            VisualsWithFilters = List.Combine(
+						                List.Transform(SectionNames, each
+						                    let
+						                        sectionData = Record.Field(Sections, _),
+						                        containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+						                        containerIds = Record.FieldNames(containers)
+						                    in
+						                        List.Select(containerIds, each
+						                            let
+						                                vc = Record.Field(containers, _),
+						                                hasFilters = try List.Count(vc[filters][byExpr]) > 0 otherwise false
+						                            in
+						                                hasFilters
+						                        )
+						                )
+						            ),
+						            VisualsWithFilterCount = List.Count(VisualsWithFilters),
+						            
+						            // Find which visuals trigger this bookmark
+						            TriggerVisuals = List.Select(VisualBookmarkLinks, each [BookmarkId] = bId),
+						            TriggerVisualIds = Text.Combine(List.Transform(TriggerVisuals, each [VisualId]), ", "),
+						            TriggerVisualTypes = Text.Combine(List.Distinct(List.Transform(TriggerVisuals, each [VisualType])), ", "),
+						            TriggerPageNames = Text.Combine(List.Distinct(List.Transform(TriggerVisuals, each [PageName])), ", "),
+						            
+						            // Detect if bookmark uses targetVisualNames (scoped bookmarks)
+						            TargetVisualNames = try bJson[options][targetVisualNames] otherwise {},
+						            IsScoped = List.Count(TargetVisualNames) > 0,
+						            
+						            // Bookmark options
+						            BookmarkVersion = try bJson[explorationState][version] otherwise null,
+						            
+						            // Report-level object changes (e.g. filter pane state)
+						            HasReportObjects = try Record.FieldCount(bJson[explorationState][objects]) > 0 otherwise false
+						        in
+						            [
+						                ReportName = ReportName,
+						                BookmarkId = bId,
+						                BookmarkName = DisplayName,
+						                TargetPageId = ActiveSection,
+						                TargetPageName = TargetPageName,
+						                IsScoped = IsScoped,
+						                AffectedVisualCount = AffectedVisualCount,
+						                HiddenVisualCount = HiddenVisualCount,
+						                HiddenVisualIds = HiddenVisualIds,
+						                VisualsWithFilterCount = VisualsWithFilterCount,
+						                TriggerVisualIds = TriggerVisualIds,
+						                TriggerVisualTypes = TriggerVisualTypes,
+						                TriggerPageNames = TriggerPageNames,
+						                HasReportObjects = HasReportObjects,
+						                BookmarkVersion = BookmarkVersion
+						            ]
+						    ),
+						    
+						    Result = Table.FromRecords(Bookmarks),
+						    Typed = Table.TransformColumnTypes(Result, {
+						        {"AffectedVisualCount", Int64.Type},
+						        {"HiddenVisualCount", Int64.Type},
+						        {"VisualsWithFilterCount", Int64.Type},
+						        {"IsScoped", type logical},
+						        {"HasReportObjects", type logical}
+						    }),
+						    Sorted = Table.Sort(Typed, {{"BookmarkName", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table BookmarkActions_pbir
+			lineageTag: 4e1050e9-fa52-4f04-8c34-dbee1aefb020
+
+			column ReportName
+				dataType: string
+				lineageTag: c3559714-8968-452e-b54c-7f7fa0201b90
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkId
+				dataType: string
+				lineageTag: 739ce042-fb38-401e-82d5-efb5ac7d1f34
+				summarizeBy: none
+				sourceColumn: BookmarkId
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkName
+				dataType: string
+				lineageTag: 1ab4cf5f-0805-4bde-97dc-df543c75a9b2
+				summarizeBy: none
+				sourceColumn: BookmarkName
+
+				annotation SummarizationSetBy = Automatic
+
+			column SectionPageId
+				dataType: string
+				lineageTag: 45cc4654-c67f-4b14-8552-370bb7cdccb8
+				summarizeBy: none
+				sourceColumn: SectionPageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column SectionPageName
+				dataType: string
+				lineageTag: 7bd21bbb-3004-46d4-a76d-164a208ebc27
+				summarizeBy: none
+				sourceColumn: SectionPageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualId
+				dataType: string
+				lineageTag: 0f68e91f-19fd-4ac4-86f2-76116c34fd4a
+				summarizeBy: none
+				sourceColumn: VisualId
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkVisualType
+				dataType: string
+				lineageTag: b1d3d401-d506-4632-97ab-7b678087d6f6
+				summarizeBy: none
+				sourceColumn: BookmarkVisualType
+
+				annotation SummarizationSetBy = Automatic
+
+			column CurrentVisualType
+				dataType: string
+				lineageTag: 39399c57-3c0a-4dc4-9b7e-13f61838a035
+				summarizeBy: none
+				sourceColumn: CurrentVisualType
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsStale
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: f14bb77f-c6b7-45de-b7d4-07118d28c38d
+				summarizeBy: none
+				sourceColumn: IsStale
+
+				annotation SummarizationSetBy = Automatic
+
+			column IsHiddenByBookmark
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: 862d8ab5-c8a6-421d-803a-18441b442589
+				summarizeBy: none
+				sourceColumn: IsHiddenByBookmark
+
+				annotation SummarizationSetBy = Automatic
+
+			column FilterCount
+				dataType: int64
+				formatString: 0
+				lineageTag: 98fd7be3-27ff-473e-85a2-a407ec423429
+				summarizeBy: sum
+				sourceColumn: FilterCount
+
+				annotation SummarizationSetBy = Automatic
+
+			column FilterFields
+				dataType: string
+				lineageTag: a8362e6e-3712-41f2-9a0c-25297917dd1b
+				summarizeBy: none
+				sourceColumn: FilterFields
+
+				annotation SummarizationSetBy = Automatic
+
+			column HasProjectionChange
+				dataType: boolean
+				formatString: """TRUE"";""TRUE"";""FALSE"""
+				lineageTag: 29f0a974-7980-4cb7-b8be-1ab02b531a2d
+				summarizeBy: none
+				sourceColumn: HasProjectionChange
+
+				annotation SummarizationSetBy = Automatic
+
+			column ProjectionRoles
+				dataType: string
+				lineageTag: 9bf79f1f-f18f-475c-b497-361c92ad696f
+				summarizeBy: none
+				sourceColumn: ProjectionRoles
+
+				annotation SummarizationSetBy = Automatic
+
+			column ObjectChangeType
+				dataType: string
+				lineageTag: f0b0a53f-c298-46d6-90b4-d9fa348518b7
+				summarizeBy: none
+				sourceColumn: ObjectChangeType
+
+				annotation SummarizationSetBy = Automatic
+
+			column ActionSummary
+				dataType: string
+				lineageTag: 9ff6e7f7-4a32-4559-8407-1e3998526fa8
+				summarizeBy: none
+				sourceColumn: ActionSummary
+
+				annotation SummarizationSetBy = Automatic
+
+			partition BookmarkActions_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    BookmarkData = Data[BookmarkData],
+						    PageData = Data[PageData],
+						    
+						    // Build a lookup: pageId → displayName
+						    PageNameLookup = Record.FromList(
+						        List.Transform(PageData, each [PageJson][displayName]? ?? [PageId]),
+						        List.Transform(PageData, each [PageId])
+						    ),
+						    
+						    // Build a lookup: visualId → current visualType from the live visual.json files
+						    VisualTypeLookup = Record.FromList(
+						        List.Combine(
+						            List.Transform(PageData, each
+						                List.Transform([VisualJsonList], each
+						                    [visual][visualType]? ?? "unknown"
+						                )
+						            )
+						        ),
+						        List.Combine(
+						            List.Transform(PageData, each
+						                List.Transform([VisualJsonList], each
+						                    [name]? ?? "unknown"
+						                )
+						            )
+						        )
+						    ),
+						    
+						    // Process each bookmark, extract per-visual actions
+						    AllActions = List.Combine(
+						        List.Transform(BookmarkData, each
+						            let
+						                bId = [BookmarkId],
+						                bJson = [BookmarkJson],
+						                BookmarkName = try bJson[displayName] otherwise bId,
+						                
+						                Sections = try bJson[explorationState][sections] otherwise Record.FromList({}, {}),
+						                SectionNames = Record.FieldNames(Sections),
+						                
+						                // For each section (page), for each visual container
+						                SectionActions = List.Combine(
+						                    List.Transform(SectionNames, each
+						                        let
+						                            sectionId = _,
+						                            sectionPageName = try Record.Field(PageNameLookup, sectionId) otherwise sectionId,
+						                            sectionData = Record.Field(Sections, sectionId),
+						                            containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+						                            containerIds = Record.FieldNames(containers)
+						                        in
+						                            List.Transform(containerIds, each
+						                                let
+						                                    visualId = _,
+						                                    vc = Record.Field(containers, visualId),
+						                                    sv = try vc[singleVisual] otherwise Record.FromList({}, {}),
+						                                    
+						                                    // Visual type as stored in the bookmark
+						                                    BookmarkVisualType = try sv[visualType] otherwise null,
+						                                    
+						                                    // Current visual type from the live file
+						                                    CurrentVisualType = try Record.Field(VisualTypeLookup, visualId) otherwise null,
+						                                    
+						                                    // Staleness check: does the bookmark type match the current type?
+						                                    IsStale = if BookmarkVisualType <> null and CurrentVisualType <> null 
+						                                        then BookmarkVisualType <> CurrentVisualType
+						                                        else if CurrentVisualType = null then true  // visual no longer exists
+						                                        else false,
+						                                    
+						                                    // Display mode change
+						                                    DisplayMode = try sv[display][mode] otherwise null,
+						                                    IsHiddenByBookmark = DisplayMode = "hidden",
+						                                    
+						                                    // Filter changes
+						                                    Filters = try vc[filters][byExpr] otherwise {},
+						                                    FilterCount = List.Count(Filters),
+						                                    FilterFields = Text.Combine(
+						                                        List.Transform(Filters, each
+						                                            let
+						                                                expr = [expression],
+						                                                // Handle Column references
+						                                                colEntity = try expr[Column][Expression][SourceRef][Entity] otherwise null,
+						                                                colProp = try expr[Column][Property] otherwise null,
+						                                                // Handle Measure references
+						                                                mEntity = try expr[Measure][Expression][SourceRef][Entity] otherwise null,
+						                                                mProp = try expr[Measure][Property] otherwise null,
+						                                                
+						                                                ref = if colEntity <> null and colProp <> null
+						                                                    then colEntity & "." & colProp
+						                                                    else if mEntity <> null and mProp <> null
+						                                                    then mEntity & "." & mProp
+						                                                    else "unknown"
+						                                            in
+						                                                ref
+						                                        ),
+						                                        ", "
+						                                    ),
+						                                    
+						                                    // Active projection changes
+						                                    ActiveProjections = try sv[activeProjections] otherwise Record.FromList({}, {}),
+						                                    HasProjectionChange = Record.FieldCount(ActiveProjections) > 0,
+						                                    ProjectionRoles = if HasProjectionChange 
+						                                        then Text.Combine(Record.FieldNames(ActiveProjections), ", ")
+						                                        else null,
+						                                    
+						                                    // Object changes (merge or replace)
+						                                    Objects = try sv[objects] otherwise Record.FromList({}, {}),
+						                                    HasMerge = try Record.HasFields(Objects, {"merge"}) otherwise false,
+						                                    HasObjectChange = Record.FieldCount(Objects) > 0,
+						                                    ObjectChangeType = if HasMerge then "merge" 
+						                                        else if HasObjectChange then "replace" 
+						                                        else null,
+						                                    
+						                                    // Summarize the action
+						                                    ActionParts = List.Select({
+						                                        if IsHiddenByBookmark then "Hide" else null,
+						                                        if FilterCount > 0 then "Filter (" & Text.From(FilterCount) & ")" else null,
+						                                        if HasProjectionChange then "Projection" else null,
+						                                        if HasObjectChange then "Object" else null
+						                                    }, each _ <> null),
+						                                    ActionSummary = if List.Count(ActionParts) > 0 
+						                                        then Text.Combine(ActionParts, " | ") 
+						                                        else "State capture"
+						                                in
+						                                    [
+						                                        ReportName = ReportName,
+						                                        BookmarkId = bId,
+						                                        BookmarkName = BookmarkName,
+						                                        SectionPageId = sectionId,
+						                                        SectionPageName = sectionPageName,
+						                                        VisualId = visualId,
+						                                        BookmarkVisualType = BookmarkVisualType,
+						                                        CurrentVisualType = CurrentVisualType,
+						                                        IsStale = IsStale,
+						                                        IsHiddenByBookmark = IsHiddenByBookmark,
+						                                        FilterCount = FilterCount,
+						                                        FilterFields = FilterFields,
+						                                        HasProjectionChange = HasProjectionChange,
+						                                        ProjectionRoles = ProjectionRoles,
+						                                        ObjectChangeType = ObjectChangeType,
+						                                        ActionSummary = ActionSummary
+						                                    ]
+						                            )
+						                    )
+						                )
+						            in
+						                SectionActions
+						        )
+						    ),
+						    
+						    Result = Table.FromRecords(AllActions),
+						    Typed = Table.TransformColumnTypes(Result, {
+						        {"FilterCount", Int64.Type},
+						        {"IsStale", type logical},
+						        {"IsHiddenByBookmark", type logical},
+						        {"HasProjectionChange", type logical}
+						    }),
+						    Sorted = Table.Sort(Typed, {{"BookmarkName", Order.Ascending}, {"SectionPageName", Order.Ascending}, {"VisualId", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		table Buttons_pbir
+			lineageTag: 3caa57a6-fe5f-4cfc-8c80-ce8dacb41b20
+
+			column ReportName
+				dataType: string
+				lineageTag: f878fb15-1f5a-406d-9c1f-faf5919f41c7
+				summarizeBy: none
+				sourceColumn: ReportName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageId
+				dataType: string
+				lineageTag: 9c061ef2-6657-4318-8d01-5fc9058cc956
+				summarizeBy: none
+				sourceColumn: PageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageName
+				dataType: string
+				lineageTag: e03cf5e0-2609-4f50-8de3-d16f1f14736e
+				summarizeBy: none
+				sourceColumn: PageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column PageOrdinal
+				dataType: string
+				lineageTag: 4e1a8167-f72e-4698-a27d-1d0b503e9d6e
+				summarizeBy: none
+				sourceColumn: PageOrdinal
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualId
+				dataType: string
+				lineageTag: 4ceb289c-48b2-4923-911e-6a3c72ca8096
+				summarizeBy: none
+				sourceColumn: VisualId
+
+				annotation SummarizationSetBy = Automatic
+
+			column VisualType
+				dataType: string
+				lineageTag: 73eb6ba0-dd36-484e-a32e-8ca583979af3
+				summarizeBy: none
+				sourceColumn: VisualType
+
+				annotation SummarizationSetBy = Automatic
+
+			column HowCreated
+				dataType: string
+				lineageTag: 9221254f-78b6-4fb8-9393-08d70e79f2df
+				summarizeBy: none
+				sourceColumn: HowCreated
+
+				annotation SummarizationSetBy = Automatic
+
+			column LinkType
+				dataType: string
+				lineageTag: b364b9ad-11b8-46ae-908b-08aaf8f6761d
+				summarizeBy: none
+				sourceColumn: LinkType
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkId
+				dataType: string
+				lineageTag: 0c839aa5-9736-48e2-8d68-9e01038b3efe
+				summarizeBy: none
+				sourceColumn: BookmarkId
+
+				annotation SummarizationSetBy = Automatic
+
+			column BookmarkName
+				dataType: string
+				lineageTag: eeb39993-4240-4bd6-900d-0e97dd4c0fea
+				summarizeBy: none
+				sourceColumn: BookmarkName
+
+				annotation SummarizationSetBy = Automatic
+
+			column TargetPageId
+				dataType: string
+				lineageTag: e4b184dc-5c0b-4605-97c9-f4cca8619a97
+				summarizeBy: none
+				sourceColumn: TargetPageId
+
+				annotation SummarizationSetBy = Automatic
+
+			column TargetPageName
+				dataType: string
+				lineageTag: f33f29af-91a4-4071-b31d-adbffd39cc02
+				summarizeBy: none
+				sourceColumn: TargetPageName
+
+				annotation SummarizationSetBy = Automatic
+
+			column WebUrl
+				dataType: string
+				lineageTag: 8e3340bb-c256-4332-ac47-9eea2becf0b8
+				summarizeBy: none
+				sourceColumn: WebUrl
+
+				annotation SummarizationSetBy = Automatic
+
+			column ButtonText
+				dataType: string
+				lineageTag: 2b7ae7cc-7f4d-4cf5-855b-bd963003fc93
+				summarizeBy: none
+				sourceColumn: ButtonText
+
+				annotation SummarizationSetBy = Automatic
+
+			column IconShape
+				dataType: string
+				lineageTag: c1166033-2f59-410a-a924-cfc53853bdc8
+				summarizeBy: none
+				sourceColumn: IconShape
+
+				annotation SummarizationSetBy = Automatic
+
+			column TooltipText
+				dataType: string
+				lineageTag: a315e6ad-b74c-4952-a22c-6e81ba9c3986
+				summarizeBy: none
+				sourceColumn: TooltipText
+
+				annotation SummarizationSetBy = Automatic
+
+			column TooltipMeasure
+				dataType: string
+				lineageTag: 03fcb6e4-d302-4b16-871c-61541256030f
+				summarizeBy: none
+				sourceColumn: TooltipMeasure
+
+				annotation SummarizationSetBy = Automatic
+
+			column ImageSourceMeasure
+				dataType: string
+				lineageTag: a66d4ec5-6448-4c83-ab8a-f2f4988041f2
+				summarizeBy: none
+				sourceColumn: ImageSourceMeasure
+
+				annotation SummarizationSetBy = Automatic
+
+			partition Buttons_pbir = m
+				mode: import
+				source = ```
+						let
+						    Data = fn_pbir_ReportData(),
+						    ReportName = Data[ReportName],
+						    PageIds = Data[PageIds],
+						    PageData = Data[PageData],
+						    BookmarkData = Data[BookmarkData],
+						    
+						    // Build lookups for cross-referencing
+						    // Bookmark ID → display name
+						    BookmarkNameLookup = Record.FromList(
+						        List.Transform(BookmarkData, each try [BookmarkJson][displayName] otherwise [BookmarkId]),
+						        List.Transform(BookmarkData, each [BookmarkId])
+						    ),
+						    
+						    // Page ID → display name
+						    PageNameLookup = Record.FromList(
+						        List.Transform(PageData, each try [PageJson][displayName] otherwise [PageId]),
+						        List.Transform(PageData, each [PageId])
+						    ),
+						    
+						    fnGetButtons = (pageDisplayName as text, pageId as text, pageOrdinal as number, vJson as record) as list =>
+						        let
+						            VisualName = try vJson[name] otherwise "",
+						            V = try vJson[visual] otherwise Record.FromList({}, {}),
+						            VisualType = try V[visualType] otherwise
+						                (if try (vJson[visualGroup] <> null) otherwise false then "visualGroup" else "unknown"),
+						            HowCreated = try vJson[howCreated] otherwise null,
+						            
+						            // Check for visualLink in visualContainerObjects
+						            vLink = try V[visualContainerObjects][visualLink]{0}[properties] otherwise null
+						        in
+						            if vLink <> null then
+						                let
+						                    LinkShow = try vLink[show][expr][Literal][Value] otherwise "false",
+						                    LinkType = try Text.Trim(vLink[type][expr][Literal][Value], "'") otherwise null,
+						                    
+						                    // Bookmark target
+						                    LinkBookmarkId = try Text.Trim(vLink[bookmark][expr][Literal][Value], "'") otherwise null,
+						                    LinkBookmarkName = if LinkBookmarkId <> null
+						                        then try Record.Field(BookmarkNameLookup, LinkBookmarkId) otherwise LinkBookmarkId
+						                        else null,
+						                    
+						                    // Page navigation target
+						                    LinkPageId = try Text.Trim(vLink[pageName][expr][Literal][Value], "'") otherwise null,
+						                    LinkPageName = if LinkPageId <> null
+						                        then try Record.Field(PageNameLookup, LinkPageId) otherwise LinkPageId
+						                        else null,
+						                    
+						                    // Web URL target
+						                    LinkWebUrl = try Text.Trim(vLink[webUrl][expr][Literal][Value], "'") otherwise null,
+						                    
+						                    // Tooltip — can be static text or measure-driven
+						                    TooltipText = try Text.Trim(vLink[tooltipPlaceholderText][expr][Literal][Value], "'") otherwise null,
+						                    TooltipMeasureEntity = try vLink[tooltip][expr][Measure][Expression][SourceRef][Entity] otherwise null,
+						                    TooltipMeasureProp = try vLink[tooltip][expr][Measure][Property] otherwise null,
+						                    TooltipMeasure = if TooltipMeasureEntity <> null and TooltipMeasureProp <> null
+						                        then TooltipMeasureEntity & "." & TooltipMeasureProp
+						                        else null,
+						                    
+						                    // Button text (actionButton specific: objects.text[].properties.text)
+						                    TextEntries = try V[objects][text] otherwise {},
+						                    ButtonText = try Text.Trim(
+						                        List.First(
+						                            List.RemoveNulls(
+						                                List.Transform(TextEntries, each
+						                                    try [properties][text][expr][Literal][Value] otherwise null
+						                                )
+						                            )
+						                        ),
+						                        "'"
+						                    ) otherwise null,
+						                    
+						                    // Icon shape (actionButton specific: objects.icon[].properties.shapeType)
+						                    IconEntries = try V[objects][icon] otherwise {},
+						                    IconShape = try Text.Trim(
+						                        List.First(
+						                            List.RemoveNulls(
+						                                List.Transform(IconEntries, each
+						                                    try [properties][shapeType][expr][Literal][Value] otherwise null
+						                                )
+						                            )
+						                        ),
+						                        "'"
+						                    ) otherwise null,
+						                    
+						                    // Image source measure (image visual repurposed as button)
+						                    ImageMeasureEntity = try V[objects][image]{0}[properties][sourceField][expr][Measure][Expression][SourceRef][Entity] otherwise null,
+						                    ImageMeasureProp = try V[objects][image]{0}[properties][sourceField][expr][Measure][Property] otherwise null,
+						                    ImageSourceMeasure = if ImageMeasureEntity <> null and ImageMeasureProp <> null
+						                        then ImageMeasureEntity & "." & ImageMeasureProp
+						                        else null
+						                in
+						                    if LinkShow = "true" and LinkType <> null then
+						                        {[
+						                            ReportName = ReportName,
+						                            PageId = pageId,
+						                            PageName = pageDisplayName,
+						                            PageOrdinal = pageOrdinal,
+						                            VisualId = VisualName,
+						                            VisualType = VisualType,
+						                            HowCreated = HowCreated,
+						                            LinkType = LinkType,
+						                            BookmarkId = LinkBookmarkId,
+						                            BookmarkName = LinkBookmarkName,
+						                            TargetPageId = LinkPageId,
+						                            TargetPageName = LinkPageName,
+						                            WebUrl = LinkWebUrl,
+						                            ButtonText = ButtonText,
+						                            IconShape = IconShape,
+						                            TooltipText = TooltipText,
+						                            TooltipMeasure = TooltipMeasure,
+						                            ImageSourceMeasure = ImageSourceMeasure
+						                        ]}
+						                    else
+						                        {}
+						            else
+						                {},
+						    
+						    AllButtons = List.Combine(
+						        List.Transform(
+						            List.Zip({PageData, List.Positions(PageIds)}),
+						            each
+						                let
+						                    pair = _,
+						                    pd = pair{0},
+						                    ordinal = pair{1},
+						                    PageDisplayName = try pd[PageJson][displayName] otherwise pd[PageId],
+						                    
+						                    PageButtons = List.Combine(
+						                        List.Transform(
+						                            pd[VisualJsonList],
+						                            each try fnGetButtons(PageDisplayName, pd[PageId], ordinal, _) otherwise {}
+						                        )
+						                    )
+						                in
+						                    PageButtons
+						        )
+						    ),
+						    
+						    Result = Table.FromRecords(AllButtons),
+						    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}})
+						in
+						    Sorted
+						```
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		relationship AutoDetected_0a9bdb1b-357e-481b-83e3-180bd2e93186
+			fromColumn: Pages_pbir.ReportName
+			toColumn: ReportSettings_pbir.ReportName
+
+		relationship AutoDetected_5b878d50-adf3-453d-86c4-c0329230c51b
+			crossFilteringBehavior: bothDirections
+			fromColumn: ModelReferences_pbir.VisualId
+			toColumn: Visuals_pbir.VisualId
+
+		relationship AutoDetected_3324997c-4f35-458b-b31f-45ebdc8cc3aa
+			fromColumn: SlicerInventory_pbir.VisualId
+			toColumn: Visuals_pbir.VisualId
+
+		relationship AutoDetected_41b17ee9-8341-4ff1-a37f-b131df906790
+			fromColumn: ConditionalFormattingRules_pbir.VisualId
+			toColumn: Visuals_pbir.VisualId
+
+		relationship AutoDetected_c2b34a5d-29c1-425a-9f7d-d2a2ddd95926
+			crossFilteringBehavior: bothDirections
+			fromColumn: Visuals_pbir.PageId
+			toColumn: Pages_pbir.PageId
+
+		relationship AutoDetected_6e46d668-babe-4702-ba1e-1070edf3d121
+			fromColumn: Bookmarks_pbir.ReportName
+			toColumn: ReportSettings_pbir.ReportName
+
+		relationship AutoDetected_f9f3854e-0d2f-4b77-ab8a-01e21027c2eb
+			isActive: false
+			fromColumn: BookmarkActions_pbir.VisualId
+			toColumn: Visuals_pbir.VisualId
+
+		relationship AutoDetected_ed32a6d2-897d-44de-9933-148ca6bb1ba1
+			fromColumn: BookmarkActions_pbir.BookmarkId
+			toColumn: Bookmarks_pbir.BookmarkId
+
+		relationship AutoDetected_32f1603f-3754-4d73-b62c-850ede7ae72e
+			crossFilteringBehavior: bothDirections
+			fromCardinality: one
+			fromColumn: Buttons_pbir.VisualId
+			toColumn: Visuals_pbir.VisualId
+
+		relationship AutoDetected_98a9e168-f5ca-4b59-8980-06d7fd258a22
+			isActive: false
+			fromColumn: Buttons_pbir.BookmarkId
+			toColumn: Bookmarks_pbir.BookmarkId
+
+		cultureInfo en-US
+
+			linguisticMetadata =
+					{
+					  "Version": "1.0.0",
+					  "Language": "en-US"
+					}
+				contentType: json
+
+		expression fn_pbir_ParseQueryRef = ```
+				let
+				    fn = (queryRef as text) as record =>
+				        let
+				            AggFunctions = {"Sum", "Avg", "Min", "Max", "Count", "CountNonNull"},
+				            
+				            IsAggregation = List.AnyTrue(
+				                List.Transform(AggFunctions, each Text.StartsWith(queryRef, _ & "(") and Text.EndsWith(queryRef, ")"))
+				            ),
+				            
+				            AggFunctionName = if IsAggregation 
+				                then List.First(List.Select(AggFunctions, each Text.StartsWith(queryRef, _ & "(")), null)
+				                else null,
+				            
+				            InnerRef = if IsAggregation and AggFunctionName <> null
+				                then Text.Range(queryRef, Text.Length(AggFunctionName) + 1, Text.Length(queryRef) - Text.Length(AggFunctionName) - 2)
+				                else queryRef,
+				            
+				            DotPos = Text.PositionOf(InnerRef, "."),
+				            
+				            TableName = if DotPos >= 0 then Text.Start(InnerRef, DotPos) else "",
+				            ObjectName = if DotPos >= 0 then Text.Range(InnerRef, DotPos + 1) else InnerRef,
+				            
+				            RefType = if IsAggregation then "Aggregation (" & AggFunctionName & ")" else "Column/Measure"
+				        in
+				            [
+				                RefType = RefType,
+				                TableName = TableName,
+				                ObjectName = ObjectName,
+				                AggFunction = AggFunctionName
+				            ]
+				in
+				    fn
+				```
+			lineageTag: 5bfcfe35-8235-4398-bd81-69cb8f450dfe
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Function
+
+		expression pq_pbir_ReportFolderPath = "C:\@temp\Visualization Framework\Visualization Framework Sample Report.Report" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+			lineageTag: 680c9d20-292d-48c7-882a-58992238f8cb
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Text
+
+		expression fn_pbir_ReportData = ```
+				let
+				    fn = () as record =>
+				        let
+				            // === SINGLE DATA SOURCE ACCESS ===
+				            // Folder.Files is recursive — gets every file in the .Report tree
+				            AllFiles = Folder.Files(pq_pbir_ReportFolderPath),
+				            
+				            // --- Normalize folder path separators for cross-platform matching ---
+				            // On Windows [Folder Path] uses backslashes; on Mac/Linux forward slashes
+				            WithNormPath = Table.AddColumn(AllFiles, "NormPath", each
+				                Text.Replace([Folder Path], "\", "/"), type text
+				            ),
+				            BasePath = Text.Replace(pq_pbir_ReportFolderPath, "\", "/"),
+				            
+				            // --- Helper: find a file by name and normalized folder path suffix ---
+				            fnGetFile = (tbl as table, fileName as text, folderSuffix as text) as binary =>
+				                let
+				                    Matched = Table.SelectRows(tbl, each 
+				                        [Name] = fileName 
+				                        and Text.EndsWith([NormPath], folderSuffix)
+				                    ),
+				                    Content = try Matched{0}[Content] otherwise null
+				                in
+				                    Content,
+				            
+				            // --- Parse core metadata files ---
+				            PlatformBin = fnGetFile(WithNormPath, ".platform", BasePath & "/"),
+				            Platform = try Json.Document(PlatformBin) otherwise Record.FromList({}, {}),
+				            ReportName = try Platform[metadata][displayName] otherwise "Unknown",
+				            
+				            ReportJsonBin = fnGetFile(WithNormPath, "report.json", "/definition/"),
+				            ReportJson = try Json.Document(ReportJsonBin) otherwise Record.FromList({}, {}),
+				            
+				            PagesJsonBin = fnGetFile(WithNormPath, "pages.json", "/definition/pages/"),
+				            PagesJson = try Json.Document(PagesJsonBin) otherwise Record.FromList({}, {}),
+				            PageIds = try PagesJson[pageOrder] otherwise {},
+				            
+				            // --- Parse all page.json files ---
+				            PageJsonFiles = Table.SelectRows(WithNormPath, each [Name] = "page.json"),
+				            
+				            // --- Parse all visual.json files ---
+				            VisualJsonFiles = Table.SelectRows(WithNormPath, each [Name] = "visual.json"),
+				            
+				            // --- Build per-page data with visuals grouped by page ---
+				            PagesBasePath = BasePath & "/definition/pages/",
+				            
+				            PageData = List.Transform(PageIds, each
+				                let
+				                    pageId = _,
+				                    PageFolderPath = PagesBasePath & pageId & "/",
+				                    
+				                    // Find this page's page.json
+				                    PageJsonRow = try Table.SelectRows(PageJsonFiles, each
+				                        [NormPath] = PageFolderPath
+				                    ){0} otherwise null,
+				                    PageJson = try Json.Document(PageJsonRow[Content]) otherwise Record.FromList({}, {}),
+				                    
+				                    // Find all visual.json files under this page
+				                    // Their NormPath starts with the page's visuals path
+				                    VisualsFolderPrefix = PageFolderPath & "visuals/",
+				                    PageVisualFiles = Table.SelectRows(VisualJsonFiles, each
+				                        Text.StartsWith([NormPath], VisualsFolderPrefix)
+				                    ),
+				                    
+				                    VisualJsonList = try List.Transform(
+				                        Table.ToRecords(PageVisualFiles),
+				                        each try Json.Document([Content]) otherwise Record.FromList({}, {})
+				                    ) otherwise {}
+				                in
+				                    [
+				                        PageId = pageId,
+				                        PageJson = PageJson,
+				                        VisualJsonList = VisualJsonList
+				                    ]
+				            ),
+				            
+				            // --- Parse bookmark files (NEW in v5.2) ---
+				            BookmarksBasePath = BasePath & "/definition/bookmarks/",
+				            
+				            // bookmarks.json contains the ordered list of bookmark IDs
+				            BookmarksMetaBin = fnGetFile(WithNormPath, "bookmarks.json", "/definition/bookmarks/"),
+				            BookmarksMeta = try Json.Document(BookmarksMetaBin) otherwise Record.FromList({}, {}),
+				            BookmarkIds = try List.Transform(BookmarksMeta[items], each [name]) otherwise {},
+				            
+				            // Each bookmark is in {bookmarkId}.bookmark.json
+				            BookmarkJsonFiles = Table.SelectRows(WithNormPath, each 
+				                Text.EndsWith([Name], ".bookmark.json")
+				                and Text.StartsWith([NormPath], BookmarksBasePath)
+				            ),
+				            
+				            BookmarkData = List.Transform(
+				                Table.ToRecords(BookmarkJsonFiles),
+				                each
+				                    let
+				                        bJson = try Json.Document([Content]) otherwise Record.FromList({}, {}),
+				                        bId = try bJson[name] otherwise Text.BeforeDelimiter([Name], ".bookmark.json")
+				                    in
+				                        [
+				                            BookmarkId = bId,
+				                            BookmarkJson = bJson
+				                        ]
+				            ),
+				            
+				            Result = [
+				                ReportName = ReportName,
+				                Platform = Platform,
+				                ReportJson = ReportJson,
+				                PageIds = PageIds,
+				                PageData = PageData,
+				                BookmarkIds = BookmarkIds,
+				                BookmarkData = BookmarkData
+				            ]
+				        in
+				            Result
+				in
+				    fn
+				```
+			lineageTag: c575bad7-fe38-41a3-b34d-77e54647d0fa
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Function
+
+		expression 'Errors in ConditionalFormattingRules_pbir' =
+				let
+				Source = ConditionalFormattingRules_pbir,
+				  #"Detected Type Mismatches" = let
+				    tableWithOnlyPrimitiveTypes = Table.SelectColumns(Source, Table.ColumnsOfType(Source, {type nullable number, type nullable text, type nullable logical, type nullable date, type nullable datetime, type nullable datetimezone, type nullable time, type nullable duration})),
+				    recordTypeFields = Type.RecordFields(Type.TableRow(Value.Type(tableWithOnlyPrimitiveTypes))),
+				    fieldNames = Record.FieldNames(recordTypeFields),
+				    fieldTypes = List.Transform(Record.ToList(recordTypeFields), each [Type]),
+				    pairs = List.Transform(List.Positions(fieldNames), (i) => {fieldNames{i}, (v) => if v = null or Value.Is(v, fieldTypes{i}) then v else error [Message = "The type of the value does not match the type of the column.", Detail = v], fieldTypes{i}})
+				in
+				    Table.TransformColumns(Source, pairs),
+				  #"Added Index" = Table.AddIndexColumn(#"Detected Type Mismatches", "Row Number" ,1),
+				  #"Kept Errors" = Table.SelectRowsWithErrors(#"Added Index", {"ReportName", "VisualId", "PageName", "PageOrdinal", "VisualType", "TableName", "ObjectName", "FormattingProperty", "BandIndex", "BandCount", "Color", "LowerBound", "LowerOperator", "UpperBound", "UpperOperator", "ColorBar"}),
+				  #"Reordered Columns" = Table.ReorderColumns(#"Kept Errors", {"Row Number", "ReportName", "VisualId", "PageName", "PageOrdinal", "VisualType", "TableName", "ObjectName", "FormattingProperty", "BandIndex", "BandCount", "Color", "LowerBound", "LowerOperator", "UpperBound", "UpperOperator", "ColorBar"})
+				in
+				  #"Reordered Columns"
+			lineageTag: 8807eaa2-82e5-4acc-bdb9-edaedee54e3c
+			queryGroup: 'Query Errors - 2/11/2026 1:12:21 PM'
+
+			annotation PBI_NavigationStepName = Navigation
+
+			annotation PBI_ResultType = Table
+
+		/// Errors in queries that were loaded on 2/11/2026 1:12:21 PM.
+		queryGroup 'Query Errors - 2/11/2026 1:12:21 PM'
+
+			annotation PBI_QueryGroupOrder = 0
+
+		annotation __PBI_TimeIntelligenceEnabled = 1
+
+		annotation PBI_QueryOrder = ["pq_pbir_ReportFolderPath","fn_pbir_ParseQueryRef","fn_pbir_ReportData","ReportSettings_pbir","Pages_pbir","Visuals_pbir","ModelReferences_pbir","UnusedObjectsFinder_pbir","SlicerInventory_pbir","ConditionalFormattingRules_pbir","Errors in ConditionalFormattingRules_pbir","Bookmarks_pbir","BookmarkActions_pbir","Buttons_pbir"]
+
+		annotation PBI_ProTooling = ["DevMode"]
+

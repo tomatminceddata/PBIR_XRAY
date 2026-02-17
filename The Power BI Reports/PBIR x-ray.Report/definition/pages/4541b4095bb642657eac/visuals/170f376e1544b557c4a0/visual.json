@@ -1,0 +1,317 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "170f376e1544b557c4a0",
+  "position": {
+    "x": 200,
+    "y": 458,
+    "z": 2000,
+    "height": 252,
+    "width": 1070,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "PageName"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.PageName",
+              "nativeQueryRef": "Page"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "VisualType"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.VisualType",
+              "nativeQueryRef": "Visual"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "TableName"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.TableName",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "ObjectName"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.ObjectName",
+              "nativeQueryRef": "Object"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "Role"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.Role",
+              "nativeQueryRef": "Role"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "Source"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.Source",
+              "nativeQueryRef": "Source"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "HasConditionalFormatting"
+                }
+              },
+              "queryRef": "Visuals_pbir.HasConditionalFormatting",
+              "nativeQueryRef": "HasConditionalFormatting"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "ModelReferences_pbir"
+                  }
+                },
+                "Property": "Source"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Model objects referenced by conditional formatting — the hidden dependencies'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "03929f2af27b06d21706",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "PageName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "16a279fd2c5d37f8a7c9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "VisualType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "32fa7194e2c70efca6cf",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "TableName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8a72523e9fdf704f1a8e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "ObjectName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "0dfcb752e53def7d3ce7",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "Role"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ce10f8bd56e6dda6994c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "ModelReferences_pbir"
+              }
+            },
+            "Property": "Source"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9a0d9f9dfa6d5b92515f",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "HasConditionalFormatting"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ecf10381c9c965cb0a63",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "HasConditionalFormatting"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "v",
+              "Entity": "Visuals_pbir",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "v"
+                          }
+                        },
+                        "Property": "HasConditionalFormatting"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'TRUE'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  }
+}

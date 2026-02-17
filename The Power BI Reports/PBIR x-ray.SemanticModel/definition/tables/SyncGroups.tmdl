@@ -1,0 +1,21 @@
+table SyncGroups
+	lineageTag: 37e54e9c-e018-4e31-96f1-0a5c683098a8
+
+	column SyncGroupName
+		lineageTag: cd657db2-2fc1-4cf0-a26a-374b908450f7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Visuals_pbir[SyncGroupName]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SyncGroups = calculated
+		mode: import
+		source =
+				
+				distinct(
+				    ALLNOBLANKROW( 'Visuals_pbir'[SyncGroupName] )
+				)
+
+	annotation PBI_Id = 7f59a6194e344225b1a0c1580b863331
+

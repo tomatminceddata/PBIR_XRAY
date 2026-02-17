@@ -1,0 +1,80 @@
+{
+  "name": "Grand Budapest Hotel",
+  "dataColors": [
+    "#F4A8B9",
+    "#8B5FBF",
+    "#D9381E",
+    "#FFD966",
+    "#3E92CC",
+    "#C62828",
+    "#9DC88D",
+    "#FF6F00",
+    "#DE83B2",
+    "#402A54"
+  ],
+  "background": "#FFF8F0",
+  "foreground": "#402A54",
+  "tableAccent": "#D9381E",
+  "hyperlink": "#8B5FBF",
+  "good": "#9DC88D",
+  "neutral": "#FFD966",
+  "bad": "#C62828",
+  "maximum": "#D9381E",
+  "center": "#FFD966",
+  "minimum": "#F4A8B9",
+  "null": "#E8DDD3",
+  "textClasses": {
+    "callout": {
+      "fontSize": 28,
+      "fontFace": "Segoe UI Light",
+      "color": "#402A54"
+    },
+    "title": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#402A54"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#402A54"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#5C4A6B"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ],
+        "visualHeaderTooltip": [
+          {
+            "type": "Default"
+          }
+        ]
+      }
+    }
+  }
+}

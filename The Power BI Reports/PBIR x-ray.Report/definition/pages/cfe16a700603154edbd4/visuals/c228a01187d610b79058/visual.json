@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "c228a01187d610b79058",
+  "position": {
+    "x": 800,
+    "y": 48,
+    "z": 3000,
+    "height": 662,
+    "width": 470,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "htmlContent443BE3AD55E043BF878BED274D3A6865",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "Slicer Sync HTML"
+                }
+              },
+              "queryRef": "Visuals_pbir.Slicer Sync HTML",
+              "nativeQueryRef": "Slicer Sync HTML"
+            }
+          ]
+        },
+        "content": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "Slicer Sync HTML"
+                }
+              },
+              "queryRef": "Visuals_pbir.Slicer Sync HTML",
+              "nativeQueryRef": "Slicer Sync HTML"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Which pages share each slicer — select a sync group above'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2ee7cf99d8892a1051f9",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "Slicer Sync HTML"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

@@ -1,0 +1,304 @@
+table BookmarkActions_pbir
+	lineageTag: 4e1050e9-fa52-4f04-8c34-dbee1aefb020
+
+	column ReportName
+		dataType: string
+		lineageTag: c3559714-8968-452e-b54c-7f7fa0201b90
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkId
+		dataType: string
+		lineageTag: 739ce042-fb38-401e-82d5-efb5ac7d1f34
+		summarizeBy: none
+		sourceColumn: BookmarkId
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkName
+		dataType: string
+		lineageTag: 1ab4cf5f-0805-4bde-97dc-df543c75a9b2
+		summarizeBy: none
+		sourceColumn: BookmarkName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SectionPageId
+		dataType: string
+		lineageTag: 45cc4654-c67f-4b14-8552-370bb7cdccb8
+		summarizeBy: none
+		sourceColumn: SectionPageId
+
+		annotation SummarizationSetBy = Automatic
+
+	column SectionPageName
+		dataType: string
+		lineageTag: 7bd21bbb-3004-46d4-a76d-164a208ebc27
+		summarizeBy: none
+		sourceColumn: SectionPageName
+
+		annotation SummarizationSetBy = Automatic
+
+	column VisualId
+		dataType: string
+		lineageTag: 0f68e91f-19fd-4ac4-86f2-76116c34fd4a
+		summarizeBy: none
+		sourceColumn: VisualId
+
+		annotation SummarizationSetBy = Automatic
+
+	column BookmarkVisualType
+		dataType: string
+		lineageTag: b1d3d401-d506-4632-97ab-7b678087d6f6
+		summarizeBy: none
+		sourceColumn: BookmarkVisualType
+
+		annotation SummarizationSetBy = Automatic
+
+	column CurrentVisualType
+		dataType: string
+		lineageTag: 39399c57-3c0a-4dc4-9b7e-13f61838a035
+		summarizeBy: none
+		sourceColumn: CurrentVisualType
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsStale
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: f14bb77f-c6b7-45de-b7d4-07118d28c38d
+		summarizeBy: none
+		sourceColumn: IsStale
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsHiddenByBookmark
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 862d8ab5-c8a6-421d-803a-18441b442589
+		summarizeBy: none
+		sourceColumn: IsHiddenByBookmark
+
+		annotation SummarizationSetBy = Automatic
+
+	column FilterCount
+		dataType: int64
+		formatString: 0
+		lineageTag: 98fd7be3-27ff-473e-85a2-a407ec423429
+		summarizeBy: sum
+		sourceColumn: FilterCount
+
+		annotation SummarizationSetBy = Automatic
+
+	column FilterFields
+		dataType: string
+		lineageTag: a8362e6e-3712-41f2-9a0c-25297917dd1b
+		summarizeBy: none
+		sourceColumn: FilterFields
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasProjectionChange
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 29f0a974-7980-4cb7-b8be-1ab02b531a2d
+		summarizeBy: none
+		sourceColumn: HasProjectionChange
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectionRoles
+		dataType: string
+		lineageTag: 9bf79f1f-f18f-475c-b497-361c92ad696f
+		summarizeBy: none
+		sourceColumn: ProjectionRoles
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectChangeType
+		dataType: string
+		lineageTag: f0b0a53f-c298-46d6-90b4-d9fa348518b7
+		summarizeBy: none
+		sourceColumn: ObjectChangeType
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActionSummary
+		dataType: string
+		lineageTag: 9ff6e7f7-4a32-4559-8407-1e3998526fa8
+		summarizeBy: none
+		sourceColumn: ActionSummary
+
+		annotation SummarizationSetBy = Automatic
+
+	partition BookmarkActions_pbir = m
+		mode: import
+		source = ```
+				let
+				    Data = fn_pbir_ReportData(),
+				    ReportName = Data[ReportName],
+				    BookmarkData = Data[BookmarkData],
+				    PageData = Data[PageData],
+				    
+				    // Build a lookup: pageId → displayName
+				    PageNameLookup = Record.FromList(
+				        List.Transform(PageData, each [PageJson][displayName]? ?? [PageId]),
+				        List.Transform(PageData, each [PageId])
+				    ),
+				    
+				    // Build a lookup: visualId → current visualType from the live visual.json files
+				    VisualTypeLookup = Record.FromList(
+				        List.Combine(
+				            List.Transform(PageData, each
+				                List.Transform([VisualJsonList], each
+				                    [visual][visualType]? ?? "unknown"
+				                )
+				            )
+				        ),
+				        List.Combine(
+				            List.Transform(PageData, each
+				                List.Transform([VisualJsonList], each
+				                    [name]? ?? "unknown"
+				                )
+				            )
+				        )
+				    ),
+				    
+				    // Process each bookmark, extract per-visual actions
+				    AllActions = List.Combine(
+				        List.Transform(BookmarkData, each
+				            let
+				                bId = [BookmarkId],
+				                bJson = [BookmarkJson],
+				                BookmarkName = try bJson[displayName] otherwise bId,
+				                
+				                Sections = try bJson[explorationState][sections] otherwise Record.FromList({}, {}),
+				                SectionNames = Record.FieldNames(Sections),
+				                
+				                // For each section (page), for each visual container
+				                SectionActions = List.Combine(
+				                    List.Transform(SectionNames, each
+				                        let
+				                            sectionId = _,
+				                            sectionPageName = try Record.Field(PageNameLookup, sectionId) otherwise sectionId,
+				                            sectionData = Record.Field(Sections, sectionId),
+				                            containers = try sectionData[visualContainers] otherwise Record.FromList({}, {}),
+				                            containerIds = Record.FieldNames(containers)
+				                        in
+				                            List.Transform(containerIds, each
+				                                let
+				                                    visualId = _,
+				                                    vc = Record.Field(containers, visualId),
+				                                    sv = try vc[singleVisual] otherwise Record.FromList({}, {}),
+				                                    
+				                                    // Visual type as stored in the bookmark
+				                                    BookmarkVisualType = try sv[visualType] otherwise null,
+				                                    
+				                                    // Current visual type from the live file
+				                                    CurrentVisualType = try Record.Field(VisualTypeLookup, visualId) otherwise null,
+				                                    
+				                                    // Staleness check: does the bookmark type match the current type?
+				                                    IsStale = if BookmarkVisualType <> null and CurrentVisualType <> null 
+				                                        then BookmarkVisualType <> CurrentVisualType
+				                                        else if CurrentVisualType = null then true  // visual no longer exists
+				                                        else false,
+				                                    
+				                                    // Display mode change
+				                                    DisplayMode = try sv[display][mode] otherwise null,
+				                                    IsHiddenByBookmark = DisplayMode = "hidden",
+				                                    
+				                                    // Filter changes
+				                                    Filters = try vc[filters][byExpr] otherwise {},
+				                                    FilterCount = List.Count(Filters),
+				                                    FilterFields = Text.Combine(
+				                                        List.Transform(Filters, each
+				                                            let
+				                                                expr = [expression],
+				                                                // Handle Column references
+				                                                colEntity = try expr[Column][Expression][SourceRef][Entity] otherwise null,
+				                                                colProp = try expr[Column][Property] otherwise null,
+				                                                // Handle Measure references
+				                                                mEntity = try expr[Measure][Expression][SourceRef][Entity] otherwise null,
+				                                                mProp = try expr[Measure][Property] otherwise null,
+				                                                
+				                                                ref = if colEntity <> null and colProp <> null
+				                                                    then colEntity & "." & colProp
+				                                                    else if mEntity <> null and mProp <> null
+				                                                    then mEntity & "." & mProp
+				                                                    else "unknown"
+				                                            in
+				                                                ref
+				                                        ),
+				                                        ", "
+				                                    ),
+				                                    
+				                                    // Active projection changes
+				                                    ActiveProjections = try sv[activeProjections] otherwise Record.FromList({}, {}),
+				                                    HasProjectionChange = Record.FieldCount(ActiveProjections) > 0,
+				                                    ProjectionRoles = if HasProjectionChange 
+				                                        then Text.Combine(Record.FieldNames(ActiveProjections), ", ")
+				                                        else null,
+				                                    
+				                                    // Object changes (merge or replace)
+				                                    Objects = try sv[objects] otherwise Record.FromList({}, {}),
+				                                    HasMerge = try Record.HasFields(Objects, {"merge"}) otherwise false,
+				                                    HasObjectChange = Record.FieldCount(Objects) > 0,
+				                                    ObjectChangeType = if HasMerge then "merge" 
+				                                        else if HasObjectChange then "replace" 
+				                                        else null,
+				                                    
+				                                    // Summarize the action
+				                                    ActionParts = List.Select({
+				                                        if IsHiddenByBookmark then "Hide" else null,
+				                                        if FilterCount > 0 then "Filter (" & Text.From(FilterCount) & ")" else null,
+				                                        if HasProjectionChange then "Projection" else null,
+				                                        if HasObjectChange then "Object" else null
+				                                    }, each _ <> null),
+				                                    ActionSummary = if List.Count(ActionParts) > 0 
+				                                        then Text.Combine(ActionParts, " | ") 
+				                                        else "State capture"
+				                                in
+				                                    [
+				                                        ReportName = ReportName,
+				                                        BookmarkId = bId,
+				                                        BookmarkName = BookmarkName,
+				                                        SectionPageId = sectionId,
+				                                        SectionPageName = sectionPageName,
+				                                        VisualId = visualId,
+				                                        BookmarkVisualType = BookmarkVisualType,
+				                                        CurrentVisualType = CurrentVisualType,
+				                                        IsStale = IsStale,
+				                                        IsHiddenByBookmark = IsHiddenByBookmark,
+				                                        FilterCount = FilterCount,
+				                                        FilterFields = FilterFields,
+				                                        HasProjectionChange = HasProjectionChange,
+				                                        ProjectionRoles = ProjectionRoles,
+				                                        ObjectChangeType = ObjectChangeType,
+				                                        ActionSummary = ActionSummary
+				                                    ]
+				                            )
+				                    )
+				                )
+				            in
+				                SectionActions
+				        )
+				    ),
+				    
+				    Result = Table.FromRecords(AllActions),
+				    Typed = Table.TransformColumnTypes(Result, {
+				        {"FilterCount", Int64.Type},
+				        {"IsStale", type logical},
+				        {"IsHiddenByBookmark", type logical},
+				        {"HasProjectionChange", type logical}
+				    }),
+				    Sorted = Table.Sort(Typed, {{"BookmarkName", Order.Ascending}, {"SectionPageName", Order.Ascending}, {"VisualId", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

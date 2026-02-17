@@ -1,0 +1,319 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "f0d47b06c1269245431b",
+  "position": {
+    "x": 10,
+    "y": 358,
+    "z": 3000,
+    "height": 352,
+    "width": 1260,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "BookmarkName"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.BookmarkName",
+              "nativeQueryRef": "Bookmark"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "SectionPageName"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.SectionPageName",
+              "nativeQueryRef": "Page"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "BookmarkVisualType"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.BookmarkVisualType",
+              "nativeQueryRef": "Snapshot type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "CurrentVisualType"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.CurrentVisualType",
+              "nativeQueryRef": "Current type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "IsStale"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.IsStale",
+              "nativeQueryRef": "Stale"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "IsHiddenByBookmark"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.IsHiddenByBookmark",
+              "nativeQueryRef": "Hidden"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "FilterCount"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.FilterCount",
+              "nativeQueryRef": "Filters"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "FilterFields"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.FilterFields",
+              "nativeQueryRef": "Filter fields"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BookmarkActions_pbir"
+                    }
+                  },
+                  "Property": "ActionSummary"
+                }
+              },
+              "queryRef": "BookmarkActions_pbir.ActionSummary",
+              "nativeQueryRef": "Summary"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "BookmarkActions_pbir"
+                  }
+                },
+                "Property": "BookmarkName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'What each bookmark does to each visual — watch for stale entries'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "59485115f195d618ba7d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "BookmarkName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cf0c62f5b9d78f6beb7e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "SectionPageName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "89ac1d3574c9f5649137",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "BookmarkVisualType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c2ea7a5aff58daed03d8",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "CurrentVisualType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "3b3c9385164e371cab44",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "IsStale"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4442605f11da0e68d144",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "IsHiddenByBookmark"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "7494e2f8242426d34f5b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "FilterCount"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "0b2a615c8a27412c13e3",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "FilterFields"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c93ef930706712ba6c7d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "BookmarkActions_pbir"
+              }
+            },
+            "Property": "ActionSummary"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

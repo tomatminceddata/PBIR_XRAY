@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "765c7a5df8d108231cb3",
+  "displayName": "Page 3 - Distribution and Map Charts",
+  "displayOption": "FitToPage",
+  "height": 1100,
+  "width": 1280
+}

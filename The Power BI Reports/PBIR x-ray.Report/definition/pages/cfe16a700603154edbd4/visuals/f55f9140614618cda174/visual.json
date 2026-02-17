@@ -1,0 +1,319 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "f55f9140614618cda174",
+  "position": {
+    "x": 10,
+    "y": 158,
+    "z": 2000,
+    "height": 552,
+    "width": 780,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageName"
+                }
+              },
+              "queryRef": "Pages_pbir.PageName",
+              "nativeQueryRef": "PageName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "SlicerTable"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.SlicerTable",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "SlicerField"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.SlicerField",
+              "nativeQueryRef": "Field"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "SlicerMode"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.SlicerMode",
+              "nativeQueryRef": "Mode"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "SyncGroupName"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.SyncGroupName",
+              "nativeQueryRef": "Sync group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "HasSelfFilter"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.HasSelfFilter",
+              "nativeQueryRef": "Self-filter"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "HasDefaultFilter"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.HasDefaultFilter",
+              "nativeQueryRef": "Default"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "StrictSingleSelect"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.StrictSingleSelect",
+              "nativeQueryRef": "Single select"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SlicerInventory_pbir"
+                    }
+                  },
+                  "Property": "HasFieldParameters"
+                }
+              },
+              "queryRef": "SlicerInventory_pbir.HasFieldParameters",
+              "nativeQueryRef": "Field params"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Pages_pbir"
+                  }
+                },
+                "Property": "PageName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every slicer in the report with its configuration'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "31f526cddb03e1c8d4bc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "SlicerTable"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "0cf0f120b7f79dcb5fc5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "SlicerField"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "7301c0c6a3af6930e645",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "SlicerMode"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "5df71af6d9fac80e99c4",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "SyncGroupName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "e3fd33294ae2c2c4cafa",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "HasSelfFilter"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cb810a7c6585ed9c5cc5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "HasDefaultFilter"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "319252f460f5bbb9d3ba",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "StrictSingleSelect"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2a128369d753a1ca61a9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SlicerInventory_pbir"
+              }
+            },
+            "Property": "HasFieldParameters"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "58cb3497a72789a0fc44",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageName"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

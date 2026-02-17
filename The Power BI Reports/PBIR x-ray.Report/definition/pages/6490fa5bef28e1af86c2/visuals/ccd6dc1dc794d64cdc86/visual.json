@@ -1,0 +1,161 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "ccd6dc1dc794d64cdc86",
+  "position": {
+    "x": 10,
+    "y": 48,
+    "z": 1000,
+    "height": 300,
+    "width": 760,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "BookmarkName"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.BookmarkName",
+              "nativeQueryRef": "Bookmark"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "TargetPageName"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.TargetPageName",
+              "nativeQueryRef": "Target page"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "IsScoped"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.IsScoped",
+              "nativeQueryRef": "Scoped"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "AffectedVisualCount"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.AffectedVisualCount",
+              "nativeQueryRef": "Affected"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "HiddenVisualCount"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.HiddenVisualCount",
+              "nativeQueryRef": "Hidden"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "VisualsWithFilterCount"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.VisualsWithFilterCount",
+              "nativeQueryRef": "Filtered"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Bookmarks_pbir"
+                    }
+                  },
+                  "Property": "TriggerVisualTypes"
+                }
+              },
+              "queryRef": "Bookmarks_pbir.TriggerVisualTypes",
+              "nativeQueryRef": "Triggered by"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Bookmarks_pbir"
+                  }
+                },
+                "Property": "BookmarkName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every bookmark and what it affects — click a row to filter actions below'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

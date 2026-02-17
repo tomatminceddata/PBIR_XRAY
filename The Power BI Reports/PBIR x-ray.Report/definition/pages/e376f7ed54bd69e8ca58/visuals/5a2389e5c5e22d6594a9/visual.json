@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "5a2389e5c5e22d6594a9",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "height": 720.5393258426966,
+    "width": 1280,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "htmlContent443BE3AD55E043BF878BED274D3A6865",
+    "query": {
+      "queryState": {
+        "content": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "vizAID Disclaimer HTML"
+                }
+              },
+              "queryRef": "Visuals_pbir.vizAID Disclaimer HTML",
+              "nativeQueryRef": "vizAID Disclaimer HTML"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "37e01a583b2269b1c7bf",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "vizAID Disclaimer HTML"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

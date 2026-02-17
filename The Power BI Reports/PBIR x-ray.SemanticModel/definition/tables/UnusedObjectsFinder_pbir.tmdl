@@ -1,0 +1,66 @@
+table UnusedObjectsFinder_pbir
+	lineageTag: 496a46a9-2dd7-4c6d-a89f-ce51f919e707
+
+	column ReportName
+		dataType: string
+		lineageTag: 4fcfb983-c1ca-4070-8c97-6995a5c862fa
+		summarizeBy: none
+		sourceColumn: ReportName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TableName
+		dataType: string
+		lineageTag: 6641488f-e9e9-4c22-b23c-538948b66cb4
+		summarizeBy: none
+		sourceColumn: TableName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjectName
+		dataType: string
+		lineageTag: 7aaf6575-fbfb-40d8-9d79-baafefe217be
+		summarizeBy: none
+		sourceColumn: ObjectName
+
+		annotation SummarizationSetBy = Automatic
+
+	column RefType
+		dataType: string
+		lineageTag: 7a8a7b16-fe85-4240-b0cb-a83b54c48bb3
+		summarizeBy: none
+		sourceColumn: RefType
+
+		annotation SummarizationSetBy = Automatic
+
+	column ModelObjectKey
+		dataType: string
+		lineageTag: 602c8639-35a4-48f5-89ee-275d9184456d
+		summarizeBy: none
+		sourceColumn: ModelObjectKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition UnusedObjectsFinder_pbir = m
+		mode: import
+		source = ```
+				let
+				    Source = ModelReferences_pbir,
+				    
+				    UniqueRefs = Table.Distinct(
+				        Table.SelectColumns(Source, {"ReportName", "TableName", "ObjectName", "RefType"})
+				    ),
+				    
+				    WithKey = Table.AddColumn(UniqueRefs, "ModelObjectKey", 
+				        each [TableName] & "." & [ObjectName], type text
+				    ),
+				    
+				    Sorted = Table.Sort(WithKey, {{"TableName", Order.Ascending}, {"ObjectName", Order.Ascending}})
+				in
+				    Sorted
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

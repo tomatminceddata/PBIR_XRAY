@@ -1,0 +1,105 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "12f0bdfdd6bd5fbfdf9b",
+  "position": {
+    "x": 769.65294592413238,
+    "y": 251.04116222760288,
+    "z": 4000,
+    "height": 459.72558514931393,
+    "width": 500.01614205004034,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "UnusedObjectsFinder_pbir"
+                    }
+                  },
+                  "Property": "TableName"
+                }
+              },
+              "queryRef": "UnusedObjectsFinder_pbir.TableName",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "UnusedObjectsFinder_pbir"
+                    }
+                  },
+                  "Property": "ObjectName"
+                }
+              },
+              "queryRef": "UnusedObjectsFinder_pbir.ObjectName",
+              "nativeQueryRef": "Object"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "UnusedObjectsFinder_pbir"
+                    }
+                  },
+                  "Property": "RefType"
+                }
+              },
+              "queryRef": "UnusedObjectsFinder_pbir.RefType",
+              "nativeQueryRef": "Type"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "UnusedObjectsFinder_pbir"
+                  }
+                },
+                "Property": "TableName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'All distinct model objects referenced by the report'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

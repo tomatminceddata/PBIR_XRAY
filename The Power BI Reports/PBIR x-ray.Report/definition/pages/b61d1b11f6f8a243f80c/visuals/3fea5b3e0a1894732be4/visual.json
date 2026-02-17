@@ -1,0 +1,120 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "3fea5b3e0a1894732be4",
+  "position": {
+    "x": 770,
+    "y": 48,
+    "z": 3000,
+    "height": 320,
+    "width": 500,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ModelReferences_pbir"
+                    }
+                  },
+                  "Property": "TableName"
+                }
+              },
+              "queryRef": "ModelReferences_pbir.TableName",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "ModelReferences_pbir"
+                        }
+                      },
+                      "Property": "VisualId"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(ModelReferences_pbir.VisualId)",
+              "nativeQueryRef": "References"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "ModelReferences_pbir"
+                        }
+                      },
+                      "Property": "ObjectName"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(ModelReferences_pbir.ObjectName)",
+              "nativeQueryRef": "Objects"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "ModelReferences_pbir"
+                      }
+                    },
+                    "Property": "VisualId"
+                  }
+                },
+                "Function": 5
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'How heavily each table is used'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

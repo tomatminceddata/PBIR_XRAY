@@ -1,0 +1,235 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "3cb2412e2bedeb11a137",
+  "position": {
+    "x": 781.624649859944,
+    "y": 47.805788982259571,
+    "z": 2000,
+    "height": 299.98132586367882,
+    "width": 488.81419234360413,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Buttons_pbir"
+                    }
+                  },
+                  "Property": "PageName"
+                }
+              },
+              "queryRef": "Buttons_pbir.PageName",
+              "nativeQueryRef": "PageName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Buttons_pbir"
+                    }
+                  },
+                  "Property": "VisualType"
+                }
+              },
+              "queryRef": "Buttons_pbir.VisualType",
+              "nativeQueryRef": "Visual"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Buttons_pbir"
+                    }
+                  },
+                  "Property": "LinkType"
+                }
+              },
+              "queryRef": "Buttons_pbir.LinkType",
+              "nativeQueryRef": "Action"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Buttons_pbir"
+                    }
+                  },
+                  "Property": "BookmarkName"
+                }
+              },
+              "queryRef": "Buttons_pbir.BookmarkName",
+              "nativeQueryRef": "Bookmark"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Buttons_pbir"
+                    }
+                  },
+                  "Property": "ButtonText"
+                }
+              },
+              "queryRef": "Buttons_pbir.ButtonText",
+              "nativeQueryRef": "Label"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Buttons_pbir"
+                    }
+                  },
+                  "Property": "IconShape"
+                }
+              },
+              "queryRef": "Buttons_pbir.IconShape",
+              "nativeQueryRef": "Icon"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Buttons_pbir"
+                  }
+                },
+                "Property": "PageName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Buttons and their actions'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "6a83637e19644abc2258",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Buttons_pbir"
+              }
+            },
+            "Property": "VisualType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cd735ef20443253a3d49",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Buttons_pbir"
+              }
+            },
+            "Property": "LinkType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6366f9bf0413130a5dc1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Buttons_pbir"
+              }
+            },
+            "Property": "BookmarkName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8258d72f178465f20801",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Buttons_pbir"
+              }
+            },
+            "Property": "ButtonText"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "dfa77ad4b2db0a0bd0dc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Buttons_pbir"
+              }
+            },
+            "Property": "IconShape"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8549400c23612a97b6e8",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Buttons_pbir"
+              }
+            },
+            "Property": "PageName"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "PBIR X-ray sample data"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "93c2042f-6651-44b0-9310-f58038961d0e"
+  }
+}

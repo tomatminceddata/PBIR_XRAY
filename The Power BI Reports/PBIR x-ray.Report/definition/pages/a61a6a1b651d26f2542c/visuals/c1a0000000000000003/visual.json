@@ -1,0 +1,263 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "c1a0000000000000003",
+  "position": {
+    "x": 10,
+    "y": 180,
+    "z": 2000,
+    "height": 340,
+    "width": 640,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageName"
+                }
+              },
+              "queryRef": "Pages_pbir.PageName",
+              "nativeQueryRef": "PageName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageOrdinal"
+                }
+              },
+              "queryRef": "Pages_pbir.PageOrdinal",
+              "nativeQueryRef": "Ordinal"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "VisualCount"
+                }
+              },
+              "queryRef": "Pages_pbir.VisualCount",
+              "nativeQueryRef": "Visuals"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "SlicerCount"
+                }
+              },
+              "queryRef": "Pages_pbir.SlicerCount",
+              "nativeQueryRef": "Slicers"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageVisibility"
+                }
+              },
+              "queryRef": "Pages_pbir.PageVisibility",
+              "nativeQueryRef": "Visibility"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageType"
+                }
+              },
+              "queryRef": "Pages_pbir.PageType",
+              "nativeQueryRef": "Type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "VisualTypeList"
+                }
+              },
+              "queryRef": "Pages_pbir.VisualTypeList",
+              "nativeQueryRef": "Visual types used"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Pages_pbir"
+                  }
+                },
+                "Property": "PageOrdinal"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every page in the report, sorted by tab order'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "9556e4293907059beacd",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1d4c70285f815b1ec378",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageOrdinal"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "84ab15b848aa97351cac",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "VisualCount"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "2e030f303da500134a8c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "SlicerCount"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "252f8f728ba70669705a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageVisibility"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "83c4e0d35b7caa4ea3bf",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "189d2138c7332a9b55ed",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "VisualTypeList"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

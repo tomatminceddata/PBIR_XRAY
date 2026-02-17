@@ -1,0 +1,185 @@
+table date
+	lineageTag: fa3ff03c-a9b1-4aa9-a975-2659442c331b
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 446a10df-0525-4a2b-8786-4aad50f3f786
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: 29dc413f-be1b-4567-9b47-f6e2a7c97055
+			defaultHierarchy: LocalDateTable_2601f702-38d9-4e4c-80fb-e68a0bc7fd92.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 67fc49d9-368c-4cff-8cb2-c36627288a4f
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 415e7067-1377-4bf9-a798-a11d99ccf4c9
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearQuarter
+		dataType: string
+		lineageTag: 9e3f4041-8fd3-4ac5-9c95-1c9800c75335
+		summarizeBy: none
+		sourceColumn: YearQuarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearQuarterNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 27363c6c-d619-45e2-acff-b60b048b8659
+		summarizeBy: sum
+		sourceColumn: YearQuarterNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: cb2bb5b8-844c-44e8-8791-e90cf6ae591c
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 3111e44c-ca7e-4445-ae10-2c369c8e3cde
+		summarizeBy: none
+		sourceColumn: YearMonth
+
+		variation Variation
+			isDefault
+			relationship: 3ebe5bc6-e66a-4d0c-bcfb-b8b8827ed7d0
+			defaultHierarchy: LocalDateTable_76cc4f55-cc80-4ef7-8d40-d3b4d82c1dff.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column YearMonthShort
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d6091e9b-0498-49cf-94d3-40a148e1825b
+		summarizeBy: none
+		sourceColumn: YearMonthShort
+
+		variation Variation
+			isDefault
+			relationship: a5bec551-92f0-4b6c-84ed-e70a6973c379
+			defaultHierarchy: LocalDateTable_874351e6-bbb4-4aab-bcd9-21c4d65d34f7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column YearMonthNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 00aef30e-df45-4665-a05f-8117079b587e
+		summarizeBy: sum
+		sourceColumn: YearMonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: 06ce63c8-fbaf-4246-8b08-bbe8b8eac5c2
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthShort
+		dataType: string
+		lineageTag: 0cb59099-db40-48d0-8290-a47b2ddd7c6f
+		summarizeBy: none
+		sourceColumn: MonthShort
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 3e791397-6b2b-4b4e-ad3c-35cabafb904b
+		summarizeBy: sum
+		sourceColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayofWeek
+		dataType: string
+		lineageTag: 772695ac-da31-4c04-b182-2d9f5cd84831
+		summarizeBy: none
+		sourceColumn: DayofWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayofWeekShort
+		dataType: string
+		lineageTag: 0cb57450-c52b-4189-97ca-e70e5398ed6b
+		summarizeBy: none
+		sourceColumn: DayofWeekShort
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayofWeekNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: e932ffc5-e964-414f-999b-cacbc3ddee10
+		summarizeBy: sum
+		sourceColumn: DayofWeekNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkingDay
+		dataType: int64
+		formatString: 0
+		lineageTag: 5ad6eb3f-0895-4803-b843-eb2675fc2153
+		summarizeBy: sum
+		sourceColumn: WorkingDay
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkingDayNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: e2832fea-c070-4c95-a7fa-68c95fc8d01a
+		summarizeBy: sum
+		sourceColumn: WorkingDayNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	partition date = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(Text.Combine({pq_par_csvFolderPath,"\","date.csv"})),[Delimiter=",", Columns=17, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Date", type date}, {"DateKey", Int64.Type}, {"Year", Int64.Type}, {"YearQuarter", type text}, {"YearQuarterNumber", Int64.Type}, {"Quarter", type text}, {"YearMonth", type date}, {"YearMonthShort", type date}, {"YearMonthNumber", Int64.Type}, {"Month", type text}, {"MonthShort", type text}, {"MonthNumber", Int64.Type}, {"DayofWeek", type text}, {"DayofWeekShort", type text}, {"DayofWeekNumber", Int64.Type}, {"WorkingDay", Int64.Type}, {"WorkingDayNumber", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

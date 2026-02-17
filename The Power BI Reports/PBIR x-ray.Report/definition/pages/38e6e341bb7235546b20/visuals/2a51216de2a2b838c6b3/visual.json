@@ -1,0 +1,302 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "2a51216de2a2b838c6b3",
+  "position": {
+    "x": 390,
+    "y": 48,
+    "z": 3000,
+    "height": 662,
+    "width": 880,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Pages_pbir"
+                    }
+                  },
+                  "Property": "PageName"
+                }
+              },
+              "queryRef": "Pages_pbir.PageName",
+              "nativeQueryRef": "PageName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "VisualType"
+                }
+              },
+              "queryRef": "Visuals_pbir.VisualType",
+              "nativeQueryRef": "Type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "VisualTitle"
+                }
+              },
+              "queryRef": "Visuals_pbir.VisualTitle",
+              "nativeQueryRef": "Title"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "ProjectionRoles"
+                }
+              },
+              "queryRef": "Visuals_pbir.ProjectionRoles",
+              "nativeQueryRef": "Data roles"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "IsHidden"
+                }
+              },
+              "queryRef": "Visuals_pbir.IsHidden",
+              "nativeQueryRef": "Hidden"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "HasConditionalFormatting"
+                }
+              },
+              "queryRef": "Visuals_pbir.HasConditionalFormatting",
+              "nativeQueryRef": "Has CF"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "SyncGroupName"
+                }
+              },
+              "queryRef": "Visuals_pbir.SyncGroupName",
+              "nativeQueryRef": "Sync group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "ParentGroup"
+                }
+              },
+              "queryRef": "Visuals_pbir.ParentGroup",
+              "nativeQueryRef": "Group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Visuals_pbir"
+                    }
+                  },
+                  "Property": "HowCreated"
+                }
+              },
+              "queryRef": "Visuals_pbir.HowCreated",
+              "nativeQueryRef": "Created via"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every visual in the report — filter by page or type on the left'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "47c3aad68953b69ac157",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "VisualType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ef3f2b0e2b699611bea9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "VisualTitle"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "774752c446f1c1711846",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "ProjectionRoles"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "66841bca4505f1bb8782",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "IsHidden"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6eb0f0aed69b988e3c7b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "HasConditionalFormatting"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8244262efbc600806422",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "SyncGroupName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9a2d01f2667d138b93d9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "ParentGroup"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "128989afe5b2b24d79e2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Visuals_pbir"
+              }
+            },
+            "Property": "HowCreated"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2036844f7602fd2c5977",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Pages_pbir"
+              }
+            },
+            "Property": "PageName"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

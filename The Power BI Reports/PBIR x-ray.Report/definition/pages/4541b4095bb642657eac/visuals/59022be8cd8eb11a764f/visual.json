@@ -1,0 +1,231 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "59022be8cd8eb11a764f",
+  "position": {
+    "x": 200,
+    "y": 48,
+    "z": 1000,
+    "height": 400,
+    "width": 1070,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "VisualType"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.VisualType",
+              "nativeQueryRef": "Visual"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "CFType"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.CFType",
+              "nativeQueryRef": "Rule type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "FormattingProperty"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.FormattingProperty",
+              "nativeQueryRef": "Target"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "TableName"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.TableName",
+              "nativeQueryRef": "Table"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "ObjectName"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.ObjectName",
+              "nativeQueryRef": "Measure / Column"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "Color"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.Color",
+              "nativeQueryRef": "Color"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "LowerBound"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.LowerBound",
+              "nativeQueryRef": "Lower"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "UpperBound"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.UpperBound",
+              "nativeQueryRef": "Upper"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "GradientType"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.GradientType",
+              "nativeQueryRef": "Gradient"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "MinColor"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.MinColor",
+              "nativeQueryRef": "Min color"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "MaxColor"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.MaxColor",
+              "nativeQueryRef": "Max color"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ConditionalFormattingRules_pbir"
+                    }
+                  },
+                  "Property": "ColorBar"
+                }
+              },
+              "queryRef": "ConditionalFormattingRules_pbir.ColorBar",
+              "nativeQueryRef": "Preview"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "ConditionalFormattingRules_pbir"
+                  }
+                },
+                "Property": "VisualType"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every conditional formatting rule — bands, gradients, and their thresholds'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

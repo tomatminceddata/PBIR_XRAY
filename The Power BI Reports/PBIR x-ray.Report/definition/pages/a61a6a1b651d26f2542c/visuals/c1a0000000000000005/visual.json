@@ -1,0 +1,144 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "c1a0000000000000005",
+  "position": {
+    "x": 10,
+    "y": 530,
+    "z": 4000,
+    "height": 180,
+    "width": 640,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "ReportName"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.ReportName",
+              "nativeQueryRef": "Report"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "ThemeName"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.ThemeName",
+              "nativeQueryRef": "Theme"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "Schema"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.Schema",
+              "nativeQueryRef": "Schema"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "PageCount"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.PageCount",
+              "nativeQueryRef": "Pages"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "TotalVisuals"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.TotalVisuals",
+              "nativeQueryRef": "Visuals"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "ExportDataMode"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.ExportDataMode",
+              "nativeQueryRef": "Export Mode"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ReportSettings_pbir"
+                    }
+                  },
+                  "Property": "UseEnhancedTooltips"
+                }
+              },
+              "queryRef": "ReportSettings_pbir.UseEnhancedTooltips",
+              "nativeQueryRef": "Enhanced Tooltips"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Report-level configuration and metadata'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
