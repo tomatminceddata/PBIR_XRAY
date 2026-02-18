@@ -1111,4 +1111,4 @@ Every field access in these queries uses `try...otherwise`. This is essential be
 
 ## Sample data
 
-The included sample report uses the **Contoso 10M row dataset** from SQLBI's Contoso Data Generator V2. Download the ready-to-use data from [github.com/sql-bi/Contoso-Data-Generator-V2-data/releases/tag/ready-to-use-data](https://github.com/sql-bi/Contoso-Data-Generator-V2-data/releases/tag/ready-to-use-data).
+The included sample report uses the **Contoso 1M row dataset** from SQLBI's Contoso Data Generator V2. Download the ready-to-use data from [github.com/sql-bi/Contoso-Data-Generator-V2-data/releases/tag/ready-to-use-data](https://github.com/sql-bi/Contoso-Data-Generator-V2-data/releases/tag/ready-to-use-data).
