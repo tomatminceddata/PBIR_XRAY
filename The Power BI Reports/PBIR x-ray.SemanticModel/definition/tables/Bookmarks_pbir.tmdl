@@ -285,15 +285,17 @@ table Bookmarks_pbir
 				            ]
 				    ),
 				    
-				    Result = Table.FromRecords(Bookmarks),
-				    Typed = Table.TransformColumnTypes(Result, {
-				        {"AffectedVisualCount", Int64.Type},
-				        {"HiddenVisualCount", Int64.Type},
-				        {"VisualsWithFilterCount", Int64.Type},
-				        {"IsScoped", type logical},
-				        {"HasReportObjects", type logical}
-				    }),
-				    Sorted = Table.Sort(Typed, {{"BookmarkName", Order.Ascending}})
+				    ResultType = type table [
+				        ReportName = nullable text, BookmarkId = nullable text, BookmarkName = nullable text,
+				        TargetPageId = nullable text, TargetPageName = nullable text,
+				        IsScoped = nullable logical, AffectedVisualCount = nullable Int64.Type,
+				        HiddenVisualCount = nullable Int64.Type, HiddenVisualIds = nullable text,
+				        VisualsWithFilterCount = nullable Int64.Type,
+				        TriggerVisualIds = nullable text, TriggerVisualTypes = nullable text, TriggerPageNames = nullable text,
+				        HasReportObjects = nullable logical, BookmarkVersion = nullable text
+				    ],
+				    Result = Table.FromRecords(Bookmarks, ResultType, MissingField.UseNull),
+				    Sorted = Table.Sort(Result, {{"BookmarkName", Order.Ascending}})
 				in
 				    Sorted
 				```

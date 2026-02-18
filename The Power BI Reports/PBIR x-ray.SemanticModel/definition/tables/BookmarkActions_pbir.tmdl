@@ -286,14 +286,17 @@ table BookmarkActions_pbir
 				        )
 				    ),
 				    
-				    Result = Table.FromRecords(AllActions),
-				    Typed = Table.TransformColumnTypes(Result, {
-				        {"FilterCount", Int64.Type},
-				        {"IsStale", type logical},
-				        {"IsHiddenByBookmark", type logical},
-				        {"HasProjectionChange", type logical}
-				    }),
-				    Sorted = Table.Sort(Typed, {{"BookmarkName", Order.Ascending}, {"SectionPageName", Order.Ascending}, {"VisualId", Order.Ascending}})
+				    ResultType = type table [
+				        ReportName = nullable text, BookmarkId = nullable text, BookmarkName = nullable text,
+				        SectionPageId = nullable text, SectionPageName = nullable text, VisualId = nullable text,
+				        BookmarkVisualType = nullable text, CurrentVisualType = nullable text,
+				        IsStale = nullable logical, IsHiddenByBookmark = nullable logical,
+				        FilterCount = nullable Int64.Type, FilterFields = nullable text,
+				        HasProjectionChange = nullable logical, ProjectionRoles = nullable text,
+				        ObjectChangeType = nullable text, ActionSummary = nullable text
+				    ],
+				    Result = Table.FromRecords(AllActions, ResultType, MissingField.UseNull),
+				    Sorted = Table.Sort(Result, {{"BookmarkName", Order.Ascending}, {"SectionPageName", Order.Ascending}, {"VisualId", Order.Ascending}})
 				in
 				    Sorted
 				```

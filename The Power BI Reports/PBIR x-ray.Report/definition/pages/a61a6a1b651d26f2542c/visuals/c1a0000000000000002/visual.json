@@ -70,7 +70,8 @@
                 }
               },
               "queryRef": "CountNonNull(SlicerInventory_pbir.VisualId)",
-              "nativeQueryRef": "Slicers"
+              "nativeQueryRef": "Count of Slicers",
+              "displayName": "Count of Slicers"
             },
             {
               "field": {
@@ -108,7 +109,8 @@
                 }
               },
               "queryRef": "CountNonNull(Buttons_pbir.VisualId)",
-              "nativeQueryRef": "Buttons"
+              "nativeQueryRef": "Count of Buttons",
+              "displayName": "Count of Buttons"
             },
             {
               "field": {
@@ -127,7 +129,8 @@
                 }
               },
               "queryRef": "CountNonNull(ConditionalFormattingRules_pbir.VisualId)",
-              "nativeQueryRef": "CF Rules"
+              "nativeQueryRef": "Count of Conditional Formattings",
+              "displayName": "Count of Conditional Formattings"
             }
           ]
         }

@@ -18,12 +18,14 @@ table ConditionalFormattingRules_pbir
 		annotation SummarizationSetBy = Automatic
 
 	column PageOrdinal
-		dataType: string
+		dataType: double
 		lineageTag: cc143663-00f7-47c4-90c8-1279d77f4542
-		summarizeBy: none
+		summarizeBy: sum
 		sourceColumn: PageOrdinal
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column VisualType
 		dataType: string
@@ -622,13 +624,18 @@ table ConditionalFormattingRules_pbir
 				        )
 				    ),
 				    
-				    Result = Table.FromRecords(AllRules),
-				    Typed = Table.TransformColumnTypes(Result, {
-				        {"BandIndex", Int64.Type},
-				        {"BandCount", Int64.Type},
-				        {"ShowBarOnly", type logical}
-				    }),
-				    Sorted = Table.Sort(Typed, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}, {"CFType", Order.Ascending}, {"TableName", Order.Ascending}, {"BandIndex", Order.Ascending}})
+				    ResultType = type table [
+				        ReportName = nullable text, VisualId = nullable text, PageId = nullable text, PageOrdinal = nullable number,
+				        VisualType = nullable text, CFType = nullable text, FormattingProperty = nullable text,
+				        TableName = nullable text, ObjectName = nullable text, InputTableName = nullable text, InputObjectName = nullable text,
+				        BandIndex = nullable Int64.Type, BandCount = nullable Int64.Type, Color = nullable text,
+				        LowerBound = nullable text, LowerOperator = nullable text, UpperBound = nullable text, UpperOperator = nullable text,
+				        GradientType = nullable text, MinColor = nullable text, MidColor = nullable text, MaxColor = nullable text,
+				        NullStrategy = nullable text, PositiveColor = nullable text, NegativeColor = nullable text,
+				        ShowBarOnly = nullable logical, ColorBar = nullable text
+				    ],
+				    Result = Table.FromRecords(AllRules, ResultType, MissingField.UseNull),
+				    Sorted = Table.Sort(Result, {{"PageOrdinal", Order.Ascending}, {"VisualId", Order.Ascending}, {"CFType", Order.Ascending}, {"TableName", Order.Ascending}, {"BandIndex", Order.Ascending}})
 				in
 				    Sorted
 				```

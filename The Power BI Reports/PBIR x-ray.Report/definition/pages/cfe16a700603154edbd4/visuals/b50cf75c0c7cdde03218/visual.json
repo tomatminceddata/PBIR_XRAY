@@ -111,7 +111,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Continent'"
+                                "Value": "'Tower'"
                               }
                             }
                           ]
@@ -126,7 +126,6 @@
         }
       ]
     },
-    "drillFilterOtherVisuals": true,
     "visualContainerObjects": {
       "title": [
         {
@@ -148,6 +147,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }
