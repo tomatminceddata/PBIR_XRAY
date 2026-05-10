@@ -8,6 +8,9 @@ PBIR X-Ray cracks open the box. It reads the PBIR folder-based format — the JS
 
 The extraction pipeline is a set of 14 Power Query M queries that parse every `.json` file in a `.Report` folder and produce structured tables covering visuals, model references, conditional formatting, slicers, bookmarks, buttons, and report settings. A companion Power BI report visualizes the results across six analysis pages. Point it at any PBIR report folder and you get a complete content inventory — the kind of documentation that nobody writes manually but everybody needs when something breaks in production.
 
+## Accompanying presentation
+You will find the first iteration of the PBIR X-Ray presentation here: https://github.com/tomatminceddata/TomsPublicSpeaking/blob/main/Fabric%20Stare/Fabric%20Stare%20-%20PBIR-X-Ray.pptx 
+
 ## The PBIR folder-based format
 
 The PBIR folder-based format splits the monolithic `report.json` into a folder tree:
